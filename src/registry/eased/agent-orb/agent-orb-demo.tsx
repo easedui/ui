@@ -8,7 +8,7 @@ import { useTokenRate } from "../_primitives/thinking-core/thinking-core";
 import { DemoFrame } from "../lib/demo-frame";
 import { Segmented } from "../segmented/segmented";
 import { ShimmerText } from "../shimmer-text/shimmer-text";
-import { ThinkingOrb, type OrbState } from "./thinking-orb";
+import { AgentOrb, type OrbState } from "./agent-orb";
 
 const REPLY =
   "Your March invoice went up because six seats were added mid-cycle. They're prorated from the 9th, so this month carries $56 extra and April goes back to the normal yearly rate. Want me to email the breakdown to finance? ";
@@ -75,7 +75,7 @@ function useFakeLevel(on: boolean) {
   return level;
 }
 
-export function ThinkingOrbDemo() {
+export function AgentOrbDemo() {
   const [state, setState] = useState<OrbState>("thinking");
   const text = useFakeStream(state === "speaking");
   const { rate, tps } = useTokenRate(text, { max: 60 });
@@ -87,9 +87,9 @@ export function ThinkingOrbDemo() {
   });
 
   return (
-    <DemoFrame title="Thinking Orb" meta={state === "speaking" ? <><NumberRoll value={shownTps} /> tok/s</> : undefined}>
+    <DemoFrame title="Agent Orb" meta={state === "speaking" ? <><NumberRoll value={shownTps} /> tok/s</> : undefined}>
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 px-4">
-        <ThinkingOrb state={state} rate={rate} level={level} size={96} label={false} />
+        <AgentOrb state={state} rate={rate} level={level} size={96} label={false} />
         <div className="flex w-full min-w-0 flex-col items-center gap-1 text-center">
           <p className="text-ui-md font-medium text-text" aria-live="polite">
             <TextSwap>{CAPTIONS[state]}</TextSwap>

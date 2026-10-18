@@ -36,7 +36,7 @@ For Cursor, VS Code and Codex, see the [agent quickstart](https://eased.dev/docs
 
 ## Eased Pro
 
-Pro adds the showpieces: Spotlight Tour, Scrub Label, Group-by List, the chart pack, the Sortable Table and more, plus every future Pro component and block. It's one payment for lifetime access, and the source ships to your repo. See [eased.dev/#pricing](https://eased.dev/#pricing). Pro source isn't in this repository.
+Pro adds the showpieces: Spotlight Tour, Scrub Label, Group-by List, the chart pack, the Sortable Table and more, plus Pro blocks, plus every future Pro component and block. It's one payment for lifetime access, and the source ships to your repo. See [eased.dev/#pricing](https://eased.dev/#pricing). Pro source isn't in this repository.
 
 ## Report an issue
 

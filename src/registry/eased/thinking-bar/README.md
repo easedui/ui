@@ -24,7 +24,7 @@ With the AI SDK, `status` is `"thinking"` while the message's last part is a str
 | `label` | `string` | `"Thinking"` | |
 | `lines` | `string[]` | | Status lines to rotate through after `label` (2–4s each by length; holds on the last). |
 | `doneLabel` | `string` | `"Thought for"` | Under one second it reads "Thought for a moment". |
-| `icon` | `ReactNode` | | Before the label, e.g. `<ThinkingOrb size="sm" label={false} />`. |
+| `icon` | `ReactNode` | | Before the label, e.g. `<AgentOrb size="sm" label={false} />`. |
 | `children` | `ReactNode` | | The reasoning. With it the bar is a disclosure; without it, a plain line. |
 | `open` / `defaultOpen` / `onOpenChange` | | | Controlled or uncontrolled. `onOpenChange` also reports the automatic changes. |
 | `autoOpen` | `boolean` | `true` | Open while thinking. |

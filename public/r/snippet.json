@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "snippet",
+  "title": "Snippet",
+  "description": "A one-line command with a $ prompt and a copy button that morphs into a check. When the command changes (pnpm ↔ npm) the text swaps and the width springs, so the copy button glides instead of jumping.",
+  "dependencies": [
+    "motion",
+    "shiki"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-motion.json",
+    "https://eased.dev/r/eased-text-swap.json",
+    "https://eased.dev/r/eased-code-core.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/snippet/snippet.tsx",
+      "content": "\"use client\";\n\nimport { useRef } from \"react\";\nimport { TextSwap } from \"../_primitives/text-swap/text-swap\";\nimport { CopyButton } from \"../_primitives/code-core/copy\";\nimport { CODE_SCHEME, useCodeLines } from \"../_primitives/code-core/code-lines\";\nimport type { CodeLang } from \"../_primitives/code-core/highlighter\";\nimport { useScrollFades } from \"../lib/dom\";\n\nexport type SnippetProps = {\n  /** The one-line command. Changing it swaps the text and springs the width. */\n  text: string;\n  /** Shown before the command and never copied. Default \"$\"; null hides it. */\n  prefix?: string | null;\n  /** Grammar for the command. Default \"bash\". */\n  lang?: CodeLang | (string & {});\n  /** Accessible name of the copy button. Default \"Copy command\". */\n  label?: string;\n  onCopy?: (text: string) => void;\n  className?: string;\n};\n\n/**\n * Snippet: a one-line command with a `$` prompt and a copy button. When the command changes\n * (pnpm ↔ npm) the old text lifts away, the new one rises in, and the pill's width springs to\n * fit, so the copy button glides instead of jumping. Too long for its container, the line\n * scrolls sideways under 20px edge fades rather than wrapping.\n */\nexport function Snippet({ text, prefix = \"$\", lang = \"bash\", label = \"Copy command\", onCopy, className = \"\" }: SnippetProps) {\n  const { lines } = useCodeLines(text, lang);\n  const scroller = useRef<HTMLDivElement>(null);\n  useScrollFades(scroller, \"x\");\n  const line = lines[0] ?? [];\n\n  return (\n    <div\n      className={`inline-flex h-control-lg max-w-full min-w-0 items-center rounded-control border border-line-subtle bg-surface-sunken pr-0.75 pl-3.5 font-mono text-ui-sm text-text [--pad:3px] [--radius-outer:var(--eased-radius-control)] ${CODE_SCHEME} ${className}`}\n    >\n      {prefix !== null && (\n        <span aria-hidden className=\"mr-2 shrink-0 text-text-muted select-none\">\n          {prefix}\n        </span>\n      )}\n      <div ref={scroller} className=\"fade-x mr-1 min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden\">\n        <code className=\"block whitespace-pre\">\n          <TextSwap swapKey={text}>\n            <span>\n              {line.map((t, i) => (\n                <span key={i} style={{ color: t.light && t.dark ? `light-dark(${t.light}, ${t.dark})` : t.light ?? t.dark }}>\n                  {t.content}\n                </span>\n              ))}\n            </span>\n          </TextSwap>\n        </code>\n      </div>\n      <CopyButton text={text} label={label} showLabel={false} radius=\"radius-nested\" onCopy={onCopy} className=\"font-sans\" />\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/snippet/snippet.tsx"
+    }
+  ],
+  "docs": "Import Snippet from components/eased/snippet/snippet. Pair it with useChoice(\"package-manager\") from code-core and packageCommand from code-tabs to follow the reader's package manager.",
+  "type": "registry:ui"
+}

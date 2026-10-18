@@ -9,6 +9,8 @@ const STATS = [
   { label: "Deploys this week", value: "18", note: "4 more than last week" },
   { label: "Success rate", value: "97.2%", note: "1 failed on Tuesday" },
   { label: "Median build", value: "1m 42s", note: "12s slower" },
+  { label: "Edge requests", value: "2.4M", note: "8% up on last week" },
+  { label: "Bandwidth", value: "86 GB", note: "62% of the monthly limit" },
 ];
 
 const ACTIVITY: { who: string; what: string; target: string; when: string; prose?: boolean }[] = [
@@ -23,12 +25,17 @@ const MEMBERS = [
   { name: "Maya Okafor", email: "maya@acme.co", role: "Owner" },
   { name: "Jonas Berg", email: "jonas@acme.co", role: "Developer" },
   { name: "Lena Park", email: "lena@acme.co", role: "Developer" },
+  { name: "Tomás Rivera", email: "tomas@acme.co", role: "Developer" },
+  { name: "Aiko Tanaka", email: "aiko@acme.co", role: "Viewer" },
 ];
 
 const SETTINGS = [
   ["Framework", "Next.js"],
   ["Root directory", "apps/web"],
+  ["Build command", "pnpm build"],
+  ["Output directory", ".next"],
   ["Node.js", "22.x"],
+  ["Region", "Frankfurt (fra1)"],
 ] as const;
 
 export function TabsDemo() {

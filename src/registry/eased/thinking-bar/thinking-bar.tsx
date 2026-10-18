@@ -26,7 +26,7 @@ export type ThinkingBarProps = {
   lines?: string[];
   /** The label once done, before the duration. Default "Thought for". */
   doneLabel?: string;
-  /** Shown before the label: a Thinking Orb, an icon. */
+  /** Shown before the label: a Agent Orb, an icon. */
   icon?: ReactNode;
   /** The reasoning. When present the bar is a disclosure with a chevron; without it, a plain line. */
   children?: ReactNode;

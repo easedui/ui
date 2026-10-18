@@ -1,6 +1,6 @@
 /**
  * P11 thinking-core: the clocks, models and contracts shared by every Eased thinking state
- * (Shimmer Text, Thinking Bar, Thinking Orb, Step Rail, Reasoning, Tool Call Row, Agent Run).
+ * (Shimmer Text, Thinking Bar, Agent Orb, Step Rail, Reasoning, Tool Call Row, Agent Run).
  * Import from here; the files behind it may move.
  */
 export {

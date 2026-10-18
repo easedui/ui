@@ -29,7 +29,7 @@ export type OrbRenderProps = {
 
 export type OrbVariant = ComponentType<OrbRenderProps>;
 
-export type ThinkingOrbProps = {
+export type AgentOrbProps = {
   /** Each state has its own colours, speed and energy, and crossfades into the next. Default `thinking`. */
   state?: OrbState;
   /**
@@ -143,7 +143,7 @@ const CSS = `
  * and speaking runs up to 2× with the token `rate`, so it visibly keeps pace with the stream.
  * States crossfade their palettes. It pauses off-screen and stands still under reduced motion.
  */
-export function ThinkingOrb({ state = "thinking", rate, level, variant = "orb", size = "md", label, className = "" }: ThinkingOrbProps) {
+export function AgentOrb({ state = "thinking", rate, level, variant = "orb", size = "md", label, className = "" }: AgentOrbProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref);
   const reduced = useSafeReducedMotion();
@@ -163,7 +163,7 @@ export function ThinkingOrb({ state = "thinking", rate, level, variant = "orb", 
       style={{ width: px, height: px }}
     >
       <Variant size={px} state={state} phase={phase} energy={energy} reduced={reduced} />
-      <style href="eased-thinking-orb" precedence="default">
+      <style href="eased-agent-orb" precedence="default">
         {CSS}
       </style>
     </span>

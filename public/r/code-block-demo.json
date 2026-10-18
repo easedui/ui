@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "code-block-demo",
+  "title": "Code Block demo",
+  "description": "A docs excerpt: a 34-line debounce hook with line numbers and highlighted lines, collapsed after 12.",
+  "registryDependencies": [
+    "https://eased.dev/r/code-block.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/code-block/code-block-demo.tsx",
+      "content": "\"use client\";\n\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { CodeBlock } from \"./code-block\";\n\nconst HOOK = `import { useEffect, useRef, useState } from \"react\";\n\n/**\n * The value, but only once it has stopped changing for \\`delay\\` ms.\n * Use it to search as someone types without a request per keystroke.\n */\nexport function useDebouncedValue<T>(value: T, delay = 250): T {\n  const [settled, setSettled] = useState(value);\n  const first = useRef(true);\n\n  useEffect(() => {\n    if (first.current) {\n      first.current = false;\n      return;\n    }\n    const id = window.setTimeout(() => setSettled(value), delay);\n    return () => window.clearTimeout(id);\n  }, [value, delay]);\n\n  return settled;\n}\n\n// Usage\nexport function SearchUsers() {\n  const [query, setQuery] = useState(\"\");\n  const debounced = useDebouncedValue(query, 300);\n  const { data, isLoading } = useUsers({ search: debounced });\n\n  return (\n    <SearchField value={query} onValueChange={setQuery} busy={isLoading}>\n      {data?.map((user) => <UserRow key={user.id} user={user} />)}\n    </SearchField>\n  );\n}\n`;\n\n/** A docs page excerpt: a 38-line hook with its key lines highlighted, collapsed after 12. */\nexport function CodeBlockDemo() {\n  return (\n    <DemoFrame>\n      <div className=\"min-h-0 flex-1 overflow-y-auto p-4 [scrollbar-width:thin]\">\n        <h3 className=\"text-ui font-medium text-text\">Debounce a value</h3>\n        <p className=\"mt-1 text-ui-sm text-pretty text-text-secondary\">\n          The search waits for a pause in typing. Lines 7–8 keep the settled value; the timer is further down.\n        </p>\n        <CodeBlock\n          className=\"mt-3 rounded-control\"\n          title=\"use-debounced-value.ts\"\n          code={HOOK}\n          lineNumbers\n          highlight=\"7-8, 16-17\"\n          collapseAfter={12}\n        />\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/code-block/code-block-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

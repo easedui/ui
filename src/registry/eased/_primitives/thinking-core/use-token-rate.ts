@@ -30,7 +30,7 @@ export type TokenRate = {
  * non-zero. If the text shrinks (a new message), it starts over.
  *
  *   const { rate } = useTokenRate(message.text);
- *   <ThinkingOrb state="speaking" rate={rate} />
+ *   <AgentOrb state="speaking" rate={rate} />
  */
 export function useTokenRate(source: string | number, { max = 60, smoothing = 0.6, charsPerToken = 4 }: UseTokenRateOptions = {}): TokenRate {
   const tps = useMotionValue(0);

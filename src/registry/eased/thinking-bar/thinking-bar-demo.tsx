@@ -59,6 +59,11 @@ export function ThinkingBarDemo() {
       }
     >
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 [scrollbar-width:thin]">
+        {/* The turn before, so the new question lands in a conversation rather than an empty panel. */}
+        <p className="ml-auto max-w-[85%] rounded-panel bg-surface-sunken px-3.5 py-2 text-ui text-text text-pretty">
+          What are we paying now?
+        </p>
+        <p className="text-ui text-text text-pretty">$252 a month: 18 seats on monthly at $14 each, renewing 1 March.</p>
         <p className="ml-auto max-w-[85%] rounded-panel bg-surface-sunken px-3.5 py-2 text-ui text-text text-pretty">
           If we add 6 seats in March, is yearly still cheaper?
         </p>

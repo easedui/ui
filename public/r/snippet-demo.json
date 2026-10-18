@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "snippet-demo",
+  "title": "Snippet demo",
+  "description": "An install card: a package-manager switch drives two commands, plus a long git clone that scrolls under edge fades.",
+  "registryDependencies": [
+    "https://eased.dev/r/snippet.json",
+    "https://eased.dev/r/code-tabs.json",
+    "https://eased.dev/r/segmented.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/snippet/snippet-demo.tsx",
+      "content": "\"use client\";\n\nimport { useChoice } from \"../_primitives/code-core/choice\";\nimport { PACKAGE_MANAGERS, packageCommand, type PackageManager } from \"../code-tabs/code-tabs\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Segmented } from \"../segmented/segmented\";\nimport { Snippet } from \"./snippet\";\n\nconst OPTIONS = PACKAGE_MANAGERS.map((pm) => ({ value: pm, label: pm }));\n\n/** An install card: pick a package manager (shared with every Code Tabs on the page) and both commands follow. */\nexport function SnippetDemo() {\n  const [pm, setPm] = useChoice(\"package-manager\", \"pnpm\", PACKAGE_MANAGERS);\n  const manager = pm as PackageManager;\n  return (\n    <DemoFrame title=\"Install\" actions={<Segmented options={OPTIONS} value={manager} onValueChange={setPm} aria-label=\"Package manager\" />}>\n      <ol className=\"flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-4\">\n        <li className=\"flex min-w-0 flex-col gap-2\">\n          <div>\n            <p className=\"text-ui font-medium text-text\">Add the component</p>\n            <p className=\"text-ui-sm text-text-secondary\">Copies the source into components/eased.</p>\n          </div>\n          <Snippet className=\"self-start\" text={packageCommand(manager, { dlx: \"shadcn add https://eased.dev/r/code-block.json\" })} />\n        </li>\n        <li className=\"flex min-w-0 flex-col gap-2\">\n          <div>\n            <p className=\"text-ui font-medium text-text\">Start your dev server</p>\n            <p className=\"text-ui-sm text-text-secondary\">Then open localhost:3000.</p>\n          </div>\n          <Snippet className=\"self-start\" text={packageCommand(manager, { run: \"dev\" })} />\n        </li>\n        <li className=\"flex min-w-0 flex-col gap-2\">\n          <div>\n            <p className=\"text-ui font-medium text-text\">Or clone the starter</p>\n            <p className=\"text-ui-sm text-text-secondary\">A Next.js app with every free component.</p>\n          </div>\n          <Snippet className=\"self-start\" text=\"git clone https://github.com/eased-dev/starter.git my-app\" />\n        </li>\n      </ol>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/snippet/snippet-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

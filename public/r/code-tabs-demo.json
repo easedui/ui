@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "code-tabs-demo",
+  "title": "Code Tabs demo",
+  "description": "An install block synced across package managers, then three files of different heights and languages.",
+  "registryDependencies": [
+    "https://eased.dev/r/code-tabs.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/code-tabs/code-tabs-demo.tsx",
+      "content": "\"use client\";\n\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { CodeTabs, packageManagerItems } from \"./code-tabs\";\n\nconst INSTALL = packageManagerItems({ add: \"motion @base-ui/react\" });\n\nconst FILES = [\n  {\n    label: \"page.tsx\",\n    code: `import { Counter } from \"./counter\";\n\nexport default function Page() {\n  return <Counter start={3} />;\n}`\n  },\n  {\n    label: \"counter.tsx\",\n    highlight: \"6\",\n    code: `\"use client\";\n\nimport { useState } from \"react\";\nimport { NumberRoll } from \"@/components/eased/number-roll/number-roll\";\n\nexport function Counter({ start = 0 }: { start?: number }) {\n  const [count, setCount] = useState(start);\n  return (\n    <button onClick={() => setCount((n) => n + 1)}>\n      <NumberRoll value={count} />\n    </button>\n  );\n}`,\n  },\n  {\n    label: \"globals.css\",\n    code: `@import \"tailwindcss\";\n@import \"./eased.css\";\n\nbody {\n  background: var(--eased-bg);\n}`,\n  },\n];\n\n/** Install in your package manager (synced page-wide), then three files of different heights and languages. */\nexport function CodeTabsDemo() {\n  return (\n    <DemoFrame>\n      <div className=\"flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 [scrollbar-width:thin]\">\n        <section className=\"flex flex-col gap-2\">\n          <h3 className=\"text-ui-sm font-medium text-text\">Install</h3>\n          <CodeTabs items={INSTALL} groupId=\"package-manager\" label=\"Package manager\" className=\"rounded-control\" />\n        </section>\n        <section className=\"flex flex-col gap-2\">\n          <h3 className=\"text-ui-sm font-medium text-text\">Use it</h3>\n          <CodeTabs items={FILES} className=\"rounded-control\" />\n        </section>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/code-tabs/code-tabs-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

@@ -2007,15 +2007,15 @@
       ]
     },
     {
-      "name": "thinking-orb-demo",
+      "name": "agent-orb-demo",
       "type": "registry:example",
-      "title": "Thinking Orb demo",
+      "title": "Agent Orb demo",
       "description": "A voice assistant: switch between idle, listening, thinking and speaking; speaking streams a reply in bursts and the orb speeds up and slows with the token rate.",
       "dependencies": [
         "motion"
       ],
       "registryDependencies": [
-        "https://eased.dev/r/thinking-orb.json",
+        "https://eased.dev/r/agent-orb.json",
         "https://eased.dev/r/eased-thinking-core.json",
         "https://eased.dev/r/eased-number-roll.json",
         "https://eased.dev/r/eased-text-swap.json",
@@ -2025,18 +2025,18 @@
       ],
       "files": [
         {
-          "path": "src/registry/eased/thinking-orb/thinking-orb-demo.tsx",
+          "path": "src/registry/eased/agent-orb/agent-orb-demo.tsx",
           "type": "registry:example",
-          "target": "@components/eased/thinking-orb/thinking-orb-demo.tsx"
+          "target": "@components/eased/agent-orb/agent-orb-demo.tsx"
         }
       ]
     },
     {
-      "name": "thinking-orb",
+      "name": "agent-orb",
       "type": "registry:ui",
-      "title": "Thinking Orb",
+      "title": "Agent Orb",
       "description": "A small living orb for an assistant's state: colour fields drift inside a glassy sphere and it breathes, idle, listening, thinking or speaking, with its speed tied to the token rate so it keeps pace with the stream.",
-      "docs": "Import ThinkingOrb from components/eased/thinking-orb/thinking-orb. Feed rate from useTokenRate (eased-thinking-core) to tie its speed to your stream.",
+      "docs": "Import AgentOrb from components/eased/agent-orb/agent-orb. Feed rate from useTokenRate (eased-thinking-core) to tie its speed to your stream.",
       "dependencies": [
         "motion"
       ],
@@ -2046,9 +2046,9 @@
       ],
       "files": [
         {
-          "path": "src/registry/eased/thinking-orb/thinking-orb.tsx",
+          "path": "src/registry/eased/agent-orb/agent-orb.tsx",
           "type": "registry:ui",
-          "target": "@components/eased/thinking-orb/thinking-orb.tsx"
+          "target": "@components/eased/agent-orb/agent-orb.tsx"
         }
       ]
     },
@@ -2345,6 +2345,20 @@
           "path": "src/registry/eased/snippet/snippet.tsx",
           "type": "registry:ui",
           "target": "@components/eased/snippet/snippet.tsx"
+        }
+      ]
+    },
+    {
+      "name": "eased-skill",
+      "type": "registry:item",
+      "title": "Eased design skill",
+      "description": "The design skill Eased is built with, as an agent skill: alignment, the 1:2 spacing ratio, concentric radii, springs per role, enter and exit, focus rings, reduced motion, and how to install and compose Eased components.",
+      "docs": "Installed to .claude/skills/eased/SKILL.md, where Claude Code loads it on demand. For Cursor, copy it to .cursor/rules/eased.mdc; for Codex and other agents, reference it from AGENTS.md.",
+      "files": [
+        {
+          "path": "src/registry/eased/eased-skill/SKILL.md",
+          "type": "registry:file",
+          "target": "~/.claude/skills/eased/SKILL.md"
         }
       ]
     }

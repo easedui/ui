@@ -22,6 +22,8 @@ const SEED: ChatMessage[] = [
       },
     ],
   },
+  { id: "m3", role: "user", parts: [{ type: "text", text: "And trial to paid?" }] },
+  { id: "m4", role: "assistant", parts: [{ type: "text", text: "Up to 18.4% from 16.9%, mostly from the new onboarding checklist." }] },
 ];
 
 const REPLIES = [

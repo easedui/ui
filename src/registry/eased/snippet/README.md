@@ -21,7 +21,7 @@ import { useChoice } from "@/components/eased/_primitives/code-core/choice";
 import { PACKAGE_MANAGERS, packageCommand, type PackageManager } from "@/components/eased/code-tabs/code-tabs";
 
 const [pm] = useChoice("package-manager", "pnpm", PACKAGE_MANAGERS);
-<Snippet text={packageCommand(pm as PackageManager, { dlx: "shadcn@latest add https://eased.dev/r/code-block.json" })} />
+<Snippet text={packageCommand(pm as PackageManager, { dlx: "shadcn add https://eased.dev/r/code-block.json" })} />
 ```
 
 ## Props

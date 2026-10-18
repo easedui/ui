@@ -1,17 +1,17 @@
-# Thinking Orb
+# Agent Orb
 
 A small living disc for an assistant's state. Colour fields drift inside a glassy sphere, a band of light sweeps through while it thinks, and it breathes. Its speed follows the token rate.
 
 ```tsx
-import { ThinkingOrb } from "@/components/eased/thinking-orb/thinking-orb";
+import { AgentOrb } from "@/components/eased/agent-orb/agent-orb";
 import { useTokenRate } from "@/components/eased/_primitives/thinking-core/thinking-core";
 
-<ThinkingOrb state="thinking" />
+<AgentOrb state="thinking" />
 
 const { rate } = useTokenRate(message.text);
-<ThinkingOrb state="speaking" rate={rate} size="lg" />
+<AgentOrb state="speaking" rate={rate} size="lg" />
 
-<ThinkingOrb state="listening" level={micLevel} />   // a 0–1 motion value from an AnalyserNode
+<AgentOrb state="listening" level={micLevel} />   // a 0–1 motion value from an AnalyserNode
 ```
 
 ## Props

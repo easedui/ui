@@ -20,7 +20,7 @@ export function SnippetDemo() {
             <p className="text-ui font-medium text-text">Add the component</p>
             <p className="text-ui-sm text-text-secondary">Copies the source into components/eased.</p>
           </div>
-          <Snippet className="self-start" text={packageCommand(manager, { dlx: "shadcn@latest add https://eased.dev/r/code-block.json" })} />
+          <Snippet className="self-start" text={packageCommand(manager, { dlx: "shadcn add https://eased.dev/r/code-block.json" })} />
         </li>
         <li className="flex min-w-0 flex-col gap-2">
           <div>
