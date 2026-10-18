@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "eased-motion",
   "title": "Eased motion",
-  "description": "The named springs (snappy, smooth, bouncy), tweens, a hydration-safe useSafeReducedMotion and press classes every Eased component shares, matching the springs in the Eased stylesheet, plus small DOM and platform helpers (isEditable, useScrollFades, useIsMac).",
+  "description": "The named springs (snappy, smooth, bouncy), tweens, a hydration-safe useSafeReducedMotion and press classes every Eased component shares, matching the springs in the Eased stylesheet, plus small DOM and platform helpers (isEditable, useScrollFades, useIsMac) and a true-minus number formatter.",
   "registryDependencies": [
     "https://eased.dev/r/eased-tokens.json"
   ],
@@ -30,6 +30,12 @@
       "content": "import { useSyncExternalStore } from \"react\";\n\nconst subscribe = () => () => {};\nconst isMac = () => /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);\n\n/**\n * True on Apple platforms, read after hydration: the server (and the hydrating render) says\n * Mac, so shortcut hints render ⌘ first and correct to Ctrl on other systems.\n */\nexport function useIsMac() {\n  return useSyncExternalStore(subscribe, isMac, () => true);\n}\n\n/** The printed modifier for shortcuts: \"⌘\" on Apple platforms, \"Ctrl\" elsewhere. */\nexport function modKey(mac: boolean) {\n  return mac ? \"⌘\" : \"Ctrl\";\n}\n",
       "type": "registry:lib",
       "target": "@components/eased/lib/platform.ts"
+    },
+    {
+      "path": "src/registry/eased/lib/format.ts",
+      "content": "/**\n * Number formatting shared by the finance and crypto blocks. Intl writes negatives with a\n * hyphen-minus (U+002D), which is narrower than \"+\" and breaks a tabular column; Eased uses the\n * true minus sign (U+2212) everywhere.\n */\n\n/** Swap Intl's hyphen-minus for the true minus sign. */\nexport const trueMinus = (text: string) => text.replace(/-/g, \"−\");\n\n/**\n * An Intl formatter that writes negatives with the true minus sign. Pass it to NumberRoll as\n * `formatter`, or call it directly: `const pct = minusFormatter(locale, { style: \"percent\" })`.\n */\nexport function minusFormatter(locale: Intl.LocalesArgument, options: Intl.NumberFormatOptions): (value: number) => string {\n  const format = new Intl.NumberFormat(locale, options);\n  return (value) => trueMinus(format.format(value));\n}\n",
+      "type": "registry:lib",
+      "target": "@components/eased/lib/format.ts"
     }
   ],
   "type": "registry:lib"

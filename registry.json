@@ -92,6 +92,42 @@
           "text-ui-lg--line-height": "1.4",
           "text-ui-lg--letter-spacing": "-0.014em",
           "tracking-caps": "0.06em",
+          "text-display-xl": "var(--eased-display-xl)",
+          "text-display-xl--line-height": "1.3",
+          "text-display-xl--letter-spacing": "-0.017em",
+          "text-display-2xl": "var(--eased-display-2xl)",
+          "text-display-2xl--line-height": "1.25",
+          "text-display-2xl--letter-spacing": "-0.02em",
+          "text-display-3xl": "var(--eased-display-3xl)",
+          "text-display-3xl--line-height": "1.2",
+          "text-display-3xl--letter-spacing": "-0.021em",
+          "text-display-4xl": "var(--eased-display-4xl)",
+          "text-display-4xl--line-height": "1.15",
+          "text-display-4xl--letter-spacing": "-0.022em",
+          "text-display-5xl": "var(--eased-display-5xl)",
+          "text-display-5xl--line-height": "1.1",
+          "text-display-5xl--letter-spacing": "-0.022em",
+          "text-display-6xl": "var(--eased-display-6xl)",
+          "text-display-6xl--line-height": "1.05",
+          "text-display-6xl--letter-spacing": "-0.025em",
+          "tracking-display": "var(--eased-tracking-display)",
+          "spacing-in-xs": "var(--eased-space-in-xs)",
+          "spacing-in-sm": "var(--eased-space-in-sm)",
+          "spacing-in": "var(--eased-space-in)",
+          "spacing-in-lg": "var(--eased-space-in-lg)",
+          "spacing-pad-xs": "var(--eased-pad-xs)",
+          "spacing-pad-sm": "var(--eased-pad-sm)",
+          "spacing-pad-base": "var(--eased-pad-base)",
+          "spacing-pad-md": "var(--eased-pad-md)",
+          "spacing-pad-lg": "var(--eased-pad-lg)",
+          "spacing-pad-xl": "var(--eased-pad-xl)",
+          "spacing-tiles-sm": "var(--eased-gap-tiles-sm)",
+          "spacing-tiles": "var(--eased-gap-tiles)",
+          "spacing-tiles-lg": "var(--eased-gap-tiles-lg)",
+          "spacing-group": "var(--eased-gap-group)",
+          "spacing-group-lg": "var(--eased-gap-group-lg)",
+          "spacing-section-sm": "var(--eased-gap-section-sm)",
+          "spacing-section": "var(--eased-gap-section)",
           "ease-enter": "var(--eased-ease-enter)",
           "ease-standard": "var(--eased-ease-standard)",
           "ease-exit": "var(--eased-ease-exit)",
@@ -207,6 +243,30 @@
           "--eased-control-lg": "2.5rem",
           "--eased-control-xl": "3rem",
           "--eased-hit": "2.75rem",
+          "--eased-display-xl": "1.25rem",
+          "--eased-display-2xl": "1.5rem",
+          "--eased-display-3xl": "1.875rem",
+          "--eased-display-4xl": "2.25rem",
+          "--eased-display-5xl": "3rem",
+          "--eased-display-6xl": "3.75rem",
+          "--eased-tracking-display": "-0.03em",
+          "--eased-space-in-xs": "4px",
+          "--eased-space-in-sm": "8px",
+          "--eased-space-in": "12px",
+          "--eased-space-in-lg": "16px",
+          "--eased-pad-xs": "8px",
+          "--eased-pad-sm": "12px",
+          "--eased-pad-base": "16px",
+          "--eased-pad-md": "24px",
+          "--eased-pad-lg": "32px",
+          "--eased-pad-xl": "40px",
+          "--eased-gap-tiles-sm": "12px",
+          "--eased-gap-tiles": "16px",
+          "--eased-gap-tiles-lg": "24px",
+          "--eased-gap-group": "32px",
+          "--eased-gap-group-lg": "48px",
+          "--eased-gap-section-sm": "64px",
+          "--eased-gap-section": "96px",
           "--eased-duration-instant": "100ms",
           "--eased-duration-fast": "150ms",
           "--eased-duration-standard": "200ms",
@@ -391,7 +451,7 @@
       "name": "eased-motion",
       "type": "registry:lib",
       "title": "Eased motion",
-      "description": "The named springs (snappy, smooth, bouncy), tweens, a hydration-safe useSafeReducedMotion and press classes every Eased component shares, matching the springs in the Eased stylesheet, plus small DOM and platform helpers (isEditable, useScrollFades, useIsMac).",
+      "description": "The named springs (snappy, smooth, bouncy), tweens, a hydration-safe useSafeReducedMotion and press classes every Eased component shares, matching the springs in the Eased stylesheet, plus small DOM and platform helpers (isEditable, useScrollFades, useIsMac) and a true-minus number formatter.",
       "registryDependencies": [
         "https://eased.dev/r/eased-tokens.json"
       ],
@@ -415,6 +475,11 @@
           "path": "src/registry/eased/lib/platform.ts",
           "type": "registry:lib",
           "target": "@components/eased/lib/platform.ts"
+        },
+        {
+          "path": "src/registry/eased/lib/format.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/lib/format.ts"
         }
       ]
     },
@@ -2266,6 +2331,7 @@
         "https://eased.dev/r/eased-tokens.json",
         "https://eased.dev/r/eased-motion.json",
         "https://eased.dev/r/eased-text-swap.json",
+        "https://eased.dev/r/eased-copy.json",
         "https://eased.dev/r/eased-auto-height.json",
         "https://eased.dev/r/progressive-blur.json"
       ],
@@ -2479,6 +2545,397 @@
           "path": "src/registry/eased/lib/mac-desktop.tsx",
           "type": "registry:component",
           "target": "@components/eased/lib/mac-desktop.tsx"
+        }
+      ]
+    },
+    {
+      "name": "eased-inertia-core",
+      "type": "registry:ui",
+      "title": "Inertia core",
+      "description": "useInertia: hand a MotionValue the release velocity and it coasts with UIScrollView friction onto the snap point the flick would reach (points, a step or a function), inside bounds, as a spring or iOS-style decay. Plus the pure inertiaTarget and resolveSnap.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-gesture.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/inertia-core/use-inertia.ts",
+          "type": "registry:ui",
+          "target": "@components/eased/_primitives/inertia-core/use-inertia.ts"
+        }
+      ]
+    },
+    {
+      "name": "eased-calendar-core",
+      "type": "registry:lib",
+      "title": "Calendar core primitive",
+      "description": "Month, week and day grids, click-click and drag range selection over days or time slots with disabled units and length limits, WAI-ARIA grid keyboard movement, timed-item placement with overlap columns, and availability maths (free time, everyone-free overlap, slot starts). Native Date helpers with date-fns names.",
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/calendar-core/availability.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/calendar-core/availability.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/calendar-core/calendar-core.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/calendar-core/calendar-core.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/calendar-core/dates.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/calendar-core/dates.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/calendar-core/grid.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/calendar-core/grid.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/calendar-core/range.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/calendar-core/range.ts"
+        }
+      ]
+    },
+    {
+      "name": "eased-doc-core",
+      "type": "registry:lib",
+      "title": "Doc core primitive",
+      "description": "Documents for contract review and docs: a paragraph/clause model with numbering and a text parser, word redlines on the diff package grouped into accept-or-reject changes, block-level version diffs, DiffHunk-shaped line hunks, and durable text anchors for comments and AI suggestions that survive edits.",
+      "dependencies": [
+        "diff"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/doc-core/anchors.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/doc-core/anchors.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/doc-core/doc-core.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/doc-core/doc-core.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/doc-core/redline.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/doc-core/redline.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/doc-core/types.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/doc-core/types.ts"
+        }
+      ]
+    },
+    {
+      "name": "eased-fixtures",
+      "type": "registry:lib",
+      "title": "Industry fixtures",
+      "description": "Realistic, deterministic sample data per industry (AI, devtools, finance, crypto, SaaS, legal, e-commerce, real estate, health, HR), seeded and anchored to a fixed now, with Intl formatters. One file per industry, typed with the Eased cores.",
+      "dependencies": [
+        "diff"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-thinking-core.json",
+        "https://eased.dev/r/eased-flow-core.json",
+        "https://eased.dev/r/eased-timeline-core.json",
+        "https://eased.dev/r/eased-calendar-core.json",
+        "https://eased.dev/r/eased-doc-core.json",
+        "https://eased.dev/r/eased-realtime-core.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/fixtures/ai.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/ai.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/crypto.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/crypto.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/devtools.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/devtools.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/ecommerce.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/ecommerce.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/finance.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/finance.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/health.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/health.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/hr.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/hr.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/legal.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/legal.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/real-estate.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/real-estate.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/saas.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/saas.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/fixtures/shared.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/fixtures/shared.ts"
+        }
+      ]
+    },
+    {
+      "name": "eased-flow-core",
+      "type": "registry:lib",
+      "title": "Flow core primitive",
+      "description": "Node/edge graphs for CI pipelines, agent runs, payment routes and approval flows: a typed graph on thinking-core's StepStatus, a small-DAG auto layout (ranks, crossing reduction, curve or step edges), fitView, status propagation with stepFlow, and edges drawn on pathLength with useEdgeProgress and FlowEdgePath.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-thinking-core.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/flow-core/edge-progress.tsx",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/flow-core/edge-progress.tsx"
+        },
+        {
+          "path": "src/registry/eased/_primitives/flow-core/flow-core.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/flow-core/flow-core.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/flow-core/layout.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/flow-core/layout.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/flow-core/status.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/flow-core/status.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/flow-core/types.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/flow-core/types.ts"
+        }
+      ]
+    },
+    {
+      "name": "eased-realtime-core",
+      "type": "registry:lib",
+      "title": "Realtime core primitive",
+      "description": "Deterministic live data: a seeded RNG and tick stream (prices, rates, vitals), useClock and useTicker that pause off-screen and in hidden tabs and slow under reduced motion, flash-on-change state, OHLC candles on chart-core scales, and an order-book depth model with a synthetic churning book.",
+      "dependencies": [
+        "motion",
+        "d3-scale"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-chart-core.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/candles.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/candles.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/clock.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/clock.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/flash.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/flash.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/orderbook.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/orderbook.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/realtime-core.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/realtime-core.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/rng.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/rng.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/stream.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/stream.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/realtime-core/use-ticker.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/realtime-core/use-ticker.ts"
+        }
+      ]
+    },
+    {
+      "name": "eased-timeline-core",
+      "type": "registry:lib",
+      "title": "Timeline core primitive",
+      "description": "Events and timelines for matter histories, ledgers, deploy logs and activity feeds: a typed event model, Intl day grouping (Today, Yesterday, weekday), relative time on a shared hydration-safe clock, live append with a once-only capped enter stagger, and lane packing with a time axis for span timelines.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-thinking-core.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/timeline-core/group.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/timeline-core/group.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/timeline-core/lanes.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/timeline-core/lanes.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/timeline-core/live.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/timeline-core/live.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/timeline-core/relative.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/timeline-core/relative.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/timeline-core/timeline-core.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/timeline-core/timeline-core.ts"
+        },
+        {
+          "path": "src/registry/eased/_primitives/timeline-core/types.ts",
+          "type": "registry:lib",
+          "target": "@components/eased/_primitives/timeline-core/types.ts"
+        }
+      ]
+    },
+    {
+      "name": "eased-overlay-core",
+      "type": "registry:ui",
+      "title": "Overlay core",
+      "description": "What every Eased overlay shares: panel, menu and modal surfaces, the blurred scrim, menu rows on shared tracks with a gliding highlight, a drawn check and shortcut glyphs, and one motion table from tooltip to toast. Dialog, Sheet, menus, Select, Combobox, Toast and Command Palette are built on it.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-floating.json",
+        "https://eased.dev/r/eased-indicator.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/overlay-core/overlay-core.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/_primitives/overlay-core/overlay-core.tsx"
+        }
+      ]
+    },
+    {
+      "name": "eased-crypto-core",
+      "type": "registry:ui",
+      "title": "Crypto core primitive",
+      "description": "Shared pieces for Eased crypto blocks: a monochrome token glyph, chain tints as tokens with a ≤10% glow, address truncation, and USD price, token amount and signed change formats.",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/crypto-core/crypto-core.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/_primitives/crypto-core/crypto-core.tsx"
+        }
+      ]
+    },
+    {
+      "name": "eased-copy",
+      "type": "registry:ui",
+      "title": "Copy primitive",
+      "description": "The copy → check morph: a clipboard write with a textarea fallback, a useCopy hook that holds the copied state for 1.6s, the copy icon that swaps to a check with a blur, and the CopyButton built on them. Shared by the code components, Wallet Card and Connect Wallet.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-text-swap.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/copy/copy.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/_primitives/copy/copy.tsx"
+        }
+      ]
+    },
+    {
+      "name": "eased-hold-core",
+      "type": "registry:ui",
+      "title": "Hold Core primitive",
+      "description": "Hold-to-confirm: a time-true linear fill while the pointer, Space or Enter is held, a quick no-overshoot drain when let go early, and a button that reveals its label on brand as the hold runs. Shared by Approval Card and PR Review.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-text-swap.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/_primitives/hold-core/hold-core.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/_primitives/hold-core/hold-core.tsx"
         }
       ]
     }
