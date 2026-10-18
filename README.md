@@ -30,7 +30,8 @@ For Cursor, VS Code and Codex, see the [agent quickstart](https://eased.dev/docs
 |---|---|
 | `src/registry/eased/<name>/` | A component's source and its `README.md` (usage, props, motion signature) |
 | `src/registry/eased/_primitives/` | Shared primitives: floating, indicator, auto height, chart, chat, code and table cores |
-| `src/registry/eased/lib/` | Tokens (`eased.css`), springs and durations (`motion.ts`), press styles |
+| `src/registry/eased/lib/` | Tokens (`eased.css`), springs and durations (`motion.ts`), press styles, and the macOS material for Mac components (`mac.ts`) |
+| `src/registry/eased/mac-*/` | Mac components for Tauri and Electron apps: menu bar popover and HUD, each with its Tauri window config |
 | `public/r/` | The built registry JSON |
 | `registry.json` | The registry manifest |
 

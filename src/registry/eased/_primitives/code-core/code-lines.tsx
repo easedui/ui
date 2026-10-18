@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNod
 import { AutoHeight } from "../auto-height/auto-height";
 import { TextSwap } from "../text-swap/text-swap";
 import { ProgressiveBlur } from "../../progressive-blur/progressive-blur";
-import { enter, exit, reducedFade, snappy, useSafeReducedMotion } from "../../lib/motion";
+import { exit, exitFast, reducedFade, snappy, useSafeReducedMotion } from "../../lib/motion";
 import { press } from "../../lib/press";
 import { highlight, peekHighlight, plainLines, type CodeLine } from "./highlighter";
 import { decorateLines, type LineDecorations } from "./lines";
@@ -205,6 +205,9 @@ export type CodeCollapseProps = {
  * the snappy spring. Collapsing a block whose top is off-screen scrolls it back into view.
  * Reduced motion: the height snaps and the blur fades at 100ms.
  */
+/** Above this many pixels of hidden code, expanding skips the height spring (see CodeCollapse). */
+const MAX_SPRING_DISTANCE = 480;
+
 export function CodeCollapse({ lines, collapseAfter, defaultExpanded = false, children, tintClassName = "from-surface-sunken via-surface-sunken/70" }: CodeCollapseProps) {
   const collapsible = collapseAfter > 0 && lines - collapseAfter >= 3;
   const [expanded, setExpanded] = useState(defaultExpanded);
@@ -214,7 +217,7 @@ export function CodeCollapse({ lines, collapseAfter, defaultExpanded = false, ch
   const id = useId();
 
   useEffect(() => {
-    const c = animate(strength, expanded ? 0 : 1, reduced ? reducedFade : expanded ? exit : enter);
+    const c = animate(strength, expanded ? 0 : 1, reduced ? reducedFade : expanded ? exitFast : exit);
     return () => c.stop();
   }, [expanded, reduced, strength]);
 
@@ -232,15 +235,20 @@ export function CodeCollapse({ lines, collapseAfter, defaultExpanded = false, ch
     }
   };
 
+  // Springing the height across hundreds of lines reads as the page lurching, so long files
+  // open in place and only the blur fades; short ones keep the height spring.
+  const springHeight = hidden * LINE <= MAX_SPRING_DISTANCE;
+  const body = (
+    <div id={id} className="overflow-y-clip" style={{ maxHeight: expanded ? undefined : collapsedHeight }}>
+      {children}
+      {/* Room for the button under the last line once expanded. */}
+      {expanded && <div aria-hidden className="h-11" />}
+    </div>
+  );
+
   return (
     <div ref={root} className="relative scroll-mt-4">
-      <AutoHeight fade={false}>
-        <div id={id} className="overflow-y-clip" style={{ maxHeight: expanded ? undefined : collapsedHeight }}>
-          {children}
-          {/* Room for the button under the last line once expanded. */}
-          {expanded && <div aria-hidden className="h-11" />}
-        </div>
-      </AutoHeight>
+      {springHeight ? <AutoHeight fade={false}>{body}</AutoHeight> : body}
       <motion.div aria-hidden className={`pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t to-transparent ${tintClassName}`} style={{ opacity: strength }} />
       <ProgressiveBlur side="bottom" size={64} maxBlur={6} layers={4} tint={false} strength={strength} />
       <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
