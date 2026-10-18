@@ -1,0 +1,130 @@
+# Date Picker
+
+A date field with a calendar in a popover, on Base UI's Popover and Input, with the month grid, range selection and keyboard movement from calendar-core. `Calendar` is the same grid on its own, for an inline picker.
+
+## When to use
+
+- Picking one day for a form: a due date, a start date, a review. The field also takes typed dates, so keyboard users never need the grid.
+- Picking a span: time off, a stay, a reporting period. Range mode previews the span as you hover and never spans a disabled day.
+- An always-visible calendar on a page or in a panel: use `Calendar` directly.
+
+## When not to use
+
+- Dates far in the past, such as a birthday: paging month by month is slow; use three Selects or a plain Input.
+- A date and a time together: pair this with a time Select, or build a scheduler on calendar-core's `timeGrid`.
+- Relative choices ("in 3 days", "next Monday"): a Select or Segmented control is faster.
+
+## Usage
+
+```tsx example.tsx
+import { useState } from "react";
+import { DatePicker } from "@/components/eased/date-picker/date-picker";
+import { Field } from "@/components/eased/field/field";
+
+export function Example() {
+  const [due, setDue] = useState<Date | null>(null);
+  return (
+    <Field label="Due date" description="Type a date like “Oct 24” or pick one.">
+      <DatePicker value={due} onValueChange={setDue} min={new Date()} />
+    </Field>
+  );
+}
+```
+
+## Examples
+
+### A range
+
+The trigger shows the span ("Oct 26 – 30, 2026"); click a start and an end, or drag across days. Label it with `aria-labelledby`, since a range has no text input for a Field label to point at.
+
+```tsx
+<span id="away-label">Away</span>
+<DatePicker mode="range" aria-labelledby="away-label" value={away} onValueChange={setAway} maxLength={21} />
+```
+
+### Weekdays only
+
+`isDateDisabled` blocks days in the grid and rejects them when typed.
+
+```tsx
+<DatePicker value={day} onValueChange={setDay} isDateDisabled={(d) => d.getDay() === 0 || d.getDay() === 6} />
+```
+
+### An inline calendar
+
+```tsx
+import { Calendar } from "@/components/eased/date-picker/date-picker";
+
+<Calendar mode="range" value={stay} onValueChange={setStay} isDateDisabled={(d) => booked.has(toDayKey(d))} />
+```
+
+## API reference
+
+### DatePicker
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `mode` | `"single" \| "range"` | `"single"` | One day in a text field, or a span on a button. |
+| `value` | `Date \| null` or `DateRange \| null` | | Controlled value. A `DateRange` is `{ start, end }`, both local midnight, inclusive. |
+| `defaultValue` | same as `value` | `null` | Uncontrolled starting value. |
+| `onValueChange` | `(value) => void` | | Fires when a day is picked or a typed date is committed (on blur or Enter). |
+| `onInvalidInput` | `(text: string) => void` | | Called with the text when a typed date can't be read or isn't allowed; the field shows the last value again. |
+| `min` / `max` | `Date` | | First and last selectable day. |
+| `isDateDisabled` | `(date: Date) => boolean` | | Days that can't be picked. A range never spans one. |
+| `minLength` / `maxLength` | `number` | | Range mode: fewest and most days. |
+| `locale` | `string` | runtime | Parsing, formatting, month and weekday names. |
+| `formatOptions` | `Intl.DateTimeFormatOptions` | `{ day, month: "short", year }` | How the value is written in the field. |
+| `weekStartsOn` | `0`–`6` | the locale's | First column of the grid. |
+| `today` | `Date` | now | The today mark, and the base for "tomorrow". Pass a fixed day for stable demos. |
+| `closeOnSelect` | `boolean` | `true` | Close after a day, or a range's second end, is picked. |
+| `open` / `defaultOpen` / `onOpenChange` | | | Control the popover. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 32, 36 or 40px. |
+| `align` | `"start" \| "center" \| "end"` | `"start"` | Popover alignment against the field. |
+| `zIndex` | `number` | `50` | Raise it inside a dialog. |
+| `className` | `string` | `""` | Classes for the bordered box. |
+
+Single mode passes any other Base UI Input prop (`name`, `id`, `required`, `aria-*`) to the text input and takes `calendarLabel` (default "Choose date") for the calendar button. Range mode takes `id`, `name` (submits `YYYY-MM-DD/YYYY-MM-DD`), `aria-label` and `aria-labelledby`.
+
+### Calendar
+
+The same props as the picker's selection (`mode`, `value`, `defaultValue`, `onValueChange`, `min`, `max`, `isDateDisabled`, `minLength`, `maxLength`, `locale`, `weekStartsOn`, `today`), plus `defaultMonth`, `onMonthChange`, `autoFocus` and `onSelectComplete`.
+
+### parseDate
+
+`parseDate(text, { locale, today })` returns the local Date the field would read from `text`, or null. It accepts ISO dates, numeric dates in the locale's order ("24/10" in en-GB, "10/24" in en-US), month names in the locale or English ("24 Oct", "October 24 2026") and today, tomorrow or yesterday.
+
+## Keyboard
+
+| Key | Action |
+|---|---|
+| `↓` or `Alt` `↓` in the field | Opens the calendar on the selected day, or today. |
+| `Enter` in the field | Reads the typed date. |
+| `Escape` in the field | Drops what was typed. |
+| `←` `→` `↑` `↓` | Moves a day or a week; crossing a month edge pages the grid. |
+| `Home` / `End` | First or last day of the week. |
+| `PageUp` / `PageDown` | Previous or next month; with `Shift`, a year. |
+| `Enter` / `Space` | Picks the focused day (range: starts, then ends the span). |
+| `Escape` | Range: drops a half-picked span and keeps the calendar open. Otherwise closes and returns focus. |
+
+## Accessibility
+
+- The grid is `role="grid"` named by the month, with `row`, `columnheader` (full weekday names) and `gridcell` parts. Each day is named in full ("Friday, October 23, 2026"), with `aria-selected`, `aria-disabled` and `aria-current="date"` for today.
+- One day is in the tab order (the selected day, else today); the popover opens with focus on it and returns focus to the trigger when it closes.
+- The month title is a polite live region, so paging is announced.
+- Disabled days stay focusable, so arrowing across a booked night doesn't skip silently.
+
+## Motion
+
+Paging slides the outgoing month 14px out and the new one 28px in from the side you moved towards, on the smooth spring with a 200ms fade in and a 150ms fade out, while the title swaps up or down with a blur; paging again mid-slide redirects. The selected day's fill is one shared-layout element that glides to the new day on the snappy spring. A range's ends pop from 0.8 scale on snappy and the band between them fills in 150ms; a hovered preview shows at lower opacity until it's committed. The popover grows from the field on Eased's floating motion. Reduced motion: no slide, glide or pop; changes fade in 100ms.
+
+## Notes for AI
+
+Pick DatePicker for any form field that holds a date or a span of dates; pick Calendar when the grid should always be visible. Set `min`, `max` and `isDateDisabled` rather than validating after the fact: they gate the grid and typed input alike. Pass `locale` explicitly when rendering on the server, and a fixed `today` in demos and tests.
+
+Don't wrap it in another Popover or add your own text parsing; the single field already reads typed dates and the range button already formats the span. Values are local midnight Dates; convert to UTC yourself if your API needs it.
+
+## Related
+
+- [Input](/components/input): the text field the single picker is built on.
+- [Select](/components/select): for short lists of dates or relative choices.
+- [Popover](/components/popover): the floating layer the calendar opens in.

@@ -165,32 +165,35 @@ export function CopyAction({ message, text }: { message?: ChatMessage; text?: st
   return (
     <MessageAction label={copied ? "Copied" : "Copy"} onClick={copy}>
       <span className="relative inline-flex size-4">
-        <AnimatePresence initial={false} mode="popLayout">
-          <motion.svg
-            key={copied ? "check" : "copy"}
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="size-4"
-            aria-hidden
-            initial={reduced ? { opacity: 0 } : swapIn}
-            animate={reduced ? { opacity: 1 } : swapShown}
-            exit={reduced ? { opacity: 0, transition: reducedFade } : { ...swapOut, transition: { ...swap, opacity: exitFast, filter: exitFast } }}
-            transition={reduced ? reducedFade : swap}
-          >
-            {copied ? (
-              <path d="M3.5 8.5l3 3 6-7" />
-            ) : (
-              <>
-                <rect x="5.25" y="5.25" width="8" height="8" rx="1.75" />
-                <path d="M10.75 5.25v-1a1.5 1.5 0 0 0-1.5-1.5h-4.5a2 2 0 0 0-2 2v4.5a1.5 1.5 0 0 0 1.5 1.5h1" />
-              </>
-            )}
-          </motion.svg>
-        </AnimatePresence>
+        {/* Both icons share one grid cell, so the swap never changes the layout (popLayout cannot lift an SVG out of flow). */}
+        <span className="inline-grid shrink-0 place-items-center *:col-start-1 *:row-start-1">
+          <AnimatePresence initial={false}>
+            <motion.svg
+              key={copied ? "check" : "copy"}
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="size-4"
+              aria-hidden
+              initial={reduced ? { opacity: 0 } : swapIn}
+              animate={reduced ? { opacity: 1 } : swapShown}
+              exit={reduced ? { opacity: 0, transition: reducedFade } : { ...swapOut, transition: { ...swap, opacity: exitFast, filter: exitFast } }}
+              transition={reduced ? reducedFade : swap}
+            >
+              {copied ? (
+                <path d="M3.5 8.5l3 3 6-7" />
+              ) : (
+                <>
+                  <rect x="5.25" y="5.25" width="8" height="8" rx="1.75" />
+                  <path d="M10.75 5.25v-1a1.5 1.5 0 0 0-1.5-1.5h-4.5a2 2 0 0 0-2 2v4.5a1.5 1.5 0 0 0 1.5 1.5h1" />
+                </>
+              )}
+            </motion.svg>
+          </AnimatePresence>
+        </span>
       </span>
       <span role="status" className="sr-only">
         {copied ? "Copied to clipboard" : ""}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "rating-demo",
+  "title": "Rating demo",
+  "description": "A recipe's reviews: an average with a count that rolls when you rate, a large rating with a word that follows the pointer, and recent reviews.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/rating.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/eased-number-roll.json",
+    "https://eased.dev/r/eased-text-swap.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/rating/rating-demo.tsx",
+      "content": "\"use client\";\n\nimport { useId, useState } from \"react\";\nimport { NumberRoll } from \"../_primitives/number-roll/number-roll\";\nimport { TextSwap } from \"../_primitives/text-swap/text-swap\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Rating } from \"./rating\";\n\nconst WORDS = [\"Tap a star to rate\", \"Not for me\", \"Could be better\", \"Good\", \"Really good\", \"Loved it\"];\n\n// The ratings before yours: 5★ down to 1★.\nconst SPREAD = [812, 291, 102, 41, 38];\nconst COUNT = SPREAD.reduce((a, b) => a + b, 0);\nconst SUM = SPREAD.reduce((a, n, i) => a + n * (5 - i), 0);\n\nconst REVIEWS = [\n  { name: \"Priya Raman\", when: \"2 days ago\", stars: 5, text: \"The glaze caramelised exactly as described. Ten minutes start to finish.\" },\n  { name: \"Tomás Ortega\", when: \"last week\", stars: 4, text: \"Great weeknight dinner. I halved the sugar and it was still lovely.\" },\n];\n\nexport function RatingDemo() {\n  const [mine, setMine] = useState(0);\n  const [hover, setHover] = useState<number | null>(null);\n  const labelId = useId();\n  const count = COUNT + (mine ? 1 : 0);\n  const average = (SUM + mine) / count;\n  const word = WORDS[Math.round(hover ?? mine)];\n\n  return (\n    <DemoFrame title=\"Miso-glazed salmon\" meta=\"Reviews\">\n      <div className=\"flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-(--pad)\">\n        <div className=\"flex items-center gap-4\">\n          <p className=\"text-3xl font-semibold text-text tabular-nums\">\n            <NumberRoll value={average} format={{ minimumFractionDigits: 1, maximumFractionDigits: 1 }} />\n          </p>\n          <div className=\"flex min-w-0 flex-col gap-1\">\n            <Rating readOnly value={average} size=\"sm\" />\n            <p className=\"text-ui-sm text-text-muted tabular-nums\">\n              <NumberRoll value={count} locale=\"en-US\" /> ratings\n            </p>\n          </div>\n        </div>\n\n        <div className=\"flex flex-col gap-2 rounded-control border border-line-subtle bg-surface-sunken px-4 py-3\">\n          <p id={labelId} className=\"text-ui font-medium text-text\">\n            Your rating\n          </p>\n          <div className=\"flex flex-wrap items-center gap-x-3 gap-y-1\">\n            <Rating aria-labelledby={labelId} size=\"lg\" value={mine} onValueChange={setMine} onHoverChange={setHover} clearable />\n            <p className=\"text-ui-sm text-text-secondary\" aria-hidden>\n              <TextSwap>{word}</TextSwap>\n            </p>\n          </div>\n        </div>\n\n        <ul className=\"flex flex-col gap-4\">\n          {REVIEWS.map((r, i) => (\n            // One review in a narrow tile, so nothing scrolls.\n            <li key={r.name} className={`flex flex-col gap-1 ${i > 0 ? \"@max-sm:hidden\" : \"\"}`}>\n              <div className=\"flex items-center justify-between gap-3\">\n                <p className=\"truncate text-ui font-medium text-text\">{r.name}</p>\n                <p className=\"shrink-0 text-ui-sm text-text-muted\">{r.when}</p>\n              </div>\n              <Rating readOnly value={r.stars} size=\"sm\" />\n              <p className=\"text-ui-sm text-pretty text-text-secondary\">{r.text}</p>\n            </li>\n          ))}\n        </ul>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/rating/rating-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

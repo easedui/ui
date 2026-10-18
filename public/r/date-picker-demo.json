@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-picker-demo",
+  "title": "Date Picker demo",
+  "description": "Time off: an away range that can't start in the past, and a typed handover date that must fall before it on a weekday.",
+  "registryDependencies": [
+    "https://eased.dev/r/date-picker.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/field.json",
+    "https://eased.dev/r/eased-calendar-core.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/date-picker/date-picker-demo.tsx",
+      "content": "\"use client\";\n\nimport { useId, useState } from \"react\";\nimport { addDays, isWeekend, type DateRange } from \"../_primitives/calendar-core/calendar-core\";\nimport { Field } from \"../field/field\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { DatePicker } from \"./date-picker\";\n\n// A fixed \"today\", so the demo reads the same on every visit.\nconst TODAY = new Date(2026, 9, 18);\nconst LOCALE = \"en-US\";\n\nconst workingDays = (r: DateRange) => {\n  let n = 0;\n  for (let d = r.start; d <= r.end; d = addDays(d, 1)) if (!isWeekend(d)) n++;\n  return n;\n};\n\nexport function DatePickerDemo() {\n  const awayLabel = useId();\n  const [away, setAway] = useState<DateRange | null>({ start: new Date(2026, 9, 26), end: new Date(2026, 9, 30) });\n  const [handover, setHandover] = useState<Date | null>(new Date(2026, 9, 23));\n  const days = away ? workingDays(away) : 0;\n  const lastDayBefore = away ? addDays(away.start, -1) : null;\n\n  return (\n    <DemoFrame title=\"Time off\" meta={away ? `${days} working ${days === 1 ? \"day\" : \"days\"}` : \"Not set\"}>\n      <div className=\"flex min-h-0 flex-1 flex-col gap-4 p-4\">\n        <div className=\"flex flex-col gap-1.5\">\n          <span id={awayLabel} className=\"w-fit text-ui font-medium text-text\">\n            Away\n          </span>\n          <DatePicker mode=\"range\" aria-labelledby={awayLabel} value={away} onValueChange={setAway} min={TODAY} maxLength={21} today={TODAY} locale={LOCALE} />\n        </div>\n\n        <Field\n          label=\"Handover review\"\n          description=\"Type a date like “Oct 23” or “tomorrow”, or pick one. Weekdays only.\"\n          error={handover && lastDayBefore && handover > lastDayBefore ? \"Hold the review before your first day away.\" : undefined}\n        >\n          <DatePicker\n            value={handover}\n            onValueChange={setHandover}\n            min={TODAY}\n            isDateDisabled={isWeekend}\n            today={TODAY}\n            locale={LOCALE}\n            placeholder=\"Pick a day\"\n          />\n        </Field>\n        <dl className=\"mt-auto grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 border-t border-line-subtle pt-4 text-ui-sm\">\n          <dt className=\"text-text-secondary\">Balance after</dt>\n          <dd className=\"text-right text-text tabular-nums\">{Math.max(0, 14 - days)} of 20 days</dd>\n          <dt className=\"text-text-secondary\">Approver</dt>\n          <dd className=\"text-right text-text\">Jonas Weber</dd>\n        </dl>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/date-picker/date-picker-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

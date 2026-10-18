@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tree-demo",
+  "title": "Tree demo",
+  "description": "A Next.js repository with git status markers and the selected path in the footer.",
+  "registryDependencies": [
+    "https://eased.dev/r/tree.json",
+    "https://eased.dev/r/eased-text-swap.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/tree/tree-demo.tsx",
+      "content": "\"use client\";\n\nimport { useMemo, useState } from \"react\";\nimport { TextSwap } from \"../_primitives/text-swap/text-swap\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Tree, type TreeNode } from \"./tree\";\n\nconst FILES: TreeNode[] = [\n  {\n    id: \"app\",\n    label: \"app\",\n    children: [\n      {\n        id: \"app/(marketing)\",\n        label: \"(marketing)\",\n        children: [\n          { id: \"app/(marketing)/page.tsx\", label: \"page.tsx\", meta: \"M\" },\n          { id: \"app/(marketing)/pricing\", label: \"pricing\", children: [{ id: \"app/(marketing)/pricing/page.tsx\", label: \"page.tsx\" }] },\n        ],\n      },\n      {\n        id: \"app/dashboard\",\n        label: \"dashboard\",\n        children: [\n          { id: \"app/dashboard/layout.tsx\", label: \"layout.tsx\" },\n          { id: \"app/dashboard/page.tsx\", label: \"page.tsx\" },\n          { id: \"app/dashboard/loading.tsx\", label: \"loading.tsx\", meta: \"U\" },\n        ],\n      },\n      { id: \"app/layout.tsx\", label: \"layout.tsx\" },\n      { id: \"app/globals.css\", label: \"globals.css\" },\n    ],\n  },\n  {\n    id: \"components\",\n    label: \"components\",\n    children: [\n      { id: \"components/invoice-table.tsx\", label: \"invoice-table.tsx\", meta: \"M\" },\n      { id: \"components/plan-picker.tsx\", label: \"plan-picker.tsx\" },\n      { id: \"components/usage-chart.tsx\", label: \"usage-chart.tsx\" },\n    ],\n  },\n  {\n    id: \"lib\",\n    label: \"lib\",\n    children: [\n      { id: \"lib/billing.ts\", label: \"billing.ts\" },\n      { id: \"lib/db.ts\", label: \"db.ts\" },\n    ],\n  },\n  { id: \"public\", label: \"public\", children: [{ id: \"public/og.png\", label: \"og.png\" }] },\n  { id: \"next.config.ts\", label: \"next.config.ts\" },\n  { id: \"package.json\", label: \"package.json\" },\n  { id: \"README.md\", label: \"README.md\" },\n];\n\n/** A Next.js repository: open folders, arrow through rows, type a name to jump to it. */\nexport function TreeDemo() {\n  const [selected, setSelected] = useState<string | null>(\"app/dashboard/page.tsx\");\n  const count = useMemo(() => countFiles(FILES), []);\n  return (\n    <DemoFrame title=\"ledgerly-web\" meta={`${count} files`}>\n      <Tree\n        aria-label=\"Files in ledgerly-web\"\n        items={FILES}\n        defaultExpanded={[\"app\", \"app/dashboard\", \"components\"]}\n        selected={selected}\n        onSelectedChange={(id) => setSelected(id)}\n        className=\"min-h-0 flex-1 px-2.5 py-2\"\n      />\n      <div className=\"flex h-10 shrink-0 items-center border-t border-line-subtle px-4 font-mono text-ui-xs text-text-muted\">\n        <span className=\"min-w-0 truncate\">\n          <TextSwap swapKey={selected ?? \"\"}>{selected ?? \"No file selected\"}</TextSwap>\n        </span>\n      </div>\n    </DemoFrame>\n  );\n}\n\nfunction countFiles(nodes: TreeNode[]): number {\n  return nodes.reduce((n, node) => n + (node.children ? countFiles(node.children) : 1), 0);\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/tree/tree-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

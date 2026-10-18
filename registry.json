@@ -2938,6 +2938,447 @@
           "target": "@components/eased/_primitives/hold-core/hold-core.tsx"
         }
       ]
+    },
+    {
+      "name": "breadcrumb-demo",
+      "type": "registry:example",
+      "title": "Breadcrumb demo",
+      "description": "A file browser five folders deep: open folders to grow the trail, click a crumb or the … menu to climb back.",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://eased.dev/r/breadcrumb.json",
+        "https://eased.dev/r/eased-demo-frame.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/breadcrumb/breadcrumb-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/breadcrumb/breadcrumb-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "A trail from the root to the current page that folds its middle crumbs into a menu when it runs out of room, measured rather than guessed, with links that underline on hover.",
+      "docs": "Import Breadcrumb from components/eased/breadcrumb/breadcrumb. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+      "dependencies": [],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/dropdown-menu.json",
+        "https://eased.dev/r/eased-floating.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/breadcrumb/breadcrumb.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/breadcrumb/breadcrumb.tsx"
+        }
+      ],
+      "meta": {
+        "industries": [
+          "saas",
+          "devtools",
+          "legal",
+          "ecommerce",
+          "education"
+        ]
+      }
+    },
+    {
+      "name": "pagination-demo",
+      "type": "registry:example",
+      "title": "Pagination demo",
+      "description": "An invoices list whose footer pages through 64 invoices, numbered in a wide tile and compact in a narrow one.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/pagination.json",
+        "https://eased.dev/r/eased-demo-frame.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-number-roll.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/pagination/pagination-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/pagination/pagination-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "Numbered pages whose selected chip glides on a spring, with ellipses in a fixed number of slots so the width never changes, and a compact Page 3 of 12 variant.",
+      "docs": "Import Pagination from components/eased/pagination/pagination. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-indicator.json",
+        "https://eased.dev/r/eased-number-roll.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/pagination/pagination.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/pagination/pagination.tsx"
+        }
+      ],
+      "meta": {
+        "industries": [
+          "saas",
+          "finance",
+          "ecommerce",
+          "legal",
+          "hr"
+        ]
+      }
+    },
+    {
+      "name": "rating-demo",
+      "type": "registry:example",
+      "title": "Rating demo",
+      "description": "A recipe's reviews: an average with a count that rolls when you rate, a large rating with a word that follows the pointer, and recent reviews.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/rating.json",
+        "https://eased.dev/r/eased-demo-frame.json",
+        "https://eased.dev/r/eased-number-roll.json",
+        "https://eased.dev/r/eased-text-swap.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/rating/rating-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/rating/rating-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rating",
+      "type": "registry:ui",
+      "title": "Rating",
+      "description": "Star rating on Base UI RadioGroup with a hover preview, half steps and a read-only mode for any fraction. Icons fill from the left and pop in turn on a spring.",
+      "docs": "Import Rating from components/eased/rating/rating. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/rating/rating.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/rating/rating.tsx"
+        }
+      ],
+      "meta": {
+        "industries": [
+          "ecommerce",
+          "travel",
+          "health",
+          "education",
+          "media"
+        ]
+      }
+    },
+    {
+      "name": "carousel-demo",
+      "type": "registry:example",
+      "title": "Carousel demo",
+      "description": "Customer stories for a finance product, one metric and quote per slide.",
+      "registryDependencies": [
+        "https://eased.dev/r/carousel.json",
+        "https://eased.dev/r/avatar.json",
+        "https://eased.dev/r/eased-demo-frame.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/carousel/carousel-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/carousel/carousel-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "A scroll-snap carousel with native momentum, mouse drag and arrow keys. Its dot stretches between pages as you scroll and its edges fade only where there is more.",
+      "docs": "Import Carousel from components/eased/carousel/carousel. Set --carousel-inset on a parent to inset the slides and footer. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-gesture.json",
+        "https://eased.dev/r/eased-scroll-fade.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/carousel/carousel.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/carousel/carousel.tsx"
+        }
+      ],
+      "meta": {
+        "industries": [
+          "saas",
+          "ecommerce",
+          "media",
+          "real-estate",
+          "finance"
+        ]
+      }
+    },
+    {
+      "name": "file-upload-demo",
+      "type": "registry:example",
+      "title": "File Upload demo",
+      "description": "Lease documents with a simulated upload: one file is too large, one drops its connection once.",
+      "registryDependencies": [
+        "https://eased.dev/r/file-upload.json",
+        "https://eased.dev/r/button.json",
+        "https://eased.dev/r/eased-scroll-fade.json",
+        "https://eased.dev/r/eased-demo-frame.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/file-upload/file-upload-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/file-upload/file-upload-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "file-upload",
+      "type": "registry:ui",
+      "title": "File Upload",
+      "description": "A dropzone that wakes when files cross the page and lifts as they reach it. Rows rise in with per-file progress on a spring, and refused files are explained inline.",
+      "docs": "Import FileUpload and useFileUpload from components/eased/file-upload/file-upload. Pass an upload function to report progress; the network call is yours. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-auto-height.json",
+        "https://eased.dev/r/eased-text-swap.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/file-upload/file-upload.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/file-upload/file-upload.tsx"
+        }
+      ],
+      "meta": {
+        "industries": [
+          "saas",
+          "legal",
+          "real-estate",
+          "hr",
+          "health"
+        ]
+      }
+    },
+    {
+      "name": "tree-demo",
+      "type": "registry:example",
+      "title": "Tree demo",
+      "description": "A Next.js repository with git status markers and the selected path in the footer.",
+      "registryDependencies": [
+        "https://eased.dev/r/tree.json",
+        "https://eased.dev/r/eased-text-swap.json",
+        "https://eased.dev/r/eased-demo-frame.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/tree/tree-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/tree/tree-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tree",
+      "type": "registry:ui",
+      "title": "Tree",
+      "description": "A file tree whose folders open on a height spring as the chevron turns, both interruptible. One selection glides between rows, guides mark each level, and keys follow WAI-ARIA.",
+      "docs": "Import Tree and TreeNode from components/eased/tree/tree. Give it a max height and it scrolls with edge fades. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-auto-height.json",
+        "https://eased.dev/r/eased-indicator.json",
+        "https://eased.dev/r/eased-scroll-fade.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/tree/tree.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/tree/tree.tsx"
+        }
+      ],
+      "meta": {
+        "industries": [
+          "devtools",
+          "saas",
+          "legal",
+          "ai"
+        ]
+      }
+    },
+    {
+      "name": "date-picker-demo",
+      "type": "registry:example",
+      "title": "Date Picker demo",
+      "description": "Time off: an away range that can't start in the past, and a typed handover date that must fall before it on a weekday.",
+      "registryDependencies": [
+        "https://eased.dev/r/date-picker.json",
+        "https://eased.dev/r/eased-demo-frame.json",
+        "https://eased.dev/r/field.json",
+        "https://eased.dev/r/eased-calendar-core.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/date-picker/date-picker-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/date-picker/date-picker-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "Date Picker",
+      "description": "A date field with a calendar popover on Base UI and calendar-core. Typed dates parse in the field's locale, months slide the way you page, the selection glides between days, and ranges preview as you hover.",
+      "docs": "Import DatePicker (or Calendar for an inline grid) from components/eased/date-picker/date-picker; wrap it in Field for a label and messages. The Eased tokens were merged into your global CSS; nothing to import.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-field.json",
+        "https://eased.dev/r/eased-floating.json",
+        "https://eased.dev/r/eased-text-swap.json",
+        "https://eased.dev/r/eased-calendar-core.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/date-picker/date-picker.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/date-picker/date-picker.tsx"
+        },
+        {
+          "path": "src/registry/eased/date-picker/calendar.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/date-picker/calendar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "number-field-demo",
+      "type": "registry:example",
+      "title": "Number Field demo",
+      "description": "A limit order: shares with split steppers, a USD limit price and a scrubbable percent stop loss, with a rolling cost summary.",
+      "registryDependencies": [
+        "https://eased.dev/r/number-field.json",
+        "https://eased.dev/r/eased-demo-frame.json",
+        "https://eased.dev/r/field.json",
+        "https://eased.dev/r/eased-number-roll.json",
+        "https://eased.dev/r/eased-motion.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/number-field/number-field-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/number-field/number-field-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "number-field",
+      "type": "registry:ui",
+      "title": "Number Field",
+      "description": "A number input on Base UI's NumberField with steppers that speed up while held, digits that roll on every step, Intl formatting with a true minus, min, max and step, and an optional scrub label.",
+      "docs": "Import NumberField from components/eased/number-field/number-field; give it a label, or wrap it in Field. The Eased tokens were merged into your global CSS; nothing to import.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-field.json",
+        "https://eased.dev/r/eased-number-roll.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/number-field/number-field.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/number-field/number-field.tsx"
+        }
+      ]
+    },
+    {
+      "name": "otp-field-demo",
+      "type": "registry:example",
+      "title": "OTP Field demo",
+      "description": "Email verification with a 3-3 code, auto-verify on the last digit, a wrong-code error and a resend countdown.",
+      "registryDependencies": [
+        "https://eased.dev/r/otp-field.json",
+        "https://eased.dev/r/eased-demo-frame.json",
+        "https://eased.dev/r/field.json",
+        "https://eased.dev/r/button.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/otp-field/otp-field-demo.tsx",
+          "type": "registry:example",
+          "target": "@components/eased/otp-field/otp-field-demo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "otp-field",
+      "type": "registry:ui",
+      "title": "OTP Field",
+      "description": "A one-time-code input on Base UI's OTPField: autofill and paste fill every cell, the caret blinks in the empty cell, characters pop in, a wrong code shakes once and an accepted one ripples green.",
+      "docs": "Import OtpField from components/eased/otp-field/otp-field; wrap it in Field for a label and messages. The Eased tokens were merged into your global CSS; nothing to import.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://eased.dev/r/eased-tokens.json",
+        "https://eased.dev/r/eased-motion.json",
+        "https://eased.dev/r/eased-field.json"
+      ],
+      "files": [
+        {
+          "path": "src/registry/eased/otp-field/otp-field.tsx",
+          "type": "registry:ui",
+          "target": "@components/eased/otp-field/otp-field.tsx"
+        }
+      ]
     }
   ]
 }

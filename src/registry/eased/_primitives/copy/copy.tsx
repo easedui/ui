@@ -58,9 +58,10 @@ export function useCopy(text: string | (() => string), { timeout = COPIED_MS, on
  */
 export function CopyIcon({ copied, className = "" }: { copied: boolean; className?: string }) {
   const reduced = useSafeReducedMotion();
+  // Both icons share one grid cell, so the swap never changes the layout (popLayout cannot lift an SVG out of flow).
   return (
-    <span aria-hidden className={`relative inline-flex size-4 shrink-0 items-center justify-center ${className}`}>
-      <AnimatePresence initial={false} mode="popLayout">
+    <span aria-hidden className={`grid size-4 shrink-0 place-items-center *:col-start-1 *:row-start-1 ${className}`}>
+      <AnimatePresence initial={false}>
         {copied ? (
           <motion.svg
             key="check"

@@ -1,0 +1,92 @@
+# Tree
+
+A file tree on the WAI-ARIA tree pattern: folders that spring open, one selection that glides between rows, indent guides under each folder's chevron, and full keyboard support with typeahead.
+
+## When to use
+
+- Hierarchies people navigate: a repository, a document library, nested settings.
+- Sidebars where one item is open at a time and folders hold more items.
+
+## When not to use
+
+- One level of disclosures with content: use [Accordion](/components/accordion).
+- Picking several items from a hierarchy: a checkbox list fits better.
+- Hundreds of thousands of nodes: virtualise a flat list instead.
+
+## Usage
+
+```tsx files.tsx
+import { Tree, type TreeNode } from "@/components/eased/tree/tree";
+
+const files: TreeNode[] = [
+  { id: "app", label: "app", children: [{ id: "app/page.tsx", label: "page.tsx" }] },
+  { id: "package.json", label: "package.json" },
+];
+
+export function Files() {
+  return <Tree aria-label="Files" items={files} defaultExpanded={["app"]} onAction={(id) => openFile(id)} className="max-h-96" />;
+}
+```
+
+## Examples
+
+### Custom icons
+
+The icon slot takes a node's own `icon`, else `renderIcon`. Return `null` for none.
+
+```tsx
+<Tree items={files} renderIcon={(node, { folder, expanded }) => (folder ? <Folder open={expanded} /> : <FileIcon name={node.id} />)} />
+```
+
+## API reference
+
+### Tree
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `TreeNode[]` | | `{ id, label, textValue?, icon?, children?, meta?, disabled? }`. A node with `children` is a folder. |
+| `aria-label` / `aria-labelledby` | `string` | | Names the tree. |
+| `expanded` / `defaultExpanded` | `string[]` | `[]` | Open folders, controlled or uncontrolled. |
+| `onExpandedChange` | `(ids) => void` | | |
+| `selected` / `defaultSelected` | `string \| null` | `null` | The selected node. |
+| `onSelectedChange` | `(id, node) => void` | | |
+| `onAction` | `(id, node) => void` | | A leaf was clicked or got Enter. |
+| `renderIcon` | `(node, state) => ReactNode` | folder and page icons | `state` is `{ folder, expanded, selected, depth }`. |
+| `className` | `string` | | Give it a max height to scroll, with edge fades. |
+
+`TreeFolderIcon`, `TreeFolderOpenIcon` and `TreeFileIcon` are exported.
+
+## Keyboard
+
+| Key | Action |
+|---|---|
+| `↓` / `↑` | Next or previous visible row. |
+| `→` | Opens a folder; on an open folder, moves to its first child. |
+| `←` | Closes an open folder; otherwise moves to the parent. |
+| `Home` / `End` | First or last visible row. |
+| `Enter` | Selects; toggles a folder or runs `onAction` on a leaf. |
+| `Space` | Selects. |
+| `*` | Opens every sibling folder. |
+| Letters | Typeahead: jumps to the next row starting with what you type; repeating a letter cycles. |
+
+## Accessibility
+
+- `role="tree"` with `treeitem`s that carry `aria-level`, `aria-setsize`, `aria-posinset`, `aria-expanded` and `aria-selected`; children sit in `role="group"`.
+- One roving tab stop: Tab enters at the selection and leaves the tree.
+- A folder that closes over the focused row hands focus to the folder.
+- Closed branches leave the accessibility tree once collapsed.
+
+## Motion
+
+Folders open on the smooth spring with no overshoot while the content fades in as the height lands; the chevron turns on the same spring. Both are interruptible: a second press mid-flight reverses from where they are. The selection highlight glides between rows on the snappy spring. The guide of the branch that holds focus darkens in 150ms. Reduced motion snaps heights and the chevron and keeps opacity fades only.
+
+## Notes for AI
+
+Use Tree for any navigable hierarchy. Pass stable `id`s (paths work well), control `selected` if the selection drives other UI, and use `onAction` to open a file.
+
+Don't add your own arrow-key handling, focus management or expand animations: they are built in. Don't nest a Tree inside an Accordion for the same hierarchy.
+
+## Related
+
+- [Accordion](/components/accordion): one level of disclosures with content.
+- [Group By List](/components/group-by-list): flat rows grouped under headers.

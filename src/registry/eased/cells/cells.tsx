@@ -237,30 +237,33 @@ export function IdCell({ id, copyable = false }: IdCellProps) {
             copied ? "opacity-100" : ""
           } ${pressIcon}`}
         >
-          <AnimatePresence initial={false} mode="popLayout">
-            <motion.svg
-              key={copied ? "done" : "copy"}
-              viewBox="0 0 14 14"
-              aria-hidden
-              className="size-3.5 fill-none stroke-current"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={reduced ? { opacity: 0 } : swapIn}
-              animate={reduced ? { opacity: 1 } : swapShown}
-              exit={reduced ? { opacity: 0 } : swapOut}
-              transition={reduced ? reducedFade : swap}
-            >
-              {copied ? (
-                <path d="M3 7.5 5.75 10 11 4" />
-              ) : (
-                <>
-                  <rect x="4.75" y="4.75" width="7" height="7" rx="1.5" />
-                  <path d="M9.25 2.75h-5a1.5 1.5 0 0 0-1.5 1.5v5" />
-                </>
-              )}
-            </motion.svg>
-          </AnimatePresence>
+          {/* Both icons share one grid cell, so the swap never changes the layout (popLayout cannot lift an SVG out of flow). */}
+          <span className="inline-grid shrink-0 place-items-center *:col-start-1 *:row-start-1">
+            <AnimatePresence initial={false}>
+              <motion.svg
+                key={copied ? "done" : "copy"}
+                viewBox="0 0 14 14"
+                aria-hidden
+                className="size-3.5 fill-none stroke-current"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={reduced ? { opacity: 0 } : swapIn}
+                animate={reduced ? { opacity: 1 } : swapShown}
+                exit={reduced ? { opacity: 0 } : swapOut}
+                transition={reduced ? reducedFade : swap}
+              >
+                {copied ? (
+                  <path d="M3 7.5 5.75 10 11 4" />
+                ) : (
+                  <>
+                    <rect x="4.75" y="4.75" width="7" height="7" rx="1.5" />
+                    <path d="M9.25 2.75h-5a1.5 1.5 0 0 0-1.5 1.5v5" />
+                  </>
+                )}
+              </motion.svg>
+            </AnimatePresence>
+          </span>
           <span aria-live="polite" className="sr-only">
             {copied ? "Copied" : ""}
           </span>

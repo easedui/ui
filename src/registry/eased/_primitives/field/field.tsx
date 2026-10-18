@@ -247,7 +247,7 @@ export function InputGroup({
       onPointerDown={focusControl}
       className={`relative flex w-full min-w-0 cursor-text border border-line-strong bg-surface text-text transition-[border-color,background-color,box-shadow] duration-(--eased-duration-standard) ease-standard reduced:transition-none ${
         multiline ? "flex-col items-stretch" : `items-center ${controlPadClass[size]}`
-      } ${controlSizeClass[size]} hover-fine:not-data-invalid:border-(--eased-neutral-9) focus-within:not-data-invalid:border-(--eased-neutral-9) focus-within:shadow-[0_0_0_3px_var(--eased-ring-soft)] data-invalid:border-danger focus-within:data-invalid:shadow-[0_0_0_3px_var(--eased-ring-danger)] has-[:disabled]:cursor-not-allowed has-[:disabled]:border-line has-[:disabled]:bg-surface-sunken has-[:disabled]:text-text-disabled ${className}`}
+      } ${controlSizeClass[size]} hover-fine:not-data-invalid:border-(--eased-neutral-9) focus-within:not-data-invalid:border-(--eased-neutral-9) focus-within:shadow-[0_0_0_3px_var(--eased-ring-soft)] data-invalid:border-danger focus-within:data-invalid:shadow-[0_0_0_3px_var(--eased-ring-danger)] has-[:is(input,textarea,[aria-haspopup]):disabled]:cursor-not-allowed has-[:is(input,textarea,[aria-haspopup]):disabled]:border-line has-[:is(input,textarea,[aria-haspopup]):disabled]:bg-surface-sunken has-[:is(input,textarea,[aria-haspopup]):disabled]:text-text-disabled ${className}`}
     >
       {children}
     </div>

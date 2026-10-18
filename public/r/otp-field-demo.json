@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "otp-field-demo",
+  "title": "OTP Field demo",
+  "description": "Email verification with a 3-3 code, auto-verify on the last digit, a wrong-code error and a resend countdown.",
+  "registryDependencies": [
+    "https://eased.dev/r/otp-field.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/field.json",
+    "https://eased.dev/r/button.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/otp-field/otp-field-demo.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../button/button\";\nimport { Field } from \"../field/field\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { OtpField } from \"./otp-field\";\n\nconst CODE = \"314159\";\nconst RESEND_AFTER = 30;\n\ntype Status = \"idle\" | \"checking\" | \"wrong\" | \"verified\";\n\nexport function OtpFieldDemo() {\n  const [code, setCode] = useState(\"\");\n  const [status, setStatus] = useState<Status>(\"idle\");\n  const [wait, setWait] = useState(RESEND_AFTER);\n  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);\n\n  useEffect(() => {\n    if (wait <= 0 || status === \"verified\") return;\n    const t = setTimeout(() => setWait((w) => w - 1), 1000);\n    return () => clearTimeout(t);\n  }, [wait, status]);\n  useEffect(() => () => clearTimeout(timer.current), []);\n\n  const verify = (value: string) => {\n    if (value.length < CODE.length || status === \"checking\") return;\n    setStatus(\"checking\");\n    clearTimeout(timer.current);\n    timer.current = setTimeout(() => setStatus(value === CODE ? \"verified\" : \"wrong\"), 700);\n  };\n\n  const reset = () => {\n    clearTimeout(timer.current);\n    setCode(\"\");\n    setStatus(\"idle\");\n    setWait(RESEND_AFTER);\n  };\n\n  const verified = status === \"verified\";\n\n  return (\n    <DemoFrame title=\"Verify your email\" meta=\"Step 2 of 3\">\n      <div className=\"flex min-h-0 flex-1 flex-col gap-6 p-4\">\n        <p className=\"text-ui text-pretty text-text-secondary\">\n          We sent a 6-digit code to <span className=\"font-medium text-text\">maya@northwind.com</span>. It expires in 10 minutes.\n        </p>\n\n        <Field\n          label=\"Verification code\"\n          description={verified ? \"Email verified.\" : `For this demo, the code is ${CODE.slice(0, 3)} ${CODE.slice(3)}.`}\n          error={status === \"wrong\" ? \"That code doesn’t match. Check the latest email from us.\" : undefined}\n        >\n          <OtpField\n            value={code}\n            onValueChange={(v) => {\n              setCode(v);\n              if (status === \"wrong\") setStatus(\"idle\");\n            }}\n            onValueComplete={verify}\n            success={verified}\n            readOnly={verified || status === \"checking\"}\n          />\n        </Field>\n        <p className=\"text-ui-sm text-pretty text-text-muted\">Can’t find it? Check your spam folder, or resend below.</p>\n\n        <div className=\"mt-auto flex items-center justify-between gap-3\">\n          {verified ? (\n            <Button variant=\"ghost\" size=\"sm\" edge=\"start\" onClick={reset}>\n              Start over\n            </Button>\n          ) : (\n            <Button variant=\"ghost\" size=\"sm\" edge=\"start\" disabled={wait > 0} onClick={reset} swapKey={wait > 0 ? \"wait\" : \"ready\"}>\n              {wait > 0 ? <span className=\"tabular-nums\">Resend in 0:{String(wait).padStart(2, \"0\")}</span> : \"Resend code\"}\n            </Button>\n          )}\n          <Button variant=\"primary\" size=\"sm\" loading={status === \"checking\"} disabled={code.length < CODE.length || verified} onClick={() => verify(code)}>\n            {verified ? \"Verified\" : \"Verify\"}\n          </Button>\n        </div>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/otp-field/otp-field-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

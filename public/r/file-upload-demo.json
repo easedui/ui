@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "file-upload-demo",
+  "title": "File Upload demo",
+  "description": "Lease documents with a simulated upload: one file is too large, one drops its connection once.",
+  "registryDependencies": [
+    "https://eased.dev/r/file-upload.json",
+    "https://eased.dev/r/button.json",
+    "https://eased.dev/r/eased-scroll-fade.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/file-upload/file-upload-demo.tsx",
+      "content": "\"use client\";\n\nimport { useRef } from \"react\";\nimport { scrollFadeMask, useScrollEdges } from \"../_primitives/scroll-fade/scroll-fade\";\nimport { Button } from \"../button/button\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { FileUpload, useFileUpload, type FileUploadFn, type FileUploadItem } from \"./file-upload\";\n\nconst MB = 1_000_000;\n\nconst SEED: FileUploadItem[] = [\n  { id: \"seed-brand\", name: \"brand-guidelines-2026.pdf\", size: 3.1 * MB, type: \"application/pdf\", status: \"done\" },\n  { id: \"seed-id\", name: \"photo-id-maya-okafor.jpg\", size: 640_000, type: \"image/jpeg\", status: \"done\" },\n];\n\n// Fails once, the first time, so Retry has something to do.\nconst failedOnce = new Set<string>();\n\n/** A pretend upload: progress in uneven steps, faster for small files; one file drops its connection once. */\nconst simulateUpload: FileUploadFn = (file, { onProgress, signal }) =>\n  new Promise((resolve, reject) => {\n    let done = 0;\n    const rate = 0.9 * MB + Math.random() * 0.6 * MB; // bytes per second\n    const flaky = file.name.includes(\"lease\") && !failedOnce.has(file.name);\n    const timer = window.setInterval(() => {\n      done += (rate / 8) * (0.5 + Math.random());\n      const fraction = Math.min(1, done / Math.max(1, file.size));\n      if (flaky && fraction > 0.58) {\n        window.clearInterval(timer);\n        failedOnce.add(file.name);\n        reject(new Error(\"Connection lost at 58%\"));\n        return;\n      }\n      onProgress(fraction);\n      if (fraction >= 1) {\n        window.clearInterval(timer);\n        resolve(undefined);\n      }\n    }, 125);\n    signal.addEventListener(\"abort\", () => window.clearInterval(timer));\n  });\n\nconst sample = (name: string, size: number, type: string) => new File([new ArrayBuffer(size)], name, { type });\n\n/** Upload documents for a lease: browse, drop or paste, or try the samples. */\nexport function FileUploadDemo() {\n  const upload = useFileUpload({ upload: simulateUpload, accept: \"application/pdf,image/*\", maxSize: 5 * MB, maxFiles: 8, defaultValue: SEED });\n  const scroller = useRef<HTMLDivElement>(null);\n  useScrollEdges(scroller);\n  const done = upload.items.filter((f) => f.status === \"done\").length;\n\n  return (\n    <DemoFrame\n      title=\"Lease documents\"\n      meta={`${done} of ${upload.items.length}`}\n      actions={\n        <Button\n          variant=\"ghost\"\n          size=\"sm\"\n          edge=\"end\"\n          disabled={upload.items.some((f) => f.name === \"signed-lease-agreement.pdf\")}\n          onClick={() =>\n            upload.add([\n              sample(\"signed-lease-agreement.pdf\", 1.8 * MB, \"application/pdf\"),\n              sample(\"unit-4b-floorplan.png\", 2.4 * MB, \"image/png\"),\n              sample(\"move-in-inspection.jpg\", 0.9 * MB, \"image/jpeg\"),\n              sample(\"drone-survey-raw.png\", 6.2 * MB, \"image/png\"),\n            ])\n          }\n        >\n          Try samples\n        </Button>\n      }\n    >\n      <div ref={scroller} style={scrollFadeMask(\"y\", 20)} className=\"min-h-0 flex-1 overflow-y-auto overscroll-contain p-4\">\n        <FileUpload controller={upload} listLabel=\"Lease documents\" />\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/file-upload/file-upload-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

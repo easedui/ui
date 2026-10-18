@@ -1,0 +1,100 @@
+# File Upload
+
+A dropzone and its file list: click, drop or paste to add files, with accept, size and count checks, per-file progress from your upload function, retry and remove.
+
+## When to use
+
+- Forms that collect documents: a lease, an expense claim, an onboarding pack.
+- Uploads where people need to see each file's progress and what went wrong with it.
+- Pages where files may be pasted from the clipboard as well as dropped.
+
+## When not to use
+
+- Attachments in a chat composer: use [Attachment](/components/attachment), which shows thumbnails inline.
+- A single avatar or logo picker: use a button that opens the file picker and a preview.
+
+## Usage
+
+```tsx lease-upload.tsx
+import { FileUpload, type FileUploadFn } from "@/components/eased/file-upload/file-upload";
+
+const upload: FileUploadFn = (file, { onProgress, signal }) =>
+  new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", `/api/uploads/${encodeURIComponent(file.name)}`);
+    xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(e.loaded / e.total);
+    xhr.onload = () => (xhr.status < 300 ? resolve(undefined) : reject(new Error("Upload failed")));
+    xhr.onerror = () => reject(new Error("Connection lost"));
+    signal.addEventListener("abort", () => xhr.abort());
+    xhr.send(file);
+  });
+
+export function LeaseUpload() {
+  return <FileUpload upload={upload} accept="application/pdf,image/*" maxSize={5_000_000} />;
+}
+```
+
+## Examples
+
+### Adding files from your own code
+
+Create the controller with `useFileUpload` and pass it in; `add` takes any list of `File`s.
+
+```tsx
+const files = useFileUpload({ upload, accept: "application/pdf" });
+<FileUpload controller={files} />
+<Button onClick={() => files.add(picked)}>Import from Drive</Button>
+```
+
+## API reference
+
+### FileUpload
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `upload` | `(file, { onProgress, signal, item }) => Promise<unknown>` | | Uploads one file. Report 0–1 progress, resolve when stored, reject with an `Error` whose message the row shows. Without it, files are listed as done. |
+| `accept` | `string` | | `<input accept>` syntax. Other files are refused with a message under the zone. |
+| `maxSize` | `number` | | Bytes. Larger files are listed with an error so the reason is visible. |
+| `maxFiles` | `number` | | Files past this count are refused. |
+| `value` / `defaultValue` | `FileUploadItem[]` | | The list, controlled or uncontrolled. |
+| `onValueChange` | `(items) => void` | | |
+| `onReject` | `(rejected) => void` | | Files refused for type or count. |
+| `controller` | `FileUploadController` | | From `useFileUpload`; its options win. |
+| `multiple` | `boolean` | `true` | |
+| `disabled` | `boolean` | `false` | |
+| `title` | `ReactNode` | `"Drop files here"` | Followed by "or browse". |
+| `hint` | `ReactNode` | accepted types and size | |
+| `listLabel` | `string` | `"Files"` | Names the list. |
+| `children` | `ReactNode` | | Rendered after the list. |
+
+`FileUploadItem` is `{ id, name, size, type, status: "uploading" \| "done" \| "error", progress?, error?, retryable?, file? }`. `useFileUpload` returns `{ items, add, remove, retry, clear, rejection }`. `formatBytes`, `matchesAccept` and `describeAccept` are exported too.
+
+## Keyboard
+
+| Key | Action |
+|---|---|
+| `Tab` | Moves to the dropzone, then each row's Retry and Remove buttons. |
+| `Enter` / `Space` | On the dropzone, opens the file picker. |
+| `⌘ V` / `Ctrl V` | With focus inside, adds files from the clipboard. |
+
+## Accessibility
+
+- The dropzone is a button described by its hint and by the refusal message.
+- Refusals are announced from a live region that stays mounted.
+- Each row is a group named with its file, status and progress; buttons say "Cancel", "Retry" or "Remove" with the file name.
+- Removing a row with the keyboard moves focus to the next row's Remove button, or back to the dropzone.
+
+## Motion
+
+A file dragged anywhere on the page wakes the zone; over it the icon lifts 2px on the snappy spring, the title swaps to "Drop 3 files" and a soft light follows the pointer. A drag of the wrong type turns the zone danger before the drop. Rows rise 8px from a 2px blur while the list's height springs (smooth, no overshoot); progress bars scale on the smooth spring; a finished row swaps its bar for the size and a check that draws once. Removed rows fade out in 100ms and the others close the gap. Reduced motion keeps opacity changes only.
+
+## Notes for AI
+
+Pick File Upload for any form that collects documents. Pass `upload` and call your storage API inside it; the component handles the list, progress, aborting on remove and retry. Use `accept` and `maxSize` rather than validating yourself.
+
+Don't wrap it in another drop target or add your own paste listener, and don't render a separate progress bar per file: rows already have one. It does not upload anything without your `upload` function.
+
+## Related
+
+- [Attachment](/components/attachment): thumbnails and chips for a chat composer.
+- [Progress](/components/progress): a single labelled progress bar.

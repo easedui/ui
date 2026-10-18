@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carousel-demo",
+  "title": "Carousel demo",
+  "description": "Customer stories for a finance product, one metric and quote per slide.",
+  "registryDependencies": [
+    "https://eased.dev/r/carousel.json",
+    "https://eased.dev/r/avatar.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/carousel/carousel-demo.tsx",
+      "content": "\"use client\";\n\nimport { Avatar } from \"../avatar/avatar\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Carousel } from \"./carousel\";\n\nconst STORIES = [\n  {\n    metric: \"9 → 2 days\",\n    label: \"to close the books each month\",\n    quote: \"Reconciliation used to eat the first week of every month. Now the ledger is clean by the 2nd and finance spends that week on forecasting.\",\n    name: \"Maya Okafor\",\n    role: \"Controller, Fieldwork\",\n  },\n  {\n    metric: \"€184k\",\n    label: \"in duplicate payments caught in Q2\",\n    quote: \"It flagged two invoices from the same supplier with different PO numbers on day one. That alone paid for the year.\",\n    name: \"Jonas Weber\",\n    role: \"Head of AP, Nordlicht\",\n  },\n  {\n    metric: \"3.4×\",\n    label: \"more invoices per person\",\n    quote: \"We grew from 40 to 130 suppliers without hiring. Approvals happen in Slack and nobody chases signatures any more.\",\n    name: \"Priya Raman\",\n    role: \"Finance Ops Lead, Tidepool\",\n  },\n  {\n    metric: \"41 min\",\n    label: \"from receipt to approved expense\",\n    quote: \"People snap a receipt and forget about it. Policy checks run before a manager ever sees it.\",\n    name: \"Tomás Herrera\",\n    role: \"CFO, Brightline Studio\",\n  },\n  {\n    metric: \"0\",\n    label: \"audit findings for the first time in four years\",\n    quote: \"Every approval has a trail our auditors could follow without asking us a single question.\",\n    name: \"Hana Sato\",\n    role: \"VP Finance, Kumo Health\",\n  },\n];\n\n/** Customer stories: swipe, drag with a mouse, press the arrows or focus the track and use arrow keys. */\nexport function CarouselDemo() {\n  return (\n    <DemoFrame title=\"Customer stories\" meta={`${STORIES.length} teams`}>\n      <div className=\"flex min-h-0 flex-1 flex-col py-4 [--carousel-inset:16px]\">\n        <Carousel aria-label=\"Customer stories\" slideSize=\"min(85%, 22rem)\" className=\"min-h-0 flex-1\" slideClassName=\"flex\">\n          {STORIES.map((s) => (\n            <figure\n              key={s.name}\n              className=\"flex w-full flex-col rounded-control border border-line-subtle bg-surface-sunken p-4 select-none\"\n            >\n              <p className=\"text-display-2xl font-semibold text-text tabular-nums\">{s.metric}</p>\n              <p className=\"mt-0.5 text-ui-sm text-text-muted\">{s.label}</p>\n              <blockquote className=\"mt-4 line-clamp-5 text-ui text-pretty text-text-secondary\">“{s.quote}”</blockquote>\n              <figcaption className=\"mt-auto flex items-center gap-2.5 pt-4\">\n                <Avatar name={s.name} size=\"md\" />\n                <span className=\"flex min-w-0 flex-col\">\n                  <span className=\"truncate text-ui-sm font-medium text-text\">{s.name}</span>\n                  <span className=\"truncate text-ui-xs text-text-muted\">{s.role}</span>\n                </span>\n              </figcaption>\n            </figure>\n          ))}\n        </Carousel>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/carousel/carousel-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}
