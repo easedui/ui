@@ -44,14 +44,6 @@ export function UsageMenu() {
 
 ## Examples
 
-### Inside a native vibrancy window
-
-Let the window's `windowEffects` (Tauri) or `vibrancy` (Electron) draw the material.
-
-```tsx
-<MacMenuPopoverContent material="native">…</MacMenuPopoverContent>
-```
-
 ### Kept inside a frame
 
 In a mock-up, keep the panel inside the fake screen rather than the viewport.
@@ -60,11 +52,49 @@ In a mock-up, keep the panel inside the fake screen rather than the viewport.
 <MacMenuPopoverContent collisionBoundary={screenElement}>…</MacMenuPopoverContent>
 ```
 
-### In a Tauri tray window
+### In a desktop tray window
 
-The panel is meant to fill a small, borderless tray window. In `tauri.conf.json`:
+On the desktop the native tray icon is the status item and a small borderless window is the panel, so render your content in `MacMenuPanel`: the same type, fills and padding, without the popover. `MacMenuItem` and `MacMenuSeparator` work inside it. In Tauri and Electron alike:
 
-```json tauri.conf.json
+- The window draws real vibrancy and the panel uses `material="native"`, its default. A CSS blur can't see the desktop through a transparent window, so `"css"` there gives an unblurred tint; it is for web pages.
+- Make the page transparent with `html, body { background: transparent; }`. shadcn's base layer paints `body` with `bg-background`, which covers the vibrancy.
+- Call `useSystemAppearance()` once in the window. The vibrancy follows the system appearance and Eased's dark styles follow `.dark`; without the hook a dark Mac gets dark glass with black text.
+- Size the window to the content (115px tall for the panel below) and hide it when it loses focus, as macOS does.
+
+```tsx src/tray.tsx
+import { exit } from "@tauri-apps/plugin-process";
+import { useSystemAppearance } from "@/components/eased/lib/mac";
+import { MacMenuItem, MacMenuPanel, MacMenuSeparator } from "@/components/eased/mac-menu-popover/mac-menu-popover";
+
+export function TrayWindow() {
+  useSystemAppearance();
+  return (
+    <MacMenuPanel>
+      <p className="font-semibold">Tally</p>
+      <p>62% of this session · resets in 1h 48m</p>
+      <MacMenuSeparator />
+      <MacMenuItem shortcut="⌘,">Settings…</MacMenuItem>
+      {/* Electron: send an IPC message that calls app.quit() instead. */}
+      <MacMenuItem shortcut="⌘Q" onClick={() => exit(0)}>Quit</MacMenuItem>
+    </MacMenuPanel>
+  );
+}
+```
+
+`MacMenuPopover` itself is for menu bars drawn in the page: a web demo, a landing page, or an app window with its own title bar. If that window draws native vibrancy, pass `material="native"` to `MacMenuPopoverContent` too.
+
+### In a Tauri app
+
+Checked with Tauri 2.12, `tauri-plugin-positioner` 2.4 and `tauri-plugin-process` 2. Add the plugins with `tauri add positioner` and `tauri add process`, then turn on the tray features, which `tauri add` leaves off:
+
+```toml src-tauri/Cargo.toml
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-positioner = { version = "2", features = ["tray-icon"] }
+```
+
+The window, hidden until the tray icon is clicked. `windowEffects` only works with `transparent: true`; `macOSPrivateApi` is not needed (a no-op since 2.12.1).
+
+```json src-tauri/tauri.conf.json
 {
   "app": {
     "windows": [
@@ -72,7 +102,7 @@ The panel is meant to fill a small, borderless tray window. In `tauri.conf.json`
         "label": "tray",
         "url": "/tray",
         "width": 320,
-        "height": 420,
+        "height": 115,
         "visible": false,
         "transparent": true,
         "decorations": false,
@@ -87,20 +117,123 @@ The panel is meant to fill a small, borderless tray window. In `tauri.conf.json`
 }
 ```
 
-- The window is the panel: size it to the content and keep the page background transparent. macOS draws the window shadow.
-- Place it under the tray icon with the positioner plugin (`tauri-plugin-positioner`): call `on_tray_event` from your tray handler, then `moveWindow(Position.TrayBottomCenter)` before showing the window. Hide the window when it loses focus (`onFocusChanged`), as macOS does.
-- In the tray window the native tray icon is the status item and the window is the panel, so render your content in `MacMenuPanel` (the same type, fills and padding, without the popover); `MacMenuItem` and `MacMenuSeparator` work inside it.
-- With `windowEffects` the window draws real vibrancy, so use `material="native"` (the panel's default): the CSS blur and tint drop out and the hairline stays. Without `windowEffects`, pass `material="css"`.
-- `macOSPrivateApi` is not needed for transparency: it has been a no-op since Tauri 2.12.1.
-- `MacMenuPopover` itself is for menu bars drawn in the page: a web demo, a landing page, or an app window with its own title bar.
+A capability for the window. `process:default` is only for `exit`; a [Mac HUD](/components/mac-hud) window gets its own.
 
-```tsx tray.tsx
-<MacMenuPanel>
-  <p className="font-semibold">Tally</p>
-  …
-  <MacMenuItem shortcut="⌘Q" onClick={() => exit(0)}>Quit</MacMenuItem>
-</MacMenuPanel>
+```json src-tauri/capabilities/tray.json
+{
+  "identifier": "tray",
+  "platforms": ["macOS"],
+  "windows": ["tray"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-position",
+    "positioner:default",
+    "process:default"
+  ]
+}
 ```
+
+The tray icon opens the window under itself and hides it on blur. `show_menu_on_left_click(false)` replaces the deprecated `menu_on_left_click`; the icon is a black-on-transparent PNG that macOS tints as a template.
+
+```rust src-tauri/src/lib.rs
+use tauri::{
+    image::Image,
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    Manager, WindowEvent,
+};
+use tauri_plugin_positioner::{Position, WindowExt};
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_positioner::init())
+        .plugin(tauri_plugin_process::init())
+        .setup(|app| {
+            // A menu bar app: no Dock icon.
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
+            TrayIconBuilder::new()
+                .icon(Image::from_bytes(include_bytes!("../icons/tray.png"))?)
+                .icon_as_template(true)
+                .show_menu_on_left_click(false)
+                .on_tray_icon_event(|tray, event| {
+                    tauri_plugin_positioner::on_tray_event(tray.app_handle(), &event);
+                    if let TrayIconEvent::Click { button: MouseButton::Left, button_state: MouseButtonState::Up, .. } = event {
+                        let Some(win) = tray.app_handle().get_webview_window("tray") else { return };
+                        if win.is_visible().unwrap_or(false) {
+                            let _ = win.hide();
+                        } else {
+                            let _ = win.move_window(Position::TrayBottomCenter);
+                            let _ = win.show();
+                            let _ = win.set_focus();
+                        }
+                    }
+                })
+                .build(app)?;
+            Ok(())
+        })
+        // Hide the panel when it loses focus, as macOS does.
+        .on_window_event(|window, event| {
+            if window.label() == "tray" && matches!(event, WindowEvent::Focused(false)) {
+                let _ = window.hide();
+            }
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+### In an Electron app
+
+The main process makes the tray icon and a hidden vibrancy window, and places the window under the icon on each click. `tray.getBounds()` can fall off every screen (an icon hidden behind the notch, or a second display), so the position is clamped to the nearest display.
+
+```js electron/main.cjs
+const path = require("node:path");
+const { app, BrowserWindow, Tray, nativeImage, screen } = require("electron");
+
+let tray, panel;
+
+app.whenReady().then(() => {
+  app.dock?.hide(); // A menu bar app: no Dock icon.
+
+  panel = new BrowserWindow({
+    width: 320,
+    height: 115,
+    show: false,
+    frame: false,
+    transparent: true,
+    backgroundColor: "#00000000",
+    resizable: false,
+    skipTaskbar: true,
+    alwaysOnTop: true,
+    vibrancy: "popover",
+    visualEffectState: "active",
+  });
+  panel.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  panel.on("blur", () => panel.hide());
+  panel.loadFile(path.join(__dirname, "../dist/index.html"), { query: { view: "tray" } });
+
+  const icon = nativeImage.createFromPath(path.join(__dirname, "trayTemplate.png"));
+  icon.setTemplateImage(true);
+  tray = new Tray(icon);
+  tray.on("click", () => {
+    if (panel.isVisible()) return panel.hide();
+    const t = tray.getBounds();
+    const { workArea } = screen.getDisplayMatching(t);
+    const { width, height } = panel.getBounds();
+    const x = Math.min(Math.max(t.x + t.width / 2 - width / 2, workArea.x + 8), workArea.x + workArea.width - width - 8);
+    const y = Math.min(Math.max(t.y + t.height + 4, workArea.y), workArea.y + workArea.height - height);
+    panel.setPosition(Math.round(x), Math.round(y));
+    panel.show();
+    panel.focus();
+  });
+});
+```
+
+macOS rounds the frameless window's corners (about 10pt) and draws its shadow; Electron can't round the vibrancy further.
 
 ## API reference
 
@@ -142,7 +275,7 @@ The panel exposes `--pad` (12px) and `--radius-outer` (11px) for concentric chil
 
 ### MacMenuPanel
 
-The panel's material, type, fills and 12px padding as a plain `div`, for a native tray window. `material` (`"native"`), `className`, `children`.
+The panel's material, type, fills and 12px padding as a plain `div`, for a native tray window. `material` (`"native"`), `className`, `children`. It fills the window, so the window draws the corners.
 
 ### MacMenuItem
 
@@ -151,6 +284,10 @@ A `<button>` row. All button props, plus `icon` (a 16px icon on the content line
 ### MacMenuSeparator, MacMenuPopoverClose
 
 A divider on the content lines (`className`), and Base UI `Popover.Close`.
+
+### useSystemAppearance
+
+From `@/components/eased/lib/mac`. Call it once in a Tauri or Electron window: it puts `.dark` on `<html>` while `prefers-color-scheme` is dark and follows changes, so the text matches the native vibrancy. It runs in an effect, so it is safe with server rendering. Eased otherwise follows `.dark` or `data-theme="dark"`, so leave it out of a web app with its own theme toggle.
 
 ## Keyboard
 
@@ -173,9 +310,9 @@ The panel grows from the arrow tip (Base UI's `--transform-origin`, which tracks
 
 ## Notes for AI
 
-Pick this for anything that should look like a Mac menu bar extra, especially in a Tauri or Electron tray window (`material="native"` there). Compose `MacMenuPopover` › `MacStatusItem` + `MacMenuPopoverContent`, fill the content with your own layout, and use `MacMenuItem` / `MacMenuSeparator` for action rows. Always pass `label` to `MacStatusItem`.
+Pick this for anything that should look like a Mac menu bar extra. In a Tauri or Electron tray window render `MacMenuPanel` (native material by default) in a window with native vibrancy, a transparent `html, body`, and `useSystemAppearance()`. Compose `MacMenuPopover` › `MacStatusItem` + `MacMenuPopoverContent`, fill the content with your own layout, and use `MacMenuItem` / `MacMenuSeparator` for action rows. Always pass `label` to `MacStatusItem`.
 
-Don't wrap the content in another card, border, shadow or blur: the panel draws its own material, hairline and shadow as one shape. Don't put a `filter`, `opacity` or `backdrop-filter` on an ancestor of the panel; it stops the blur from seeing the page. Don't scale the status item on press, and don't add animation to the panel: it already uses the shared floating motion.
+Don't use `material="css"` in a desktop window: the blur can't see the desktop. Don't wrap the content in another card, border, shadow or blur: the panel draws its own material, hairline and shadow as one shape. Don't put a `filter`, `opacity` or `backdrop-filter` on an ancestor of the panel; it stops the blur from seeing the page. Don't scale the status item on press, and don't add animation to the panel: it already uses the shared floating motion.
 
 ## Related
 

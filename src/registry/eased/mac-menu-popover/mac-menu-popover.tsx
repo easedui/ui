@@ -67,7 +67,7 @@ export type MacMenuPopoverContentProps = {
   width?: number;
   /** Draw the arrow. Without it the panel is a plain rounded rectangle. Default true. */
   arrow?: boolean;
-  /** `"css"` frosts the panel in the browser; `"native"` leaves it to a Tauri/Electron window's vibrancy. Default "css". */
+  /** `"css"` frosts the panel in a web page; `"native"` leaves it to a Tauri/Electron window's vibrancy. Default "css". */
   material?: MacMaterialMode;
   /** Below the menu bar, or above an anchor near the bottom of the screen. Default "bottom". */
   side?: "bottom" | "top";
@@ -273,7 +273,8 @@ function shapePath(w: number, h: number, tipX: number, arrowSide: "top" | "botto
 /**
  * The panel without the popover, for a Tauri/Electron tray window, where the native tray icon is
  * the status item and the window is the panel. Same type, fills and 12px padding; it fills the
- * window, so let `windowEffects` round the corners. Usually `material="native"`.
+ * window, so the window rounds the corners (Tauri `windowEffects.radius`; macOS rounds a frameless
+ * Electron window). Usually `material="native"`: a CSS blur can't see the desktop behind a window.
  */
 export function MacMenuPanel({ material = "native", className = "", children }: { material?: MacMaterialMode; className?: string; children?: ReactNode }) {
   return (
@@ -319,7 +320,7 @@ function Shortcut({ keys }: { keys: string }) {
   return (
     <span className={`${macTextSecondary} flex justify-end`}>
       <span className="tracking-wide">{chars.slice(0, -1).join("")}</span>
-      <span className="w-[1.2em] text-center">{chars.at(-1)}</span>
+      <span className="w-[1.2em] text-center">{chars[chars.length - 1]}</span>
     </span>
   );
 }

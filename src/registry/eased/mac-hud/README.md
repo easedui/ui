@@ -72,9 +72,20 @@ show("volume", volume, { muted: true });
 </div>
 ```
 
+### In a desktop window
+
+A HUD floats above every app, so in Tauri or Electron it lives in its own small window that is exactly the HUD's size. In both:
+
+- The window draws real vibrancy, and the HUD takes `material="native"` and `position="none"`. A CSS blur can't see the desktop through a transparent window, so `"css"` there gives an unblurred tint.
+- Make the page transparent with `html, body { background: transparent; }` (shadcn's `bg-background` on `body` covers the vibrancy) and call `useSystemAppearance()` from `@/components/eased/lib/mac`, so the glyphs follow the system's light or dark material.
+- The window ignores the pointer, never takes focus, and sits centred 140pt above the bottom of the primary display.
+- Hide the window in `onExitComplete`, or the empty vibrancy stays on screen after the HUD has left. Vibrancy belongs to the window, so it appears and disappears at once while the icon and bar animate.
+
+For the pill, size the window 200×44 and place it 12pt below the menu bar at the right.
+
 ### In a Tauri app
 
-A HUD floats above every app, so on the desktop it lives in its own small window. Give it real vibrancy and pass `material="native"`, which drops the CSS blur and tint and keeps the hairline. Make the window the HUD's size and render the HUD with `position="none"`.
+Checked with Tauri 2.12. The window, in `tauri.conf.json`. `"focusable": false` matters: without it `show()` takes focus, and a tray panel that hides on blur closes. `windowEffects` only works with `transparent: true`; `macOSPrivateApi` is a no-op since 2.12.1.
 
 ```json src-tauri/tauri.conf.json
 {
@@ -89,6 +100,7 @@ A HUD floats above every app, so on the desktop it lives in its own small window
         "transparent": true,
         "decorations": false,
         "focus": false,
+        "focusable": false,
         "shadow": false,
         "resizable": false,
         "alwaysOnTop": true,
@@ -101,25 +113,44 @@ A HUD floats above every app, so on the desktop it lives in its own small window
 }
 ```
 
-The HUD window's page listens for level changes from the rest of the app, ignores the cursor, and sits 140px above the bottom of the current screen, centred.
+A capability for the window, so its page may move, show, hide and click-through it:
+
+```json src-tauri/capabilities/hud.json
+{
+  "identifier": "hud",
+  "platforms": ["macOS"],
+  "windows": ["hud"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-position",
+    "core:window:allow-set-ignore-cursor-events"
+  ]
+}
+```
+
+The page listens for levels, sent from Rust with `app.emit_to("hud", "hud", level)` (from a global shortcut handler, say) or from another window with `emitTo`. It places the window on the primary display each time: the hidden window's own monitor is wherever it was last shown.
 
 ```tsx src/hud.tsx
 import { listen } from "@tauri-apps/api/event";
 import { PhysicalPosition } from "@tauri-apps/api/dpi";
-import { currentMonitor, getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentWindow, primaryMonitor } from "@tauri-apps/api/window";
 import { useEffect } from "react";
+import { useSystemAppearance } from "@/components/eased/lib/mac";
 import { MacHud, useMacHud, type MacHudKind } from "@/components/eased/mac-hud/mac-hud";
 
 type Level = { kind: MacHudKind; value: number; muted?: boolean };
 
 export function HudWindow() {
+  useSystemAppearance();
   const { hud, show } = useMacHud();
 
   useEffect(() => {
     const win = getCurrentWindow();
     win.setIgnoreCursorEvents(true);
     const off = listen<Level>("hud", async ({ payload }) => {
-      const monitor = await currentMonitor();
+      const monitor = await primaryMonitor();
       if (monitor) {
         const size = 200 * monitor.scaleFactor;
         const x = monitor.position.x + (monitor.size.width - size) / 2;
@@ -132,11 +163,86 @@ export function HudWindow() {
     return () => void off.then((unlisten) => unlisten());
   }, [show]);
 
-  return <MacHud {...hud} position="none" material="native" />;
+  return <MacHud {...hud} position="none" material="native" onExitComplete={() => void getCurrentWindow().hide()} />;
 }
 ```
 
-Hide the window once the HUD has left (about 150ms after `hud.open` turns false), or the empty native material stays on screen. Native vibrancy belongs to the window, so it appears and disappears at once while the icon and bar animate; a CSS blur cannot reach the desktop behind a transparent webview, which is why the window draws it. For the pill, size the window 200×44 and place it 12px below the menu bar at the right. `macOSPrivateApi` is a no-op since Tauri 2.12.1.
+### In an Electron app
+
+The main process owns the window and sends it each level; `showInactive()` shows it without taking focus. Electron can't round vibrancy, and macOS gives a frameless window about 10pt corners, so pass `radius={10}` to match (the pill becomes a rounded rectangle there).
+
+```js electron/main.cjs
+const path = require("node:path");
+const { app, BrowserWindow, ipcMain, screen } = require("electron");
+
+let hud;
+
+app.whenReady().then(() => {
+  app.dock?.hide(); // A menu bar app: no Dock icon.
+
+  hud = new BrowserWindow({
+    width: 200,
+    height: 200,
+    show: false,
+    frame: false,
+    transparent: true,
+    backgroundColor: "#00000000",
+    focusable: false,
+    hasShadow: false,
+    resizable: false,
+    skipTaskbar: true,
+    vibrancy: "hud",
+    visualEffectState: "active",
+    webPreferences: { preload: path.join(__dirname, "preload.cjs") },
+  });
+  hud.setAlwaysOnTop(true, "screen-saver");
+  hud.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  hud.setIgnoreMouseEvents(true);
+  hud.loadFile(path.join(__dirname, "../dist/index.html"), { query: { view: "hud" } });
+});
+
+// Call from a globalShortcut handler, for example.
+function showHud(level) {
+  const { bounds } = screen.getPrimaryDisplay();
+  hud.setPosition(Math.round(bounds.x + (bounds.width - 200) / 2), bounds.y + bounds.height - 200 - 140);
+  if (!hud.isVisible()) hud.showInactive();
+  hud.webContents.send("hud", level);
+}
+
+ipcMain.on("hud-closed", () => hud.hide());
+```
+
+```js electron/preload.cjs
+const { contextBridge, ipcRenderer } = require("electron");
+
+contextBridge.exposeInMainWorld("hud", {
+  onLevel: (callback) => {
+    const listener = (_event, level) => callback(level);
+    ipcRenderer.on("hud", listener);
+    return () => ipcRenderer.off("hud", listener);
+  },
+  closed: () => ipcRenderer.send("hud-closed"),
+});
+```
+
+```tsx src/hud.tsx
+import { useEffect } from "react";
+import { useSystemAppearance } from "@/components/eased/lib/mac";
+import { MacHud, useMacHud, type MacHudKind } from "@/components/eased/mac-hud/mac-hud";
+
+declare global {
+  interface Window {
+    hud: { onLevel: (callback: (level: { kind: MacHudKind; value: number; muted?: boolean }) => void) => () => void; closed: () => void };
+  }
+}
+
+export function HudWindow() {
+  useSystemAppearance();
+  const { hud, show } = useMacHud();
+  useEffect(() => window.hud.onLevel(({ kind, value, muted }) => show(kind, value, { muted })), [show]);
+  return <MacHud {...hud} position="none" material="native" radius={10} onExitComplete={window.hud.closed} />;
+}
+```
 
 ## API reference
 
@@ -151,12 +257,18 @@ Hide the window once the HUD has left (about 150ms after `hud.open` turns false)
 | `variant` | `"classic" \| "pill"` | `"classic"` | The 200×200 square of macOS 15 and earlier, or the 200×44 capsule of macOS 26. |
 | `position` | `"fixed" \| "absolute" \| "none"` | `"fixed"` | Against the viewport, in the nearest positioned parent, or in flow for you to place (a Tauri HUD window). |
 | `material` | `"css" \| "native"` | `"css"` | `native` drops the CSS blur and tint for a window that draws real vibrancy. |
+| `radius` | `number` | `18`, or a capsule for `pill` | Corner radius, px. Match a native window's corner: `10` in Electron. |
+| `onExitComplete` | `() => void` | | Called when the exit animation has finished (not on a variant swap): hide a native HUD window here. |
 | `labels` | `{ volume?, brightness?, keyboard?, muted?: string }` | `"Volume"`, `"Brightness"`, `"Keyboard brightness"`, `"muted"` | Translate the announcement. |
 | `className` | `string` | `""` | Appended to the HUD's classes; position is kept. |
 
 ### useMacHud
 
 `useMacHud({ duration? })` returns `{ hud, show, hide }`. `show(kind, value, { muted? })` opens or updates the HUD and restarts the hold; `hide()` closes it at once. `duration` is the hold after the last `show`, in ms (default `1100`). Spread `hud` onto `<MacHud>`.
+
+### useSystemAppearance
+
+From `@/components/eased/lib/mac`. Call it once in a Tauri or Electron HUD window: it puts `.dark` on `<html>` while `prefers-color-scheme` is dark and follows changes, so the glyphs match the native vibrancy. It runs in an effect, so it is safe with server rendering. Eased otherwise follows `.dark` or `data-theme="dark"`, so a web app keeps its own theme toggle.
 
 ### MacHudIcon
 
@@ -174,9 +286,9 @@ The HUD fades in on the enter curve while it scales from 0.96 on the snappy spri
 
 ## Notes for AI
 
-Use Mac HUD for transient feedback on a level changed by a shortcut or media key in a Mac-style app. Call `show` from `useMacHud` on every change, including repeats; render one HUD per window with `{...hud}` spread onto it. In Tauri or Electron with native vibrancy, use `material="native"` and `position="none"` inside a 200×200 window.
+Use Mac HUD for transient feedback on a level changed by a shortcut or media key in a Mac-style app. Call `show` from `useMacHud` on every change, including repeats; render one HUD per window with `{...hud}` spread onto it. In Tauri or Electron, render it with `material="native"` and `position="none"` in a 200×200 vibrancy window that ignores the pointer and can't take focus, with a transparent page and `useSystemAppearance()`; hide the window in `onExitComplete`.
 
-Do not unmount it to hide it, do not add a timer of your own (the hook owns the 1.1-second hold), and do not put controls in it: it is click-through. Do not give it a drop shadow or a different radius; macOS's HUD has neither.
+Do not unmount it to hide it, do not add a timer of your own (the hook owns the 1.1-second hold), and do not put controls in it: it is click-through. Do not give it a drop shadow, or a different radius except to match a native window's corner (`radius={10}` in Electron).
 
 ## Related
 

@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 /**
  * The macOS look for the Eased Mac pack: system type, translucent "vibrancy" materials and
  * hairlines, in light and dark. Motion stays Eased's (`./motion`); only the material and the
@@ -6,8 +8,10 @@
  *   macFont          the San Francisco stack, at macOS's 13px body size
  *   macMaterial      frosted panel: translucent tint + backdrop blur/saturate, hairline, shadow
  *   MAC_RADIUS       corner radii macOS uses for popovers, HUDs and controls (px)
+ *   useSystemAppearance   puts `.dark` on <html> while the system is dark (Tauri/Electron windows)
  *
- * Dark follows Eased's convention: a `.dark` class or `data-theme="dark"` on an ancestor.
+ * Dark follows Eased's convention: a `.dark` class or `data-theme="dark"` on an ancestor, so a
+ * web app keeps its own theme toggle.
  *
  * Inside a Tauri/Electron window that already draws native vibrancy (Tauri `windowEffects`,
  * `window-vibrancy`, Electron `vibrancy`), pass `"native"`: the CSS blur and tint drop out so
@@ -15,7 +19,8 @@
  */
 
 /** -apple-system resolves to SF Pro on Apple platforms; elsewhere the platform UI font. */
-export const macFont = "font-[-apple-system,BlinkMacSystemFont,system-ui,sans-serif] text-[13px] leading-[16px] antialiased";
+export const macFontFamily = "font-[-apple-system,BlinkMacSystemFont,system-ui,sans-serif]";
+export const macFont = `${macFontFamily} text-[13px] leading-[16px] antialiased`;
 
 /** `css` approximates vibrancy in the browser; `native` leaves it to the window behind. */
 export type MacMaterialMode = "css" | "native";
@@ -71,3 +76,19 @@ export const macShadow =
 
 /** Corner radii in px (measured on macOS 14–15; macOS 26 rounds popovers to ~16). */
 export const MAC_RADIUS = { popover: 11, hud: 18, pill: 9999, control: 6 } as const;
+
+/**
+ * Follows the system appearance: toggles `.dark` on <html> from `prefers-color-scheme` and keeps
+ * it in step. For a Tauri/Electron window, whose native vibrancy (and the webview's
+ * `prefers-color-scheme`) follow the OS; without it dark vibrancy gets light-mode text. Runs in
+ * an effect, so it is hydration-safe. Leave it out of a web app that has its own theme toggle.
+ */
+export function useSystemAppearance() {
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => document.documentElement.classList.toggle("dark", query.matches);
+    apply();
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, []);
+}

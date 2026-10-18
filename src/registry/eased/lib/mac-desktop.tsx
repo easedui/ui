@@ -1,6 +1,6 @@
 import type { ReactNode, Ref } from "react";
 import { DemoFrame } from "./demo-frame";
-import { macFont, macText } from "./mac";
+import { macFont, macFontFamily, macText } from "./mac";
 
 export type MacDesktopProps = {
   /** The frontmost app, bold at the left of the menu bar. */
@@ -22,11 +22,13 @@ export type MacDesktopProps = {
 /**
  * One small macOS screen every Mac pack demo shares, so they read as the same desktop: a soft
  * wallpaper with a few files on it, and a translucent 24px menu bar. Demo only, built on
- * `DemoFrame`, so it keeps the 420px / 28rem tile contract.
+ * `DemoFrame`, so it keeps the 420px / 28rem tile contract. The whole frame, footer included,
+ * sets the system font family (not its size), so the demo never falls back to the app's
+ * `--font-sans`, which a fresh shadcn setup leaves circular (Times).
  */
 export function MacDesktop({ app, menus = [], statusItems, footer, ref, className = "", children }: MacDesktopProps) {
   return (
-    <DemoFrame className={className}>
+    <DemoFrame className={`${macFontFamily} ${className}`}>
       <div ref={ref} className={`${macFont} ${macText} ${WALLPAPER} relative flex min-h-0 flex-1 flex-col`}>
         <div className="flex h-6 shrink-0 items-center justify-between gap-3 bg-[rgb(255_255_255/0.45)] px-2.5 backdrop-blur-xl in-[.dark]:bg-[rgb(0_0_0/0.3)] in-data-[theme=dark]:bg-[rgb(0_0_0/0.3)]">
           <div aria-hidden className="flex min-w-0 items-center gap-4 overflow-hidden px-1">

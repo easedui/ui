@@ -19,6 +19,12 @@ const QUARTERS = 64;
 const DELAY = 400;
 const REPEAT = 80;
 
+/*
+ * The keys sit 6px apart, so a mouse gets the 32px key alone. On touch they take the 44px
+ * target: neighbours' areas meet only in the gap, never over each other's key.
+ */
+const TOUCH_TARGET = "pointer-coarse:hit-area";
+
 const ARROWS: Record<string, [MacHudKind, 1 | -1]> = {
   ArrowUp: ["volume", 1],
   ArrowDown: ["volume", -1],
@@ -77,6 +83,8 @@ export function MacHudDemo() {
         <div className="flex shrink-0 items-center justify-between gap-3 border-t border-line-subtle px-(--pad) py-3">
           <Segmented
             aria-label="HUD style"
+            // Segments are 26px tall; on touch each gets the 44px target without growing.
+            className="pointer-coarse:[&>button]:hit-area"
             options={VARIANTS}
             value={variant}
             onValueChange={(v) => {
@@ -102,7 +110,7 @@ export function MacHudDemo() {
               </MediaKey>
             </KeyGroup>
             <KeyGroup label="Volume">
-              <Button variant="secondary" size="icon-sm" hitArea={false} aria-label="Mute" onClick={mute}>
+              <Button variant="secondary" size="icon-sm" hitArea={false} className={TOUCH_TARGET} aria-label="Mute" onClick={mute}>
                 <MacHudIcon kind="volume" value={0} muted className="size-4" />
               </Button>
               <MediaKey label="Volume down" hold={hold} onPress={key("volume", -1)}>
@@ -147,6 +155,7 @@ function MediaKey({ label, hold, onPress, children }: { label: string; hold: Hol
       variant="secondary"
       size="icon-sm"
       hitArea={false}
+      className={TOUCH_TARGET}
       aria-label={label}
       onPointerDown={(e) => {
         if (e.button !== 0) return;

@@ -49,6 +49,13 @@ export type MacHudProps = {
   position?: "fixed" | "absolute" | "none";
   /** `css` draws the frosted material; `native` leaves it to a window with real vibrancy. Default "css". */
   material?: MacMaterialMode;
+  /**
+   * Corner radius, px. Default 18 for classic, a full capsule for pill. In a native window, match
+   * the window's corner: Electron can't round vibrancy, and macOS gives a frameless window ~10.
+   */
+  radius?: number;
+  /** Called once the exit animation has finished, e.g. to hide a native HUD window. */
+  onExitComplete?: () => void;
   labels?: Partial<MacHudLabels>;
   /** Appended to the HUD's classes; position is kept. */
   className?: string;
@@ -87,6 +94,8 @@ export function MacHud({
   variant = "classic",
   position = "fixed",
   material = "css",
+  radius,
+  onExitComplete,
   labels,
   className = "",
 }: MacHudProps) {
@@ -104,7 +113,8 @@ export function MacHud({
       <span role="status" className="sr-only">
         {open ? announce : ""}
       </span>
-      <AnimatePresence>
+      {/* Only a real close counts: a variant swap while open also completes an exit. */}
+      <AnimatePresence onExitComplete={open ? undefined : onExitComplete}>
         {open && (
           <motion.div
             // A new variant is a new HUD: the old one leaves while the new one enters, no morph.
@@ -119,7 +129,7 @@ export function MacHud({
                 : { opacity: 0, scale: 0.98, y: pill ? -6 : 0, transition: exit }
             }
             transition={reduce ? reducedFade : { ...snappy, opacity: enter }}
-            style={{ borderRadius: pill ? MAC_RADIUS.pill : MAC_RADIUS.hud }}
+            style={{ borderRadius: radius ?? (pill ? MAC_RADIUS.pill : MAC_RADIUS.hud) }}
             className={`pointer-events-none select-none ${POSITION[position]} ${position === "none" ? "" : PLACE[variant]} ${macFont} ${macMaterial("hud", material)} ${
               pill ? "flex h-11 w-[200px] items-center gap-3 px-4" : "size-[200px]"
             } ${className}`}

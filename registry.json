@@ -225,8 +225,10 @@
           "--eased-duration-spring-bouncy": "600ms",
           "--eased-press-scale": "0.97",
           "--eased-press-scale-icon": "0.96",
-          "--eased-press-scale-wide": "0.985",
-          "@media (prefers-reduced-motion: reduce)": {
+          "--eased-press-scale-wide": "0.985"
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ":root": {
             "--eased-duration-focus": "0ms"
           }
         },
@@ -2366,7 +2368,7 @@
       "name": "eased-mac",
       "type": "registry:lib",
       "title": "Eased Mac",
-      "description": "The macOS look the Mac pack shares: the San Francisco font stack, frosted popover and HUD materials in light and dark, hairlines and macOS corner radii, with a native mode that leaves vibrancy to a Tauri or Electron window.",
+      "description": "The macOS look the Mac pack shares: the San Francisco font stack, frosted popover and HUD materials in light and dark, hairlines and macOS corner radii, with a native mode that leaves vibrancy to a Tauri or Electron window and a hook that follows the system appearance there.",
       "registryDependencies": [
         "https://eased.dev/r/eased-tokens.json"
       ],
@@ -2405,7 +2407,7 @@
       "type": "registry:ui",
       "title": "Mac HUD",
       "description": "The macOS volume and brightness overlay: a frosted, click-through HUD in the classic 200×200 square or the macOS 26 pill. Repeat changes update it in place and restart its 1.1s hold; it never replays its entrance.",
-      "docs": "Import MacHud and useMacHud from components/eased/mac-hud/mac-hud. The Eased tokens were merged into your global CSS; nothing to import. Call show(kind, value) from useMacHud() and spread hud onto <MacHud>. Dark mode follows .dark or data-theme=\"dark\". In a Tauri or Electron window with native vibrancy, pass material=\"native\".",
+      "docs": "Import MacHud and useMacHud from components/eased/mac-hud/mac-hud. The Eased tokens were merged into your global CSS; nothing to import. Call show(kind, value) from useMacHud() and spread hud onto <MacHud>. Dark mode follows .dark or data-theme=\"dark\". In a Tauri or Electron HUD window with native vibrancy, pass material=\"native\" and position=\"none\", hide the window in onExitComplete, keep html and body transparent, and call useSystemAppearance() from components/eased/lib/mac so dark follows the system.",
       "dependencies": [
         "motion"
       ],
@@ -2445,7 +2447,7 @@
       "type": "registry:ui",
       "title": "Mac menu popover",
       "description": "A macOS menu bar popover: a status item and a frosted panel whose arrow and panel are one shape, so one blur and one hairline follow the arrow. It grows from the arrow tip, reverses mid-flight, and drops its CSS blur for native Tauri or Electron vibrancy.",
-      "docs": "Import MacMenuPopover, MacStatusItem, MacMenuPopoverContent, MacMenuItem and MacMenuSeparator from components/eased/mac-menu-popover/mac-menu-popover. The Eased tokens were merged into your global CSS; nothing to import. Put MacStatusItem (with a label) and MacMenuPopoverContent inside MacMenuPopover, and wrap rows that should close the panel in MacMenuPopoverClose. Dark mode follows .dark or data-theme=\"dark\". In a Tauri or Electron tray window, render MacMenuPanel instead; it defaults to material=\"native\".",
+      "docs": "Import MacMenuPopover, MacStatusItem, MacMenuPopoverContent, MacMenuItem and MacMenuSeparator from components/eased/mac-menu-popover/mac-menu-popover. The Eased tokens were merged into your global CSS; nothing to import. Put MacStatusItem (with a label) and MacMenuPopoverContent inside MacMenuPopover, and wrap rows that should close the panel in MacMenuPopoverClose. Dark mode follows .dark or data-theme=\"dark\". In a Tauri or Electron tray window, render MacMenuPanel instead; it defaults to material=\"native\" (a CSS blur cannot see the desktop there). Keep html and body transparent and call useSystemAppearance() from components/eased/lib/mac so dark follows the system.",
       "dependencies": [
         "@base-ui/react"
       ],

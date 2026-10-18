@@ -219,8 +219,10 @@
       "--eased-duration-spring-bouncy": "600ms",
       "--eased-press-scale": "0.97",
       "--eased-press-scale-icon": "0.96",
-      "--eased-press-scale-wide": "0.985",
-      "@media (prefers-reduced-motion: reduce)": {
+      "--eased-press-scale-wide": "0.985"
+    },
+    "@media (prefers-reduced-motion: reduce)": {
+      ":root": {
         "--eased-duration-focus": "0ms"
       }
     },
