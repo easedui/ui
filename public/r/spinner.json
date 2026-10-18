@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinner",
+  "title": "Spinner",
+  "description": "A quarter arc turning on a faint ring, the eased.dev status-badge mark. Spins on the compositor, pauses off-screen, freezes under reduced motion, announces itself unless visible text already does.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/spinner/spinner.tsx",
+      "content": "\"use client\";\n\nimport { useInView } from \"motion/react\";\nimport { useRef, type CSSProperties } from \"react\";\n\nexport type SpinnerSize = \"sm\" | \"md\" | \"lg\";\n\nexport type SpinnerProps = {\n  /**\n   * `sm` 14px (beside 12px text), `md` 16px (13–14px text), `lg` 20px (16px text), or a\n   * diameter in px. Default `md`.\n   */\n  size?: SpinnerSize | number;\n  /**\n   * Announced name, e.g. \"Saving\". Default \"Loading\". Pass `false` when visible text beside the\n   * spinner already says what is happening (\"Uploading…\"), so it is not read twice.\n   */\n  label?: string | false;\n  /** Colour comes from `currentColor`; set a text colour class here. Default `text-text-muted`. */\n  className?: string;\n};\n\nconst SIZES: Record<SpinnerSize, number> = { sm: 14, md: 16, lg: 20 };\n\n/**\n * A quarter arc turning on a faint ring, the same mark as eased.dev's status badge. It spins\n * on the compositor, so it keeps turning while the main thread is busy; it pauses off-screen\n * and freezes in place under reduced motion (R85).\n */\nexport function Spinner({ size = \"md\", label = \"Loading\", className = \"text-text-muted\" }: SpinnerProps) {\n  const ref = useRef<HTMLSpanElement>(null);\n  const inView = useInView(ref);\n  const px = typeof size === \"number\" ? size : SIZES[size];\n  // Ring weight scales with size: 2px at 16, 2.5px at 22 (the status badge), never under 1.5px.\n  const stroke = Math.max(1.5, Math.round(px * 0.114 * 4) / 4);\n  const style = { width: px, height: px, \"--spinner-w\": `${stroke}px` } as CSSProperties;\n  return (\n    <span\n      ref={ref}\n      role={label ? \"status\" : undefined}\n      aria-label={label || undefined}\n      aria-hidden={label ? undefined : true}\n      style={style}\n      className={`relative inline-block shrink-0 align-middle ${className}`}\n    >\n      <span className=\"absolute inset-0 rounded-pill border-(length:--spinner-w) border-current opacity-15\" />\n      <span\n        className=\"absolute inset-0 animate-[eased-spin_900ms_linear_infinite] rounded-pill border-(length:--spinner-w) border-transparent border-t-current reduced:animate-none\"\n        style={{ animationPlayState: inView ? \"running\" : \"paused\" }}\n      />\n      <style href=\"eased-spinner\" precedence=\"default\">\n        {\"@keyframes eased-spin { to { transform: rotate(360deg); } }\"}\n      </style>\n    </span>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/spinner/spinner.tsx"
+    }
+  ],
+  "docs": "Import Spinner from components/eased/spinner/spinner. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+  "type": "registry:ui"
+}

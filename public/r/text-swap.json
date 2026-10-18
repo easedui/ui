@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "text-swap",
+  "title": "Text Swap",
+  "description": "Change a label, status or short value with y + blur, and spring the width to fit, so neighbours glide instead of jumping. Direction-aware for counts and steps.",
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-text-swap.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/text-swap/text-swap.tsx",
+      "content": "\"use client\";\n\n/**\n * Text Swap: change a label, status or short value with y + blur, and spring the width to fit.\n * The engine lives in `_primitives/text-swap`, shared with Button, Field messages and toasts.\n */\nexport { TextSwap, type TextSwapProps } from \"../_primitives/text-swap/text-swap\";\n",
+      "type": "registry:ui",
+      "target": "@components/eased/text-swap/text-swap.tsx"
+    }
+  ],
+  "docs": "Import TextSwap from components/eased/text-swap/text-swap. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+  "type": "registry:ui"
+}

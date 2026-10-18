@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input",
+  "title": "Input",
+  "description": "A Base UI text input whose focus is the border alone. An error shakes it once, 6px, then the field's message opens with a height spring. Leading and trailing addons.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-field.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/input/input.tsx",
+      "content": "\"use client\";\n\nimport { Input as BaseInput } from \"@base-ui/react/input\";\nimport type { ComponentProps, ReactNode } from \"react\";\nimport {\n  InputGroup,\n  InputGroupAddon,\n  controlClass,\n  type ControlSize,\n} from \"../_primitives/field/field\";\n\nexport type InputProps = Omit<ComponentProps<typeof BaseInput>, \"size\" | \"className\"> & {\n  /** sm 32px, md 36px (default), lg 40px. */\n  size?: ControlSize;\n  /** Leading content: an icon, or a prefix such as \"https://\". */\n  start?: ReactNode;\n  /** Trailing content: a unit, a kbd hint, a button. */\n  end?: ReactNode;\n  /**\n   * Mark the input invalid outside a `Field` (inside one, the field's validity drives it):\n   * red border, `aria-invalid`, and one shake when it turns on.\n   */\n  invalid?: boolean;\n  /** Classes for the bordered shell. */\n  className?: string;\n  /** Classes for the `<input>` itself. */\n  controlClassName?: string;\n};\n\n/**\n * A text input on Base UI's Input, so it labels, describes and validates itself inside a\n * `Field`. Focus firms the border and grows a soft glow; an error shakes the box once, 6px, and the field's\n * message opens under it with a height spring.\n */\nexport function Input({\n  size = \"md\",\n  start,\n  end,\n  invalid,\n  className = \"\",\n  controlClassName = \"\",\n  ...props\n}: InputProps) {\n  return (\n    <InputGroup size={size} invalid={invalid} className={className}>\n      {start !== undefined && <InputGroupAddon>{start}</InputGroupAddon>}\n      <BaseInput\n        {...props}\n        {...(invalid !== undefined ? { \"aria-invalid\": invalid } : null)}\n        className={`${controlClass} ${controlClassName}`}\n      />\n      {end !== undefined && <InputGroupAddon>{end}</InputGroupAddon>}\n    </InputGroup>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/input/input.tsx"
+    }
+  ],
+  "docs": "Import Input from components/eased/input/input; wrap it in Field for a label and messages. The Eased tokens were merged into your global CSS; nothing to import.",
+  "type": "registry:ui"
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea-demo",
+  "title": "Textarea demo",
+  "description": "A support reply that springs open as you write, with a rolling counter.",
+  "registryDependencies": [
+    "https://eased.dev/r/textarea.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/button.json",
+    "https://eased.dev/r/field.json",
+    "https://eased.dev/r/avatar.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/textarea/textarea-demo.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Avatar } from \"../avatar/avatar\";\nimport { Button } from \"../button/button\";\nimport { Field } from \"../field/field\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Textarea } from \"./textarea\";\n\nconst MAX = 280;\nconst TEMPLATE =\n  \"Thanks for flagging this, Maya. The export fails when a sheet name contains a slash, so the fix ships in tomorrow’s release. Until then, renaming the sheet works. I’ll reply here once it’s live.\";\n\nexport function TextareaDemo() {\n  const [value, setValue] = useState(\"\");\n  const [state, setState] = useState<\"idle\" | \"sending\" | \"sent\">(\"idle\");\n  const timers = useRef<number[]>([]);\n  useEffect(() => () => timers.current.forEach(clearTimeout), []);\n\n  const send = () => {\n    if (!value.trim()) return;\n    setState(\"sending\");\n    timers.current.push(\n      window.setTimeout(() => {\n        setState(\"sent\");\n        setValue(\"\");\n        timers.current.push(window.setTimeout(() => setState(\"idle\"), 1600));\n      }, 900),\n    );\n  };\n\n  return (\n    <DemoFrame title=\"Reply to Maya Chen\" meta=\"#4821\">\n      <div className=\"flex min-h-0 flex-1 flex-col gap-4 p-4\">\n        <div className=\"flex gap-3\">\n          <Avatar name=\"Maya Chen\" size=\"md\" />\n          <div className=\"min-w-0\">\n            <p className=\"text-ui-sm text-text-muted\">Maya Chen · 2h ago</p>\n            <p className=\"text-ui text-pretty text-text-secondary\">\n              Exporting to CSV fails on the “Q3/Q4 forecast” sheet. Other sheets are fine.\n            </p>\n          </div>\n        </div>\n\n        <Field label=\"Reply\">\n          <Textarea\n            value={value}\n            onValueChange={setValue}\n            maxLength={MAX}\n            minRows={2}\n            maxRows={6}\n            placeholder=\"Write a reply…\"\n            onKeyDown={(e) => {\n              if (e.key === \"Enter\" && (e.metaKey || e.ctrlKey)) send();\n            }}\n          />\n        </Field>\n\n        <div className=\"flex items-center gap-2\">\n          <Button variant=\"ghost\" size=\"sm\" edge=\"start\" onClick={() => setValue(TEMPLATE)}>\n            Insert template\n          </Button>\n          <div className=\"flex-1\" />\n          <Button\n            variant=\"primary\"\n            size=\"sm\"\n            loading={state === \"sending\"}\n            disabled={!value.trim() && state === \"idle\"}\n            focusableWhenDisabled\n            onClick={send}\n          >\n            {state === \"sent\" ? \"Sent\" : \"Send reply\"}\n          </Button>\n        </div>\n        <span role=\"status\" className=\"sr-only\">\n          {state === \"sent\" ? \"Reply sent\" : \"\"}\n        </span>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/textarea/textarea-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

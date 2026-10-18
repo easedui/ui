@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kbd-demo",
+  "title": "Kbd demo",
+  "description": "A keyboard shortcuts list whose keycaps press and rows light up as you hold the real keys.",
+  "registryDependencies": [
+    "https://eased.dev/r/kbd.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/eased-motion.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/kbd/kbd-demo.tsx",
+      "content": "\"use client\";\n\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { modKey, useIsMac } from \"../lib/platform\";\nimport { Kbd, useKeysHeld } from \"./kbd\";\n\ntype Shortcut = { action: string; keys: string[]; then?: string[] };\n\n\nconst shortcuts = (mac: boolean): { group: string; items: Shortcut[] }[] => [\n  {\n    group: \"General\",\n    items: [\n      { action: \"Open command menu\", keys: [modKey(mac), \"K\"] },\n      { action: \"Search\", keys: [\"/\"] },\n      { action: \"Show shortcuts\", keys: [\"⇧\", \"?\"] },\n    ],\n  },\n  {\n    group: \"Issues\",\n    items: [\n      { action: \"New issue\", keys: [\"C\"] },\n      { action: \"Move up\", keys: [mac ? \"⌥\" : \"Alt\", \"↑\"] },\n      { action: \"Go to inbox\", keys: [\"G\"], then: [\"I\"] },\n      { action: \"Close panel\", keys: [\"Esc\"] },\n    ],\n  },\n];\n\nexport function KbdDemo() {\n  const mac = useIsMac();\n  return (\n    <DemoFrame title=\"Keyboard shortcuts\" meta=\"Try the keys\">\n      <div className=\"min-h-0 flex-1 overflow-y-auto p-1.5 [scrollbar-width:thin]\">\n        {shortcuts(mac).map(({ group, items }) => (\n          <section key={group} aria-label={group} className=\"pb-1.5\">\n            <h3 className=\"px-2.5 pt-2 pb-1 text-ui-xs font-medium tracking-caps text-text-muted uppercase\">{group}</h3>\n            <ul>\n              {items.map((s) => (\n                <Row key={s.action} shortcut={s} />\n              ))}\n            </ul>\n          </section>\n        ))}\n      </div>\n    </DemoFrame>\n  );\n}\n\n/** The row lights up while its whole chord is held, the way a shortcuts overlay confirms a match. */\nfunction Row({ shortcut }: { shortcut: Shortcut }) {\n  const held = useKeysHeld(shortcut.keys);\n  return (\n    <li\n      data-held={held || undefined}\n      className=\"flex h-9 items-center justify-between gap-3 rounded-control px-2.5 text-ui-sm text-text-secondary transition-colors duration-150 ease-standard data-held:bg-surface-hover data-held:text-text\"\n    >\n      <span className=\"min-w-0 truncate\">{shortcut.action}</span>\n      <span className=\"flex shrink-0 items-center gap-1.5\">\n        <Kbd keys={shortcut.keys} />\n        {shortcut.then && (\n          <>\n            <span className=\"text-ui-xs text-text-muted\">then</span>\n            <Kbd keys={shortcut.then} />\n          </>\n        )}\n      </span>\n    </li>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/kbd/kbd-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

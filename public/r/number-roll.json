@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-roll",
+  "title": "Number Roll",
+  "description": "Tabular digits that roll in the direction of change: a 9 → 0 carry rolls forward, a value that changes mid-roll redirects, new places fade in while the rest slide over. Intl formatting, locale-aware separators.",
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-number-roll.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/number-roll/number-roll.tsx",
+      "content": "\"use client\";\n\n/**\n * Number Roll: tabular digits that roll in the direction of change, with locale-aware\n * separators. The engine is the shared `_primitives/number-roll` primitive that Badge,\n * Progress and the other Eased components roll their numbers with; this entry point is\n * the public import.\n *\n *   <NumberRoll value={48210.4} format={{ style: \"currency\", currency: \"USD\" }} />\n */\nexport {\n  NumberRoll,\n  toRollParts,\n  type NumberRollFormat,\n  type NumberRollProps,\n  type RollDirection,\n  type RollPart,\n} from \"../_primitives/number-roll/number-roll\";\n",
+      "type": "registry:ui",
+      "target": "@components/eased/number-roll/number-roll.tsx"
+    }
+  ],
+  "docs": "Import NumberRoll from components/eased/number-roll/number-roll. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+  "type": "registry:ui"
+}

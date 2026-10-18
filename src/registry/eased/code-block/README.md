@@ -1,0 +1,58 @@
+# Code Block
+
+Shiki-highlighted code in Eased's warm stone (dark) and cream (light) themes, with a file title bar, a language pill, a copy button, highlighted and focused lines, and long blocks that collapse under a progressive blur.
+
+**Motion signature:** copying morphs the two sheets into a check that draws itself in while "Copied" slides out beside it; a long block melts into a progressive blur under "Show 22 more lines", and expanding springs the height open as the blur fades away.
+
+## When to use
+
+- Docs, READMEs, changelogs and AI answers: any code a reader will copy.
+- One file with a name (`title`), or a bare excerpt (the copy button then floats over the code and appears on hover).
+
+## When not to use
+
+- Several files or one command per package manager: use [Code Tabs](/components/code-tabs).
+- A single shell command: use [Snippet](/components/snippet).
+
+## Usage
+
+```tsx search.tsx
+import { CodeBlock } from "@/components/eased/code-block/code-block";
+
+<CodeBlock title="use-debounced-value.ts" code={source} lineNumbers highlight="7-8, 16-17" />
+```
+
+Pre-highlight on the server for a first paint that is already coloured:
+
+```tsx page.tsx
+import { highlight } from "@/components/eased/_primitives/code-core/highlighter";
+
+const tokens = await highlight(source, "tsx");
+<CodeBlock title="button.tsx" code={source} tokens={tokens} />
+```
+
+## Props
+
+| Prop | Default | |
+|---|---|---|
+| `code` | | The source to show and copy. |
+| `lang` | from `title` | tsx, ts, js, jsx, json, css, bash, html, md, python, diff (aliases such as `typescript`, `sh`, `py` work). Anything else renders as plain text. |
+| `title` | | File name for the title bar. |
+| `icon` | file glyph | Replaces the glyph before the title. |
+| `showLang` | `true` | The language pill (hidden under 320px of block width). |
+| `lineNumbers` | `false` | A `tabular-nums slashed-zero` gutter that is never selected or copied. |
+| `startLine` | `1` | First line number, for excerpts. |
+| `highlight`, `focus`, `added`, `removed` | | Line ranges: `"3-5, 9"`, `4`, or `[1, [6, 8]]`. Focused lines dim the rest until hover. |
+| `collapseAfter` | `20` | Collapse longer blocks; only when 3 or more lines would hide. `0` never collapses. |
+| `defaultExpanded` | `false` | Start a collapsible block open. |
+| `copy` | `true` | Show the copy button. |
+| `onCopy` | | `(code) => void` after a successful copy. |
+| `wrap` | `false` | Soft-wrap instead of scrolling sideways. |
+| `tokens` | | Lines from `highlight()`, to skip client highlighting. |
+
+## Notes
+
+- Grammars load on demand through one shared Shiki instance (JavaScript regex engine, no WASM).
+- Token colours use CSS `light-dark()`, so a theme switch never re-highlights. The block sets `color-scheme` from `.dark` or `data-theme="dark"`.
+- Keyboard: the copy and "Show more" buttons are in the tab order; a block that scrolls sideways is a focusable region.
+- Reduced motion: the copy icon cross-fades, the height snaps and the blur fades in 100ms.

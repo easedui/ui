@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "message-demo",
+  "title": "Message demo",
+  "description": "Follow-ups that merge into one run of bubbles, corners tightening as each lands.",
+  "registryDependencies": [
+    "https://eased.dev/r/message.json",
+    "https://eased.dev/r/attachment-demo.json",
+    "https://eased.dev/r/button.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/message/message-demo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { groupMessages, useStickToBottom, type ChatMessage } from \"../_primitives/chat-core/chat-core\";\nimport { scene } from \"../attachment/attachment-demo\";\nimport { Button } from \"../button/button\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { CopyAction, Message } from \"./message\";\n\nconst SEED: ChatMessage[] = [\n  {\n    id: \"1\",\n    role: \"user\",\n    parts: [\n      { type: \"file\", mediaType: \"image/png\", filename: \"kitchen-before.png\", url: scene(\"#e9e4dc\", \"#c9a27e\", \"#b7c4b0\", \"#6f7f6a\", 30) },\n      { type: \"text\", text: \"This is the kitchen now. What would make it feel bigger without moving walls?\" },\n    ],\n  },\n  {\n    id: \"2\",\n    role: \"assistant\",\n    parts: [\n      {\n        type: \"text\",\n        text: \"Three things do most of the work: paint the upper cabinets the wall colour so they recede, swap the pendant for a flush light, and run one floor finish through to the dining area.\",\n      },\n    ],\n  },\n];\n\nconst FOLLOW_UPS = [\"Love the cabinet idea.\", \"What colour would you pick?\", \"Something warm, not stark white.\"];\n\n/** Send the follow-ups one by one: each new bubble tightens the corners where it meets the last. */\nexport function MessageDemo() {\n  const [messages, setMessages] = useState(SEED);\n  const [step, setStep] = useState(0);\n  const { scrollRef, contentRef, scrollToBottom } = useStickToBottom();\n  const left = FOLLOW_UPS.length - step;\n\n  const send = () => {\n    if (step >= FOLLOW_UPS.length) {\n      setStep(0);\n      setMessages(SEED);\n      return;\n    }\n    const text = FOLLOW_UPS[step];\n    setStep(step + 1);\n    setMessages((m) => [...m, { id: `f${step}-${Date.now()}`, role: \"user\", metadata: { live: true }, parts: [{ type: \"text\", text }] }]);\n    scrollToBottom();\n  };\n\n  return (\n    <DemoFrame title=\"Kitchen ideas\" meta={`${messages.length} messages`}>\n      <div ref={scrollRef} className=\"min-h-0 flex-1 overflow-y-auto [scrollbar-width:thin]\">\n        <div ref={contentRef} className=\"flex flex-col gap-4 p-4\">\n          {groupMessages(messages).map((g) => (\n            <div key={g.key} className=\"flex flex-col gap-1\">\n              {g.messages.map(({ message, position }) => {\n                return (\n                  <Message\n                    key={message.id}\n                    message={message}\n                    position={position}\n                    animateIn={Boolean(message.metadata)}\n                    actions={message.role === \"assistant\" ? <CopyAction message={message} /> : undefined}\n                    actionsVisible=\"always\"\n                  />\n                );\n              })}\n            </div>\n          ))}\n        </div>\n      </div>\n      <div className=\"flex shrink-0 items-center gap-3 border-t border-line-subtle px-4 py-3\">\n        <p className=\"min-w-0 flex-1 truncate text-ui-sm text-text-muted\">\n          {left > 0 ? `“${FOLLOW_UPS[step]}”` : \"All follow-ups sent\"}\n        </p>\n        <Button variant=\"primary\" size=\"sm\" onClick={send}>\n          {left > 0 ? \"Send follow-up\" : \"Reset\"}\n        </Button>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/message/message-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

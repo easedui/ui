@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-demo",
+  "title": "Accordion demo",
+  "description": "A billing FAQ with answers of different lengths.",
+  "registryDependencies": [
+    "https://eased.dev/r/accordion.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/accordion/accordion-demo.tsx",
+      "content": "\"use client\";\n\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Accordion, AccordionItem } from \"./accordion\";\n\nexport function AccordionDemo() {\n  return (\n    <DemoFrame title=\"Billing help\" meta=\"4 questions\">\n      <div className=\"min-h-0 flex-1 overflow-y-auto px-4 py-1\">\n        <Accordion defaultValue={[\"charged\"]}>\n          <AccordionItem value=\"charged\" title=\"When am I charged?\">\n            On the day your trial ends, then on the same date every month. If that date doesn’t exist in a month, such as\n            the 31st, we charge on the last day instead.\n          </AccordionItem>\n          <AccordionItem value=\"switch\" title=\"Can I change plans mid-cycle?\">\n            Yes. Upgrades apply at once and you pay the difference for the days left in the cycle. Downgrades take effect at\n            your next renewal, so you keep what you paid for.\n          </AccordionItem>\n          <AccordionItem value=\"refund\" title=\"Do you offer refunds?\">\n            Within 14 days of any charge, in full, no questions asked.\n          </AccordionItem>\n          <AccordionItem value=\"vat\" title=\"How do I add a VAT number to my invoices?\">\n            <p>\n              Go to Settings → Billing → Tax details and enter it with its country prefix, for example DE123456789. We\n              check it against VIES before saving.\n            </p>\n            <p className=\"mt-2\">\n              New invoices show it from then on. To reissue a past invoice with the number on it, open the invoice and\n              choose Regenerate.\n            </p>\n          </AccordionItem>\n        </Accordion>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/accordion/accordion-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

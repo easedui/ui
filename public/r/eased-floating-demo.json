@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "eased-floating-demo",
+  "title": "Floating layer demo",
+  "description": "One popover per side; each enters toward its trigger and flips on collision.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-floating.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/button.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/_primitives/floating/floating-demo.tsx",
+      "content": "\"use client\";\n\nimport { Popover } from \"@base-ui/react/popover\";\nimport { DemoFrame } from \"../../lib/demo-frame\";\nimport { Button } from \"../../button/button\";\nimport { FloatingLayer, floatingSurface, type FloatingSide } from \"./floating\";\n\nconst SIDES: { side: FloatingSide; label: string; area: string }[] = [\n  { side: \"top\", label: \"Top\", area: \"col-start-2 row-start-1\" },\n  { side: \"left\", label: \"Left\", area: \"col-start-1 row-start-2\" },\n  { side: \"right\", label: \"Right\", area: \"col-start-3 row-start-2\" },\n  { side: \"bottom\", label: \"Bottom\", area: \"col-start-2 row-start-3\" },\n];\n\n/** One popover per side: each grows from its trigger and enters 5px toward it, whichever side it lands on. */\nexport function FloatingDemo() {\n  return (\n    <DemoFrame title=\"Floating layer\" meta=\"4 sides\">\n      <div className=\"grid flex-1 grid-cols-3 grid-rows-3 place-items-center gap-2 bg-surface-sunken px-4\">\n        {SIDES.map(({ side, label, area }) => (\n          <div key={side} className={area}>\n            <Popover.Root>\n              <Popover.Trigger render={<Button size=\"sm\" />}>{label}</Popover.Trigger>\n              <FloatingLayer parts={Popover} side={side} className={`${floatingSurface} w-44 rounded-panel p-3 text-ui-sm`}>\n                <Popover.Title className=\"font-medium text-text\">Placed {label.toLowerCase()}</Popover.Title>\n                <Popover.Description className=\"mt-0.5 text-pretty text-text-secondary\">\n                  Grows from the trigger, 5px toward it. Leaves half as far.\n                </Popover.Description>\n              </FloatingLayer>\n            </Popover.Root>\n          </div>\n        ))}\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/_primitives/floating/floating-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

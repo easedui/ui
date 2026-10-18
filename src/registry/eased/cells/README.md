@@ -1,0 +1,27 @@
+# Cells kit
+
+Cells that make table rows look finished. They work in any table and size themselves to an Eased table's density.
+
+```tsx
+import { DeltaCell, IdCell, PersonCell, ProgressCell, RelativeTimeCell, StatusCell } from "@/components/eased/cells/cells";
+
+<PersonCell name="Maya Okafor" src={url} detail="maya@northwind.studio" />
+<StatusCell tone="success" live>Active</StatusCell>
+<DeltaCell value={12480} delta={0.124} format={{ style: "currency", currency: "USD", maximumFractionDigits: 0 }} />
+<ProgressCell value={64} label="Onboarding" />
+<RelativeTimeCell date={invoice.issuedAt} />
+<IdCell id="INV-2041" copyable />
+```
+
+| Cell | Props | |
+|---|---|---|
+| `PersonCell` | `name`, `src?`, `detail?` | 24px avatar when dense, 32px when comfortable. The second line shows only in comfortable rows. |
+| `StatusCell` | `children`, `tone?`, `live?` | A Badge with a dot. `live` makes the dot breathe. |
+| `DeltaCell` | `value`, `delta` (a fraction), `format?`, `locale?`, `invert?` | The value rolls. The delta sits in a fixed track: a rise is success and a fall is warning (`invert` swaps them). |
+| `ProgressCell` | `value`, `max?`, `label?`, `locale?` | A `role="meter"` bar with fixed widths for the track and the label. |
+| `RelativeTimeCell` | `date`, `now?`, `locale?` | `<time>` with the full date as its title. It stays current on a 30s clock and shows the short date before hydration. |
+| `IdCell` | `id`, `copyable?` | Mono with slashed zeros. The copy button keeps its space while hidden. |
+
+Put numeric cells in `align: "end"` columns.
+
+**Motion signature:** values roll in the direction they change, and deltas change colour with them. Meters fill from empty the first time they scroll into view, then glide on the smooth spring and turn green at 100%. A live status dot breathes and pauses off-screen. The copy icon swaps to a tick with Eased's text-swap blur. Under reduced motion, everything is set at once.

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table",
+  "title": "Table",
+  "description": "A premium hairline table on TanStack Table: half-pixel row rules, a quiet sentence-case header, numbers right-aligned on one edge, one emphasised cell per row, a sticky header, and dense or comfortable rows.",
+  "dependencies": [
+    "@tanstack/react-table"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-table-core.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/table/table.tsx",
+      "content": "\"use client\";\n\nimport { useTable, type RowData } from \"@tanstack/react-table\";\nimport type { CSSProperties, ReactNode } from \"react\";\nimport { easedFeatures, TableView, type EasedColumnDef, type TableDensity } from \"../_primitives/table-core/table-core\";\n\nexport { easedColumns, type EasedColumnDef, type EasedColumnMeta, type TableDensity } from \"../_primitives/table-core/table-core\";\n\nexport type TableProps<TData extends RowData> = {\n  /** Rows. Keep the array stable (state or a memo): a new array every render rebuilds the row model. */\n  data: ReadonlyArray<TData>;\n  /** TanStack column definitions, made with `easedColumns<TData>()`. Keep them at module scope or memoised. */\n  columns: ReadonlyArray<EasedColumnDef<TData>>;\n  /** A stable id per row. Defaults to the row index. */\n  getRowId?: (row: TData, index: number) => string;\n  /** The table's accessible name (a visually hidden caption). */\n  label: string;\n  /** `dense` (36px rows, default) or `comfortable` (48px rows). */\n  density?: TableDensity;\n  /** Pin the header while the body scrolls. Default true; bound the table's height for it to apply. */\n  stickyHeader?: boolean;\n  /** Shown when `data` is empty. */\n  empty?: ReactNode;\n  className?: string;\n  style?: CSSProperties;\n};\n\n/**\n * A premium hairline table on TanStack Table: half-pixel row rules, a sentence-case muted\n * header, tabular numbers right-aligned on one edge, one emphasised cell per row, and two\n * densities. Columns are plain TanStack column defs; cells can come from the Cells kit.\n */\nexport function Table<TData extends RowData>({\n  data,\n  columns,\n  getRowId,\n  label,\n  density = \"dense\",\n  stickyHeader = true,\n  empty,\n  className,\n  style,\n}: TableProps<TData>) {\n  const table = useTable({ features: easedFeatures, data: data as TData[], columns, getRowId, enableSorting: false });\n  return (\n    <TableView\n      table={table}\n      label={label}\n      density={density}\n      stickyHeader={stickyHeader}\n      empty={empty}\n      className={className}\n      style={style}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/table/table.tsx"
+    }
+  ],
+  "docs": "Import Table and easedColumns from components/eased/table/table. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
+  "type": "registry:ui"
+}

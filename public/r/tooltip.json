@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "title": "Tooltip",
+  "description": "A short label that waits 400ms for the first trigger, then follows the pointer instantly across its neighbours. Enters 3px toward its trigger, shows an optional shortcut, never appears on touch.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-floating.json",
+    "https://eased.dev/r/kbd.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/tooltip/tooltip.tsx",
+      "content": "\"use client\";\n\nimport { Tooltip as BaseTooltip } from \"@base-ui/react/tooltip\";\nimport type { ReactElement, ReactNode } from \"react\";\nimport { FloatingLayer, floatingSurface, type FloatingAlign, type FloatingSide } from \"../_primitives/floating/floating\";\nimport { Kbd } from \"../kbd/kbd\";\n\nexport type TooltipProviderProps = {\n  /** How long the pointer must rest on the first trigger before its tooltip opens, ms. Default 400. */\n  delay?: number;\n  /** How long a tooltip stays after the pointer leaves, ms. Default 0. */\n  closeDelay?: number;\n  /** After a tooltip closes, the next one within this window opens instantly and unanimated, ms. Default 400. */\n  timeout?: number;\n  children: ReactNode;\n};\n\n/**\n * A delay group. Inside it the first tooltip waits `delay`; while the pointer sweeps on to\n * neighbouring triggers the rest appear at once, with no animation.\n */\nexport function TooltipProvider({ delay = 400, closeDelay = 0, timeout = 400, children }: TooltipProviderProps) {\n  return (\n    <BaseTooltip.Provider delay={delay} closeDelay={closeDelay} timeout={timeout}>\n      {children}\n    </BaseTooltip.Provider>\n  );\n}\n\nexport type TooltipProps = {\n  /** The label. Keep it short; the trigger still needs a matching `aria-label`. */\n  content: ReactNode;\n  /** Keys shown after the label as `Kbd` caps, one per key: `[\"⌘\", \"B\"]`, or `\"Esc\"` for one key. */\n  shortcut?: string | string[];\n  /** The trigger: one focusable element that accepts a ref, usually an icon button. */\n  children: ReactElement;\n  /** Preferred side; flips on collision. Default \"top\". */\n  side?: FloatingSide;\n  align?: FloatingAlign;\n  /** Gap to the trigger, px. Default 6. */\n  sideOffset?: number;\n  /** Rest time before opening, ms. Unset: the provider's delay (400), or Base UI's 600 outside a provider. */\n  delay?: number;\n  closeDelay?: number;\n  /** Close when the trigger is clicked. Default true. */\n  closeOnClick?: boolean;\n  open?: boolean;\n  defaultOpen?: boolean;\n  onOpenChange?: (open: boolean) => void;\n  disabled?: boolean;\n  /** Stacking order. Default 50; raise it inside a higher layer such as a dialog. */\n  zIndex?: number;\n  /** Appended to the tooltip's classes. */\n  className?: string;\n};\n\n/**\n * A short visual label for mouse and keyboard users. It opens after the pointer rests (or on\n * keyboard focus), enters 3px toward its trigger from the trigger's origin, and never shows on touch.\n */\nexport function Tooltip({\n  content,\n  shortcut,\n  children,\n  side = \"top\",\n  align = \"center\",\n  sideOffset,\n  delay,\n  closeDelay,\n  closeOnClick = true,\n  open,\n  defaultOpen,\n  onOpenChange,\n  disabled,\n  zIndex,\n  className = \"\",\n}: TooltipProps) {\n  const keys = typeof shortcut === \"string\" ? [shortcut] : shortcut;\n\n  return (\n    <BaseTooltip.Root\n      open={open}\n      defaultOpen={defaultOpen}\n      onOpenChange={onOpenChange ? (next) => onOpenChange(next) : undefined}\n      disabled={disabled}\n    >\n      <BaseTooltip.Trigger\n        render={children}\n        delay={delay}\n        closeDelay={closeDelay}\n        closeOnClick={closeOnClick}\n      />\n      <FloatingLayer\n        parts={BaseTooltip}\n        role=\"tooltip\"\n        side={side}\n        align={align}\n        sideOffset={sideOffset}\n        zIndex={zIndex}\n        className={`${floatingSurface} flex max-w-[min(16rem,var(--available-width))] items-center gap-2 rounded-control-sm px-2.5 py-1 text-ui-sm text-pretty ${className}`}\n      >\n        <span className=\"min-w-0\">{content}</span>\n        {keys && keys.length > 0 && (\n          // The label already names the action; the caps are a visual hint, not read twice.\n          <span aria-hidden className=\"-mr-1 inline-flex shrink-0\">\n            <Kbd keys={keys} listen={false} />\n          </span>\n        )}\n      </FloatingLayer>\n    </BaseTooltip.Root>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/tooltip/tooltip.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

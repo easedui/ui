@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "segmented-demo",
+  "title": "Segmented demo",
+  "description": "A traffic card: a metric switch in the header and a date-range control that redraws the chart.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/segmented.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/eased-motion.json",
+    "https://eased.dev/r/badge.json",
+    "https://eased.dev/r/number-roll.json",
+    "https://eased.dev/r/text-swap.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/segmented/segmented-demo.tsx",
+      "content": "\"use client\";\n\nimport { motion } from \"motion/react\";\nimport { useState } from \"react\";\nimport { Badge } from \"../badge/badge\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { smooth, useSafeReducedMotion } from \"../lib/motion\";\nimport { NumberRoll } from \"../number-roll/number-roll\";\nimport { TextSwap } from \"../text-swap/text-swap\";\nimport { Segmented } from \"./segmented\";\n\ntype Range = \"24h\" | \"7d\" | \"30d\" | \"12m\";\ntype Metric = \"visitors\" | \"views\";\n\nconst RANGES = [\n  { value: \"24h\", label: \"24h\" },\n  { value: \"7d\", label: \"7 days\" },\n  { value: \"30d\", label: \"30 days\" },\n  { value: \"12m\", label: \"12 mo\" },\n] as const;\n\nconst METRICS = [\n  { value: \"visitors\", label: \"Visitors\" },\n  { value: \"views\", label: \"Views\" },\n] as const;\n\n// Twelve buckets per range, as a share of the range's busiest bucket.\nconst DATA: Record<Range, { total: number; delta: number; bars: number[]; axis: [string, string] }> = {\n  \"24h\": { total: 3_842, delta: 0.081, bars: [18, 12, 9, 14, 38, 62, 81, 100, 92, 74, 55, 31], axis: [\"00:00\", \"22:00\"] },\n  \"7d\": { total: 26_190, delta: -0.034, bars: [72, 80, 77, 91, 100, 46, 39, 70, 84, 88, 95, 52], axis: [\"Oct 6\", \"Oct 17\"] },\n  \"30d\": { total: 118_604, delta: 0.124, bars: [41, 48, 52, 50, 61, 66, 63, 72, 79, 85, 93, 100], axis: [\"Sep 18\", \"Oct 17\"] },\n  \"12m\": { total: 1_204_330, delta: 0.468, bars: [22, 26, 31, 30, 38, 44, 52, 57, 63, 74, 88, 100], axis: [\"Nov\", \"Oct\"] },\n};\n\nconst pct = new Intl.NumberFormat(\"en-US\", { style: \"percent\", maximumFractionDigits: 1, signDisplay: \"always\" });\n\nexport function SegmentedDemo() {\n  const reduced = useSafeReducedMotion();\n  const [range, setRange] = useState<Range>(\"7d\");\n  const [metric, setMetric] = useState<Metric>(\"visitors\");\n  const data = DATA[range];\n  const scale = metric === \"views\" ? 2.7 : 1;\n  const total = Math.round(data.total * scale);\n\n  return (\n    <DemoFrame\n      title=\"Traffic\"\n      actions={<Segmented aria-label=\"Metric\" options={METRICS} value={metric} onValueChange={setMetric} />}\n    >\n      <div className=\"flex min-h-0 flex-1 flex-col gap-5 p-4\">\n        <Segmented aria-label=\"Date range\" options={RANGES} value={range} onValueChange={setRange} fullWidth />\n\n        <div className=\"flex items-baseline justify-between gap-3\">\n          <div className=\"min-w-0\">\n            <p className=\"text-ui-sm text-text-muted\">\n              <TextSwap>{metric === \"views\" ? \"Page views\" : \"Unique visitors\"}</TextSwap>\n            </p>\n            <p className=\"text-3xl font-semibold text-text tabular-nums\">\n              <NumberRoll value={total} locale=\"en-US\" />\n            </p>\n          </div>\n          <Badge tone={data.delta < 0 ? \"danger\" : \"success\"}>{pct.format(data.delta)}</Badge>\n        </div>\n\n        <div className=\"flex min-h-0 flex-1 flex-col gap-2\">\n          <div className=\"flex min-h-0 flex-1 items-end gap-1.5\" aria-hidden>\n            {data.bars.map((value, i) => (\n              <motion.div\n                key={i}\n                initial={false}\n                // clip-path, not scaleY, so the rounded top never squashes. 4px is --eased-radius-control-2xs:\n                // Motion cannot interpolate a var() inside clip-path.\n                animate={{ clipPath: `inset(${100 - value}% 0 0 0 round 4px 4px 0 0)` }}\n                transition={reduced ? { duration: 0 } : smooth}\n                className={`h-full flex-1 ${i === data.bars.length - 1 ? \"bg-brand\" : \"bg-surface-active\"}`}\n              />\n            ))}\n          </div>\n          <div className=\"flex justify-between text-ui-xs text-text-muted tabular-nums\">\n            <span>{data.axis[0]}</span>\n            <span>{data.axis[1]}</span>\n          </div>\n        </div>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/segmented/segmented-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

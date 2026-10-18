@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-demo",
+  "title": "Input demo",
+  "description": "Workspace settings with a URL prefix, live validation and a disabled field.",
+  "registryDependencies": [
+    "https://eased.dev/r/input.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/field.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/input/input-demo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Field } from \"../field/field\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Input } from \"./input\";\n\nconst RESERVED = [\"admin\", \"api\", \"app\", \"eased\", \"www\"];\n\nconst validateSlug = (value: unknown) => {\n  const v = String(value ?? \"\");\n  if (!v) return \"Pick a URL for your workspace.\";\n  if (/[^a-z0-9-]/.test(v)) return \"Use lowercase letters, numbers and hyphens.\";\n  if (v.length < 3) return \"Use at least 3 characters.\";\n  if (RESERVED.includes(v)) return `“${v}” is reserved. Try another.`;\n  return null;\n};\n\nexport function InputDemo() {\n  const [name, setName] = useState(\"Northwind Traders\");\n  const [slug, setSlug] = useState(\"northwind\");\n\n  return (\n    <DemoFrame title=\"Workspace\" meta=\"Settings\">\n      <div className=\"flex min-h-0 flex-1 flex-col gap-4 p-4\">\n        <Field label=\"Name\">\n          <Input value={name} onValueChange={setName} placeholder=\"Acme Inc.\" />\n        </Field>\n\n        <Field\n          label=\"URL\"\n          description=\"Changing it breaks links people have saved.\"\n          validate={validateSlug}\n          validationMode=\"onChange\"\n        >\n          <Input\n            value={slug}\n            onValueChange={setSlug}\n            start={<span className=\"-mr-2 text-ui text-text-muted\">eased.dev/</span>}\n            spellCheck={false}\n            autoCapitalize=\"off\"\n          />\n        </Field>\n\n        <Field label=\"Region\" description=\"Data residency is set when the workspace is created.\" disabled>\n          <Input\n            defaultValue=\"Frankfurt (eu-central-1)\"\n            start={\n              <svg viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden>\n                <path\n                  d=\"M4.5 7V5.5a3.5 3.5 0 0 1 7 0V7m-7.75 0h8.5c.41 0 .75.34.75.75v5c0 .41-.34.75-.75.75h-8.5a.75.75 0 0 1-.75-.75v-5c0-.41.34-.75.75-.75Z\"\n                  stroke=\"currentColor\"\n                  strokeWidth=\"1.5\"\n                  strokeLinecap=\"round\"\n                />\n              </svg>\n            }\n          />\n        </Field>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/input/input-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

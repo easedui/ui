@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress-demo",
+  "title": "Progress demo",
+  "description": "An upload list: uneven chunks, an indeterminate processing step, then complete; plus a storage meter.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/progress.json",
+    "https://eased.dev/r/spinner.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/button.json",
+    "https://eased.dev/r/number-roll.json",
+    "https://eased.dev/r/text-swap.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/progress/progress-demo.tsx",
+      "content": "\"use client\";\n\nimport { useInView } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../button/button\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { NumberRoll } from \"../number-roll/number-roll\";\nimport { Spinner } from \"../spinner/spinner\";\nimport { TextSwap } from \"../text-swap/text-swap\";\nimport { Progress } from \"./progress\";\n\ntype Upload = { id: string; name: string; size: number; speed: number };\n\nconst FILES: Upload[] = [\n  { id: \"a\", name: \"Launch film final.mov\", size: 842, speed: 46 },\n  { id: \"b\", name: \"Press kit.zip\", size: 128, speed: 31 },\n  { id: \"c\", name: \"Hero stills.fig\", size: 64, speed: 22 },\n  { id: \"d\", name: \"Captions (EN, DE, JA).srt\", size: 3, speed: 1.4 },\n];\n\n/** Megabytes sent per file, then ticks of server-side processing once the bytes are in. */\ntype State = Record<string, { sent: number; processing: number }>;\n\nconst fresh = (): State => Object.fromEntries(FILES.map((f) => [f.id, { sent: 0, processing: 0 }]));\nconst PROCESSING_TICKS = 6;\n\nexport function ProgressDemo() {\n  const [state, setState] = useState<State>(fresh);\n  const root = useRef<HTMLUListElement>(null);\n  const inView = useInView(root);\n\n  // Uneven chunks, the way a real upload reports, then a short indeterminate processing step.\n  useEffect(() => {\n    if (!inView) return;\n    const t = window.setInterval(() => {\n      setState((s) => {\n        const next = { ...s };\n        for (const f of FILES) {\n          const cur = s[f.id];\n          if (cur.sent < f.size) {\n            next[f.id] = { ...cur, sent: Math.min(f.size, cur.sent + f.speed * (0.4 + Math.random())) };\n          } else if (cur.processing < PROCESSING_TICKS) {\n            next[f.id] = { ...cur, processing: cur.processing + 1 };\n          }\n        }\n        return next;\n      });\n    }, 450);\n    return () => window.clearInterval(t);\n  }, [inView]);\n\n  const done = FILES.filter((f) => state[f.id].processing >= PROCESSING_TICKS).length;\n  const busy = done < FILES.length;\n\n  return (\n    <DemoFrame\n      title=\"Uploads\"\n      meta={\n        <span className=\"inline-flex items-center gap-1.5\">\n          {busy && <Spinner size=\"sm\" label={false} />}\n          {done} of {FILES.length}\n        </span>\n      }\n      actions={\n        <Button variant=\"ghost\" size=\"sm\" edge=\"end\" onClick={() => setState(fresh())}>\n          Restart\n        </Button>\n      }\n    >\n      <ul ref={root} className=\"flex flex-col gap-5 p-4\">\n        {FILES.map((f) => {\n          const { sent, processing } = state[f.id];\n          const phase = sent < f.size ? \"uploading\" : processing < PROCESSING_TICKS ? \"processing\" : \"done\";\n          return (\n            <li key={f.id} className=\"flex flex-col gap-1.5\">\n              <Progress\n                label={f.name}\n                value={phase === \"processing\" ? null : sent}\n                max={f.size}\n                getAriaValueText={(formatted) => (phase === \"processing\" ? \"Processing\" : `${formatted} uploaded`)}\n              />\n              <div className=\"flex items-center justify-between text-ui-xs text-text-muted tabular-nums\">\n                <span>\n                  <NumberRoll value={Math.round(Math.min(sent, f.size))} />\n                  &nbsp;/&nbsp;{f.size}&nbsp;MB\n                </span>\n                <Status phase={phase} />\n              </div>\n            </li>\n          );\n        })}\n      </ul>\n\n      <div className=\"mt-auto border-t border-line-subtle p-4\">\n        <Progress label=\"Workspace storage\" value={7.4} max={10} format={{ style: \"unit\", unit: \"gigabyte\", maximumFractionDigits: 1 }} size=\"sm\" successOnComplete={false} />\n      </div>\n    </DemoFrame>\n  );\n}\n\nfunction Status({ phase }: { phase: \"uploading\" | \"processing\" | \"done\" }) {\n  const text = phase === \"uploading\" ? \"Uploading…\" : phase === \"processing\" ? \"Processing…\" : \"Uploaded\";\n  return (\n    <TextSwap swapKey={phase} className={phase === \"done\" ? \"text-success-text\" : \"\"}>\n      {phase === \"done\" && (\n        <svg viewBox=\"0 0 14 14\" aria-hidden className=\"size-3.5 fill-none stroke-current\" strokeWidth={1.5} strokeLinecap=\"round\" strokeLinejoin=\"round\">\n          <path d=\"M3 7.5 5.75 10 11 4\" />\n        </svg>\n      )}\n      {text}\n    </TextSwap>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/progress/progress-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

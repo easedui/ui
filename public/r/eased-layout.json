@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "eased-layout",
+  "title": "Eased layout",
+  "description": "Alignment recipes for repeating rows: rowGrid and rowGridRow share a leading, a flexible and a fixed trailing track, so every row's role or value starts on one x.",
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/lib/layout.ts",
+      "content": "/**\n * Alignment recipes for rules 101–109, as class strings to compose with your own.\n *\n *   rowGrid     a list whose rows share tracks: leading item, flexible text, then a fixed\n *               trailing column set by `--col` (default 5rem). Rows are `rowGridRow`, which\n *               subgrids the parent, so every role, menu or value starts on one x (R102, R103).\n *   rowGridRow  one row of a `rowGrid`. Add a height (`h-9`) and any row padding.\n *\n *   <ul className={`${rowGrid} gap-x-2.5 [--col:5.5rem]`}>\n *     <li className={`${rowGridRow} h-11`}><Avatar /><span>…</span><span>Can edit</span></li>\n *   </ul>\n */\nexport const rowGrid = \"grid grid-cols-[auto_minmax(0,1fr)_var(--col,5rem)] items-center\";\nexport const rowGridRow = \"col-span-full grid grid-cols-subgrid items-center\";\n",
+      "type": "registry:lib",
+      "target": "@components/eased/lib/layout.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

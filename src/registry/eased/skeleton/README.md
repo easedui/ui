@@ -1,0 +1,22 @@
+# Skeleton
+
+Loading placeholders with one page-wide shimmer that hand off to the real content in place.
+
+```tsx
+import { Skeleton, SkeletonText } from "@/components/eased/skeleton/skeleton";
+
+<Skeleton loading={!user} className="size-8 rounded-pill"><Avatar name={user?.name ?? "Maya Okafor"} /></Skeleton>
+<Skeleton loading={!user} text><p>{user?.name ?? "Maya Okafor"}</p></Skeleton>
+<Skeleton className="h-24 w-full rounded-panel" />          {/* a plain block */}
+<SkeletonText lines={3} />
+```
+
+## Props
+
+`Skeleton`: `loading` (default `true`), `children` (the real content, laid out invisibly while loading so nothing shifts at the handoff; pass stand-in text of typical length while data is missing), `text` (cover the middle 60% of each line box so it reads as text), `block` (lay out as a block instead of inline), `className` (size and radius; default `rounded-control-xs`).
+
+`SkeletonText`: `lines` (default 3, the last one shorter), `loading`, `className`.
+
+**Limits of the shared sweep:** the band is painted in viewport space with `background-attachment: fixed`. iOS Safari ignores `fixed`, so there each skeleton sweeps its own box (still on the shared beat). Inside an ancestor that keeps a `transform` or `will-change` (an entrance animation that never resets), the background becomes relative to that element; end entrances with `transitionEnd: { transform: "none" }`. The loop does not pause off-screen: skeletons are short-lived, and under reduced motion it stops.
+
+**Motion signature:** every skeleton paints the same viewport-space highlight and shares one animation phase, so a single band sweeps across the whole page instead of each block flashing on its own beat; when loading ends the shimmer fades out as the content fades in from a 4px blur in the same box. Reduced motion: a still tint and an opacity handoff.

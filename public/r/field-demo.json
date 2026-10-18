@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field-demo",
+  "title": "Field demo",
+  "description": "A sign-up form on Base UI Form: submit focuses the first invalid field and a server error routes to its field.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/field.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/button.json",
+    "https://eased.dev/r/input.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/field/field-demo.tsx",
+      "content": "\"use client\";\n\nimport { Form } from \"@base-ui/react/form\";\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../button/button\";\nimport { Input } from \"../input/input\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Field } from \"./field\";\n\nconst TAKEN = \"maya@northwind.com\";\n\nconst validateEmail = (value: unknown) => {\n  const v = String(value ?? \"\").trim();\n  if (!v) return \"Enter your work email.\";\n  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v)) return \"That doesn’t look like an email address.\";\n  if (/@(gmail|yahoo|hotmail|outlook)\\./i.test(v)) return \"Use your work email, not a personal one.\";\n  return null;\n};\n\nconst validatePassword = (value: unknown) => {\n  const v = String(value ?? \"\");\n  if (!v) return \"Choose a password.\";\n  if (v.length < 8) return `Add ${8 - v.length} more character${8 - v.length === 1 ? \"\" : \"s\"}.`;\n  return null;\n};\n\nexport function FieldDemo() {\n  const [errors, setErrors] = useState<Record<string, string>>({});\n  const [state, setState] = useState<\"idle\" | \"loading\" | \"done\">(\"idle\");\n  const timer = useRef(0);\n  useEffect(() => () => clearTimeout(timer.current), []);\n\n  const submit = (values: Record<string, unknown>) => {\n    setState(\"loading\");\n    timer.current = window.setTimeout(() => {\n      // A server reply: Base UI's Form routes it to the field and focuses it.\n      if (String(values.email).trim().toLowerCase() === TAKEN) {\n        setErrors({ email: \"An account with this email already exists.\" });\n        setState(\"idle\");\n        return;\n      }\n      setState(\"done\");\n    }, 900);\n  };\n\n  return (\n    <DemoFrame title=\"Create your account\" meta=\"Step 1 of 2\">\n      <Form\n        errors={errors}\n        onFormSubmit={submit}\n        className=\"flex min-h-0 flex-1 flex-col gap-4 p-4\"\n        aria-label=\"Create your account\"\n      >\n        <Field\n          name=\"email\"\n          label=\"Work email\"\n          description={`We’ll send a sign-in link here. Try ${TAKEN}.`}\n          validate={validateEmail}\n          onChange={() => errors.email && setErrors({})}\n        >\n          <Input type=\"email\" placeholder=\"you@company.com\" autoComplete=\"email\" aria-required />\n        </Field>\n\n        <Field name=\"password\" label=\"Password\" description=\"At least 8 characters.\" validate={validatePassword}>\n          <Input type=\"password\" placeholder=\"••••••••\" autoComplete=\"new-password\" aria-required />\n        </Field>\n\n        <div className=\"mt-auto flex items-center justify-between gap-3\">\n          <p className=\"text-ui-sm text-text-muted\">\n            Already have an account?{\" \"}\n            <a href=\"#\" className=\"rounded-control-2xs text-text underline-offset-2 hover-fine:underline focus-ring\">\n              Sign in\n            </a>\n          </p>\n          <Button\n            type=\"submit\"\n            variant=\"primary\"\n            loading={state === \"loading\"}\n            disabled={state === \"done\"}\n            focusableWhenDisabled\n            swapKey={state === \"done\" ? \"done\" : \"idle\"}\n          >\n            {state === \"done\" ? (\n              <>\n                <svg viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden>\n                  <path d=\"m3.75 8.5 2.75 2.75 5.75-6.5\" stroke=\"currentColor\" strokeWidth=\"1.5\" strokeLinecap=\"round\" strokeLinejoin=\"round\" />\n                </svg>\n                Account created\n              </>\n            ) : (\n              \"Continue\"\n            )}\n          </Button>\n        </div>\n        <span role=\"status\" className=\"sr-only\">\n          {state === \"done\" ? \"Account created\" : \"\"}\n        </span>\n      </Form>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/field/field-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

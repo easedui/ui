@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field",
+  "title": "Field",
+  "description": "Label, control and one message line on Base UI Field. The description and the error share the line and swap with y + blur; inside Base UI's Form, submitting focuses the first invalid field.",
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-field.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/field/field.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\nimport {\n  FieldLabel,\n  FieldMessage,\n  FieldRoot,\n  type FieldRootProps,\n} from \"../_primitives/field/field\";\n\nexport type FieldProps = Omit<FieldRootProps, \"children\"> & {\n  /** The visible label, tied to the control for you. */\n  label?: ReactNode;\n  /** Helper text under the control. While the field is invalid the error takes its place. */\n  description?: ReactNode;\n  /**\n   * An error you control (a server reply, a form library). Setting it marks the field invalid.\n   * Leave it out to show the message from `validate`, `<Form errors>` or the browser.\n   */\n  error?: ReactNode;\n  /** One control: `<Input>`, `<Textarea>`, `<SearchField>`, or any Base UI control. */\n  children: ReactNode;\n};\n\n/**\n * Label, control and one message line, on Base UI's Field. The description and the error\n * share the line and swap with y + blur; the line's height springs when it opens or rewraps.\n * Inside Base UI's `<Form>`, submitting focuses the first invalid field.\n */\nexport function Field({ label, description, error, invalid, children, ...props }: FieldProps) {\n  const hasError = error !== undefined && error !== null && error !== false && error !== \"\";\n  return (\n    <FieldRoot {...props} invalid={invalid ?? (hasError || undefined)}>\n      {label !== undefined && <FieldLabel>{label}</FieldLabel>}\n      {children}\n      <FieldMessage description={description} error={hasError ? error : undefined} />\n    </FieldRoot>\n  );\n}\n\nexport { FieldRoot, FieldLabel, FieldMessage } from \"../_primitives/field/field\";\n",
+      "type": "registry:ui",
+      "target": "@components/eased/field/field.tsx"
+    }
+  ],
+  "docs": "Import Field from components/eased/field/field and put an Input, Textarea or Search Field inside. The Eased tokens were merged into your global CSS; nothing to import.",
+  "type": "registry:ui"
+}
