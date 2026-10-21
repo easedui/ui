@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "code-tabs",
   "title": "Code Tabs",
-  "description": "Several files, or one command per package manager, in one code block: the underline glides between tabs, the code cross-fades 6px in the direction of travel while the height springs, and with a groupId every block on the page switches together and remembers the choice.",
+  "description": "Animated code tabs for React and shadcn, showing several files or one command per package manager.",
   "dependencies": [
     "motion",
     "@base-ui/react",
@@ -21,6 +21,9 @@
       "target": "@components/eased/code-tabs/code-tabs.tsx"
     }
   ],
+  "meta": {
+    "details": "Several files, or one command per package manager, in one code block: the underline glides between tabs, the code cross-fades 6px in the direction of travel while the height springs, and with a groupId every block on the page switches together and remembers the choice."
+  },
   "docs": "Import CodeTabs, packageManagerItems and packageCommand from components/eased/code-tabs/code-tabs. Use groupId=\"package-manager\" on install blocks so pnpm/npm/yarn/bun stays in sync across the page.",
   "type": "registry:ui"
 }

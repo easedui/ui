@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "title": "Slider",
+  "description": "An animated slider for React and shadcn, single or range, with a live value readout.",
+  "dependencies": [
+    "@base-ui/react",
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-number-roll.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/slider/slider.tsx",
+      "content": "\"use client\";\n\nimport { Slider as BaseSlider } from \"@base-ui/react/slider\";\nimport { useId, useState, type ReactNode } from \"react\";\nimport { NumberRoll } from \"../_primitives/number-roll/number-roll\";\n\nexport type SliderProps<V extends number | readonly number[]> = {\n  /** The value (controlled). An array of two makes a range with two thumbs. */\n  value?: V;\n  /** The initial value (uncontrolled). */\n  defaultValue?: V;\n  /** Fires on every change while dragging or stepping. */\n  onValueChange?: (value: V) => void;\n  /** Fires once when a drag ends or a key is released: save here. */\n  onValueCommitted?: (value: V) => void;\n  /** Default 0. */\n  min?: number;\n  /** Default 100. */\n  max?: number;\n  /** Default 1. */\n  step?: number;\n  /** Shift + arrow and Page keys move by this much. Default 10. */\n  largeStep?: number;\n  /** Formats the readout and the value screen readers hear, e.g. `{ style: \"currency\", currency: \"USD\" }`. */\n  format?: Intl.NumberFormatOptions;\n  /** Locale for `format`. Defaults to the runtime locale. */\n  locale?: Intl.LocalesArgument;\n  /** The label above the track. Leave it out for a bare slider, and pass `aria-label`. */\n  label?: ReactNode;\n  /** Show the value, rolling, on the label row. Default true when there is a label. */\n  showValue?: boolean;\n  /** Minimum steps between a range's two thumbs. Default 0. */\n  minStepsBetweenValues?: number;\n  name?: string;\n  disabled?: boolean;\n  \"aria-label\"?: string;\n  className?: string;\n};\n\n/**\n * A slider on Base UI: drag, click the track, or use arrows, Shift + arrows, Page, Home and\n * End. Pass an array for a range. The thumb swells while held, and the readout's digits roll\n * when the value steps (keys, track clicks) and follow the finger exactly while dragging.\n */\nexport function Slider<V extends number | readonly number[]>({\n  label,\n  showValue,\n  format,\n  locale,\n  onValueChange,\n  onValueCommitted,\n  \"aria-label\": ariaLabel,\n  className = \"\",\n  ...props\n}: SliderProps<V>) {\n  const id = useId();\n  const [inner, setInner] = useState<number | readonly number[]>(props.value ?? props.defaultValue ?? props.min ?? 0);\n  const [dragging, setDragging] = useState(false);\n  const current = props.value ?? inner;\n  const values = typeof current === \"number\" ? [current] : current;\n  const withValue = showValue ?? label != null;\n\n  return (\n    <BaseSlider.Root\n      {...(props as BaseSlider.Root.Props<V>)}\n      format={format}\n      locale={locale}\n      aria-labelledby={label != null ? `${id}-label` : undefined}\n      onValueChange={(v, details) => {\n        setDragging(details.reason === \"drag\");\n        setInner(v as number | readonly number[]);\n        onValueChange?.(v as V);\n      }}\n      onValueCommitted={(v) => {\n        setDragging(false);\n        onValueCommitted?.(v as V);\n      }}\n      className={`group/slider flex min-w-0 flex-col gap-2 data-disabled:opacity-50 ${className}`}\n    >\n      {(label != null || withValue) && (\n        <div className=\"flex min-w-0 items-baseline justify-between gap-3\">\n          {label != null && (\n            <span id={`${id}-label`} className=\"min-w-0 truncate text-ui font-medium text-text\">\n              {label}\n            </span>\n          )}\n          {withValue && (\n            <span className=\"ms-auto shrink-0 text-ui text-text-secondary tabular-nums\" aria-hidden>\n              {values.map((v, i) => (\n                <span key={i}>\n                  {i > 0 && <span className=\"px-1 text-text-muted\">–</span>}\n                  <NumberRoll value={v} format={format} locale={locale} animated={!dragging} aria-hidden />\n                </span>\n              ))}\n            </span>\n          )}\n        </div>\n      )}\n      {/* A 20px control around a 4px track: the whole band is the hit target. */}\n      <BaseSlider.Control className=\"relative flex h-5 w-full touch-none items-center select-none data-disabled:cursor-not-allowed\">\n        <BaseSlider.Track className=\"relative h-1 w-full rounded-pill bg-surface-active inset-shadow-well\">\n          <BaseSlider.Indicator className=\"rounded-pill bg-brand\" />\n          {values.map((_, i) => (\n            <BaseSlider.Thumb\n              key={i}\n              index={values.length > 1 ? i : undefined}\n              getAriaLabel={ariaLabel && values.length > 1 ? (n) => `${ariaLabel} ${n === 0 ? \"minimum\" : \"maximum\"}` : undefined}\n              aria-label={values.length === 1 ? ariaLabel : undefined}\n              className=\"group/thumb flex size-5 items-center justify-center rounded-pill outline-none [&:has(:focus-visible)>span]:shadow-[0_0_0_2px_var(--eased-bg),0_0_0_4px_var(--eased-ring)] data-disabled:cursor-not-allowed\"\n            >\n              <span\n                aria-hidden\n                className=\"size-4 rounded-pill bg-surface-raised shadow-thumb [transition:scale_var(--eased-duration-spring-snappy)_var(--eased-spring-snappy),box-shadow_var(--eased-duration-focus)_var(--eased-ease-standard)] [@media(hover:hover)_and_(pointer:fine)]:group-hover/thumb:scale-110 group-data-dragging/thumb:scale-125 reduced:scale-100! dark:bg-text\"\n              />\n            </BaseSlider.Thumb>\n          ))}\n        </BaseSlider.Track>\n      </BaseSlider.Control>\n    </BaseSlider.Root>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/slider/slider.tsx"
+    }
+  ],
+  "meta": {
+    "details": "A Base UI slider, single or range. The thumb swells while held, and the readout's digits roll when the value steps, then follow the finger exactly while dragging.",
+    "industries": [
+      "saas",
+      "finance",
+      "crypto",
+      "ecommerce",
+      "real-estate",
+      "travel",
+      "media",
+      "ai",
+      "health"
+    ],
+    "releaseAt": "2026-10-21"
+  },
+  "docs": "Import Slider from components/eased/slider/slider. Props: value or defaultValue (a number, or two for a range), onValueChange, onValueCommitted, min, max, step, largeStep, format, locale, label, showValue, disabled. The Eased tokens were merged into your global CSS; nothing to import.",
+  "type": "registry:ui"
+}

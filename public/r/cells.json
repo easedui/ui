@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "cells",
   "title": "Cells kit",
-  "description": "Table cells that make rows look finished: avatar with name, status badge, number with a rolling value and coloured delta, a progress meter that fills on view, a self-updating relative time, and a mono ID with a copy button.",
+  "description": "An animated set of table cells for React and shadcn, for names, statuses, numbers, progress, times and IDs.",
   "dependencies": [
     "motion"
   ],
@@ -22,6 +22,9 @@
       "target": "@components/eased/cells/cells.tsx"
     }
   ],
+  "meta": {
+    "details": "Table cells that make rows look finished: avatar with name, status badge, number with a rolling value and coloured delta, a progress meter that fills on view, a self-updating relative time, and a mono ID with a copy button."
+  },
   "docs": "Import PersonCell, StatusCell, DeltaCell, ProgressCell, RelativeTimeCell and IdCell from components/eased/cells/cells. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

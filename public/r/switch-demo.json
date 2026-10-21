@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch-demo",
+  "title": "Switch demo",
+  "description": "Notification settings with switches on one right edge.",
+  "registryDependencies": [
+    "https://eased.dev/r/switch.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/switch/switch-demo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Switch } from \"./switch\";\n\n/** Notification settings: label and description on the left, switches on one right edge. */\nexport function SwitchDemo() {\n  const [digest, setDigest] = useState(true);\n  return (\n    <DemoFrame title=\"Notifications\" meta={digest ? \"Digest on Mondays\" : \"No digest\"}>\n      <div className=\"flex min-h-0 flex-1 flex-col divide-y divide-line-subtle overflow-y-auto px-(--pad)\">\n        <Switch defaultChecked description=\"Replies and @mentions in threads you follow.\" className=\"py-3.5\">\n          Comments and mentions\n        </Switch>\n        <Switch checked={digest} onCheckedChange={setDigest} description=\"A summary of the week, every Monday at 9:00.\" className=\"py-3.5\">\n          Weekly digest\n        </Switch>\n        <Switch description=\"New features and changelog posts, about twice a month.\" className=\"py-3.5\">\n          Product updates\n        </Switch>\n        <Switch defaultChecked disabled description=\"Required for workspace owners.\" className=\"py-3.5\">\n          Sign-in alerts\n        </Switch>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/switch/switch-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

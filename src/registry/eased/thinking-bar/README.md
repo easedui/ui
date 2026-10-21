@@ -29,6 +29,7 @@ With the AI SDK, `status` is `"thinking"` while the message's last part is a str
 | `open` / `defaultOpen` / `onOpenChange` | | | Controlled or uncontrolled. `onOpenChange` also reports the automatic changes. |
 | `autoOpen` | `boolean` | `true` | Open while thinking. |
 | `autoClose` | `number \| false` | `1000` | Close this many ms after `done`. Both automatic behaviours stop once the reader toggles it, and come back on the next thinking run. |
+| `variant` | `"inline" \| "row"` | `"inline"` | `inline` is the 14px muted line at the top of a reply. `row` is a full-width 13px row with the chevron on the trailing edge, matching Agent Run's header, for a console that stacks it over a rail. |
 | `className` | `string` | | |
 
 Base UI Collapsible supplies the button, `aria-expanded` and `aria-controls`. The rolling digits are hidden from assistive tech; the button's name is "Thinking…" or "Thought for 12 seconds", and a polite status announces the result once.

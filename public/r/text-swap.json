@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "text-swap",
   "title": "Text Swap",
-  "description": "Change a label, status or short value with y + blur, and spring the width to fit, so neighbours glide instead of jumping. Direction-aware for counts and steps.",
+  "description": "An animated text swap for React and shadcn, for changing a label or value without its neighbours jumping.",
   "registryDependencies": [
     "https://eased.dev/r/eased-tokens.json",
     "https://eased.dev/r/eased-text-swap.json"
@@ -15,6 +15,9 @@
       "target": "@components/eased/text-swap/text-swap.tsx"
     }
   ],
+  "meta": {
+    "details": "Change a label, status or short value with y + blur, and spring the width to fit, so neighbours glide instead of jumping. Direction-aware for counts and steps."
+  },
   "docs": "Import TextSwap from components/eased/text-swap/text-swap. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

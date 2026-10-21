@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "title": "Switch",
+  "description": "An animated switch for React and shadcn, which becomes a full settings row when given a label.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/switch/switch.tsx",
+      "content": "\"use client\";\n\nimport { Switch as BaseSwitch } from \"@base-ui/react/switch\";\nimport { useId, type ReactNode } from \"react\";\n\nexport type SwitchProps = {\n  /** On (controlled). */\n  checked?: boolean;\n  /** Initially on (uncontrolled). */\n  defaultChecked?: boolean;\n  onCheckedChange?: (checked: boolean) => void;\n  /** What a form submits under `name` while on. */\n  value?: string;\n  name?: string;\n  disabled?: boolean;\n  required?: boolean;\n  readOnly?: boolean;\n  /**\n   * The label. With one, Switch renders a settings row: label (and description) on the left,\n   * the switch on the right, and the whole row toggles it. Leave it out for a bare switch, and\n   * pass `aria-label`.\n   */\n  children?: ReactNode;\n  /** Muted text under the label. */\n  description?: ReactNode;\n  \"aria-label\"?: string;\n  id?: string;\n  className?: string;\n};\n\n/*\n * The thumb is a 20px box clipped to a 16px circle. At rest the clip hides the 4px on the\n * side it travels toward; pressing opens the clip, so the thumb stretches in the direction it\n * is about to move, then the box translates 12px while the clip closes behind it. Visually the\n * circle travels 16px. Only transform and clip-path animate, on the snappy spring.\n */\nconst THUMB_CLIP =\n  \"[clip-path:inset(0_4px_0_0_round_8px)] group-data-checked:[clip-path:inset(0_0_0_4px_round_8px)] group-active:[clip-path:inset(0_0_0_0_round_8px)] group-data-disabled:group-active:[clip-path:inset(0_4px_0_0_round_8px)] group-data-disabled:group-data-checked:group-active:[clip-path:inset(0_0_0_4px_round_8px)] group-data-readonly:group-active:[clip-path:inset(0_4px_0_0_round_8px)] group-data-readonly:group-data-checked:group-active:[clip-path:inset(0_0_0_4px_round_8px)]\";\n\nconst SPRING =\n  \"[transition:translate_var(--eased-duration-spring-snappy)_var(--eased-spring-snappy),clip-path_var(--eased-duration-spring-snappy)_var(--eased-spring-snappy),background-color_150ms_var(--eased-ease-standard)] reduced:[transition:background-color_100ms_linear]\";\n\nfunction SwitchTrack() {\n  return (\n    <>\n      {/* Drop shadows on the unclipped wrapper, so the clip does not cut them off. Tinted from the shadow token. */}\n      <span\n        aria-hidden\n        className={`pointer-events-none absolute top-0.5 left-0.5 h-4 w-5 translate-x-0 group-data-checked:translate-x-3 [filter:drop-shadow(0_1px_1.5px_oklch(var(--eased-shadow-tint)/0.2))_drop-shadow(0_0_0.5px_oklch(var(--eased-shadow-tint)/0.18))] ${SPRING}`}\n      >\n        <BaseSwitch.Thumb\n          className={`block size-full group-data-unchecked:bg-surface-raised dark:group-data-unchecked:bg-text-secondary group-data-checked:bg-text-on-brand ${THUMB_CLIP} ${SPRING}`}\n        />\n      </span>\n    </>\n  );\n}\n\nconst TRACK =\n  \"group relative inline-flex h-5 w-9 shrink-0 rounded-pill inset-shadow-well transition-colors duration-150 ease-standard focus-ring data-unchecked:bg-surface-active data-checked:bg-brand hover-fine:data-unchecked:not-data-disabled:bg-line hover-fine:data-checked:not-data-disabled:bg-brand-hover data-disabled:cursor-not-allowed data-disabled:opacity-50\";\n\n/**\n * A switch on Base UI: Space and Enter toggle it, forms submit it, Field validates it. The\n * thumb springs across and, while pressed, stretches toward where it is going.\n */\nexport function Switch({ children, description, className = \"\", ...props }: SwitchProps) {\n  const id = useId();\n\n  if (children == null) {\n    return (\n      <BaseSwitch.Root {...props} className={(s) => `${TRACK} ${s.readOnly ? \"cursor-default\" : \"cursor-pointer\"} ${className}`}>\n        <SwitchTrack />\n      </BaseSwitch.Root>\n    );\n  }\n\n  return (\n    <div className={`grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 ${className}`}>\n      <span className=\"flex min-w-0 flex-col gap-0.5 py-px\">\n        <label\n          htmlFor={`${id}-switch`}\n          id={`${id}-label`}\n          className={`text-ui ${props.disabled ? \"cursor-not-allowed text-text-disabled\" : \"cursor-pointer text-text\"}`}\n        >\n          {children}\n        </label>\n        {description && (\n          <span id={`${id}-desc`} className=\"text-ui-sm text-text-muted text-pretty\">\n            {description}\n          </span>\n        )}\n      </span>\n      {/* 20px switch on the label's 20px first line (rule 107). */}\n      <BaseSwitch.Root\n        {...props}\n        id={props.id ?? `${id}-switch`}\n        aria-labelledby={`${id}-label`}\n        aria-describedby={description ? `${id}-desc` : undefined}\n        className={(s) => `${TRACK} mt-px ${s.readOnly ? \"cursor-default\" : \"cursor-pointer\"}`}\n      >\n        <SwitchTrack />\n      </BaseSwitch.Root>\n    </div>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/switch/switch.tsx"
+    }
+  ],
+  "meta": {
+    "details": "A Base UI switch whose thumb springs across and, while pressed, stretches toward where it is going. With a label it becomes a settings row whose whole label toggles it.",
+    "industries": [
+      "ai",
+      "devtools",
+      "finance",
+      "crypto",
+      "saas",
+      "legal",
+      "ecommerce",
+      "real-estate",
+      "health",
+      "hr",
+      "education",
+      "travel",
+      "media"
+    ],
+    "releaseAt": "2026-10-21"
+  },
+  "docs": "Import Switch from components/eased/switch/switch. Props: checked, defaultChecked, onCheckedChange, name, value, disabled, required, children (label), description. The Eased tokens were merged into your global CSS; nothing to import.",
+  "type": "registry:ui"
+}

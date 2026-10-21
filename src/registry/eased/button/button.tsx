@@ -58,9 +58,9 @@ const VARIANT: Record<ButtonVariant, string> = {
   primary:
     "border-transparent bg-brand text-text-on-brand inset-shadow-highlight hover-fine:not-data-disabled:bg-brand-hover active:not-data-disabled:bg-brand-active data-disabled:not-aria-busy:opacity-50",
   secondary:
-    "border-transparent bg-surface-hover text-text hover-fine:not-data-disabled:bg-surface-active active:not-data-disabled:bg-surface-active aria-expanded:bg-surface-active data-disabled:not-aria-busy:bg-surface-sunken data-disabled:not-aria-busy:text-text-disabled",
+    "border-transparent bg-surface-hover text-text hover-fine:not-data-disabled:bg-surface-active active:not-data-disabled:bg-surface-active aria-[haspopup]:aria-expanded:bg-surface-active data-disabled:not-aria-busy:bg-surface-sunken data-disabled:not-aria-busy:text-text-disabled",
   ghost:
-    "border-transparent text-text-muted hover-fine:not-data-disabled:bg-surface-hover hover-fine:not-data-disabled:text-text active:not-data-disabled:bg-surface-active aria-expanded:bg-surface-active aria-expanded:text-text data-disabled:not-aria-busy:text-text-disabled",
+    "border-transparent text-text-muted hover-fine:not-data-disabled:bg-surface-hover hover-fine:not-data-disabled:text-text active:not-data-disabled:bg-surface-active aria-[haspopup]:aria-expanded:bg-surface-active aria-[haspopup]:aria-expanded:text-text data-disabled:not-aria-busy:text-text-disabled",
   danger:
     "border-line text-danger-text hover-fine:not-data-disabled:border-danger active:not-data-disabled:bg-danger-subtle data-disabled:not-aria-busy:bg-surface-sunken data-disabled:not-aria-busy:text-text-disabled",
   "danger-solid":

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "attachment",
   "title": "Attachment Chip",
-  "description": "A chat attachment: images as a thumbnail that sharpens from a blur once decoded, files as a typed chip. Upload progress is a ring that springs between reports; a failure shakes once and offers Retry; removing one lets its neighbours slide into the gap.",
+  "description": "An animated attachment chip for React and shadcn, with image thumbnails, upload progress and retry.",
   "dependencies": [
     "motion"
   ],
@@ -20,6 +20,9 @@
       "target": "@components/eased/attachment/attachment-chip.tsx"
     }
   ],
+  "meta": {
+    "details": "A chat attachment: images as a thumbnail that sharpens from a blur once decoded, files as a typed chip. Upload progress is a ring that springs between reports; a failure shakes once and offers Retry; removing one lets its neighbours slide into the gap."
+  },
   "docs": "Import AttachmentChip and AttachmentList from components/eased/attachment/attachment-chip. Pair with useAttachments from components/eased/_primitives/chat-core/chat-core.",
   "type": "registry:ui"
 }

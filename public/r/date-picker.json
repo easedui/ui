@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "date-picker",
   "title": "Date Picker",
-  "description": "A date field with a calendar popover on Base UI and calendar-core. Typed dates parse in the field's locale, months slide the way you page, the selection glides between days, and ranges preview as you hover.",
+  "description": "An animated date picker for React and shadcn, with a calendar popover, typed dates and ranges.",
   "dependencies": [
     "@base-ui/react",
     "motion"
@@ -29,6 +29,9 @@
       "target": "@components/eased/date-picker/calendar.tsx"
     }
   ],
+  "meta": {
+    "details": "A date field with a calendar popover on Base UI and calendar-core. Typed dates parse in the field's locale, months slide the way you page, the selection glides between days, and ranges preview as you hover."
+  },
   "docs": "Import DatePicker (or Calendar for an inline grid) from components/eased/date-picker/date-picker; wrap it in Field for a label and messages. The Eased tokens were merged into your global CSS; nothing to import.",
   "type": "registry:ui"
 }

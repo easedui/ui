@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider-demo",
+  "title": "Slider demo",
+  "description": "Usage limits: a spend cap, a price range and an alert threshold.",
+  "registryDependencies": [
+    "https://eased.dev/r/slider.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/slider/slider-demo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Slider } from \"./slider\";\n\nconst usd = { style: \"currency\", currency: \"USD\", maximumFractionDigits: 0 } as const;\n\n/** Usage limits: a spend cap, a price range with two thumbs, and an alert threshold. */\nexport function SliderDemo() {\n  const [cap, setCap] = useState(400);\n  return (\n    <DemoFrame title=\"Usage limits\" meta={`Cap ${new Intl.NumberFormat(\"en-US\", usd).format(cap)}/mo`}>\n      <div className=\"flex min-h-0 flex-1 flex-col justify-center gap-8 overflow-y-auto px-(--pad) py-4\">\n        <Slider label=\"Monthly spend cap\" value={cap} onValueChange={setCap} min={0} max={2000} step={50} largeStep={250} format={usd} locale=\"en-US\" />\n        <Slider label=\"Model price range\" defaultValue={[2, 15]} min={0} max={30} step={0.5} minStepsBetweenValues={2} format={{ ...usd, maximumFractionDigits: 2, minimumFractionDigits: 0 }} locale=\"en-US\" aria-label=\"Price per million tokens\" />\n        <Slider label=\"Alert at\" defaultValue={80} min={50} max={100} format={{ style: \"unit\", unit: \"percent\" }} />\n        <Slider label=\"Burst allowance\" defaultValue={20} disabled format={{ style: \"unit\", unit: \"percent\" }} />\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/slider/slider-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "popover",
   "title": "Popover",
-  "description": "A panel that opens from its trigger's transform-origin with a 5px directional offset, closes at half the distance in 150ms, and reverses mid-flight. Its trigger presses by colour, never by scale.",
+  "description": "An animated popover for React and shadcn, opening from its trigger, built on Base UI.",
   "dependencies": [
     "@base-ui/react"
   ],
@@ -19,5 +19,8 @@
       "target": "@components/eased/popover/popover.tsx"
     }
   ],
+  "meta": {
+    "details": "A panel that opens from its trigger's transform-origin with a 5px directional offset, closes at half the distance in 150ms, and reverses mid-flight. Its trigger presses by colour, never by scale."
+  },
   "type": "registry:ui"
 }

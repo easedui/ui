@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert-demo",
+  "title": "Alert demo",
+  "description": "Billing: a failed payment that retries into a success, and a note you can dismiss.",
+  "registryDependencies": [
+    "https://eased.dev/r/alert.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/button.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/alert/alert-demo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../button/button\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Alert } from \"./alert\";\n\ntype Payment = \"failed\" | \"retrying\" | \"paid\";\n\n/** Billing: a failed payment retries into a success; a note dismisses and the page glides up. */\nexport function AlertDemo() {\n  const [payment, setPayment] = useState<Payment>(\"failed\");\n  const [note, setNote] = useState(true);\n\n  const retry = () => {\n    setPayment(\"retrying\");\n    window.setTimeout(() => setPayment(\"paid\"), 1200);\n  };\n\n  return (\n    <DemoFrame\n      title=\"Billing\"\n      actions={\n        <Button size=\"sm\" variant=\"ghost\" edge=\"end\" onClick={() => { setPayment(\"failed\"); setNote(true); }}>\n          Reset\n        </Button>\n      }\n    >\n      <div className=\"flex min-h-0 flex-1 flex-col overflow-y-auto px-(--pad) py-4\">\n        <Alert\n          tone={payment === \"paid\" ? \"success\" : \"danger\"}\n          role={payment === \"paid\" ? \"status\" : \"alert\"}\n          title={payment === \"paid\" ? \"Payment received\" : \"Your October payment failed\"}\n          actions={\n            payment !== \"paid\" && (\n              <Button size=\"sm\" loading={payment === \"retrying\"} onClick={retry}>\n                Retry $249.00\n              </Button>\n            )\n          }\n        >\n          {payment === \"paid\"\n            ? \"Visa ending 4242 was charged $249.00. Your receipt is on its way.\"\n            : \"Visa ending 4242 was declined by the bank. We'll try again on Oct 21.\"}\n        </Alert>\n        <Alert open={note} innerClassName=\"pt-3\" tone=\"neutral\" title=\"Invoices go to billing@northwind.com\" onDismiss={() => setNote(false)}>\n          Add a second address in Settings → Billing contacts.\n        </Alert>\n        <Alert tone=\"warning\" role=\"none\" className=\"mt-3\" title=\"Card expires in 6 days\">\n          Update it before Oct 24 to keep your Pro plan.\n        </Alert>\n        <dl className=\"mt-4 grid grid-cols-[minmax(0,1fr)_auto] gap-y-2 border-t border-line-subtle pt-3 text-ui-sm\">\n          <dt className=\"text-text-muted\">Plan</dt>\n          <dd className=\"text-end text-text\">Pro, 12 seats</dd>\n          <dt className=\"text-text-muted\">Next invoice</dt>\n          <dd className=\"text-end text-text tabular-nums\">Nov 1, $249.00</dd>\n        </dl>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/alert/alert-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

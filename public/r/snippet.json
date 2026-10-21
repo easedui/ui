@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "snippet",
   "title": "Snippet",
-  "description": "A one-line command with a $ prompt and a copy button that morphs into a check. When the command changes (pnpm ↔ npm) the text swaps and the width springs, so the copy button glides instead of jumping.",
+  "description": "An animated command snippet for React and shadcn, a one-line command with a copy button.",
   "dependencies": [
     "motion",
     "shiki"
@@ -21,6 +21,9 @@
       "target": "@components/eased/snippet/snippet.tsx"
     }
   ],
+  "meta": {
+    "details": "A one-line command with a $ prompt and a copy button that morphs into a check. When the command changes (pnpm ↔ npm) the text swaps and the width springs, so the copy button glides instead of jumping."
+  },
   "docs": "Import Snippet from components/eased/snippet/snippet. Pair it with useChoice(\"package-manager\") from code-core and packageCommand from code-tabs to follow the reader's package manager.",
   "type": "registry:ui"
 }

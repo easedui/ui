@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "carousel",
   "title": "Carousel",
-  "description": "A scroll-snap carousel with native momentum, mouse drag and arrow keys. Its dot stretches between pages as you scroll and its edges fade only where there is more.",
+  "description": "An animated carousel for React and shadcn, with scroll snapping, mouse drag and arrow keys.",
   "dependencies": [
     "motion"
   ],
@@ -21,6 +21,7 @@
     }
   ],
   "meta": {
+    "details": "A scroll-snap carousel with native momentum, mouse drag and arrow keys. Its dot stretches between pages as you scroll and its edges fade only where there is more.",
     "industries": [
       "saas",
       "ecommerce",

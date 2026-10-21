@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "pagination",
   "title": "Pagination",
-  "description": "Numbered pages whose selected chip glides on a spring, with ellipses in a fixed number of slots so the width never changes, and a compact Page 3 of 12 variant.",
+  "description": "Animated pagination for React and shadcn, with a width that never changes as you page.",
   "dependencies": [
     "motion"
   ],
@@ -21,6 +21,7 @@
     }
   ],
   "meta": {
+    "details": "Numbered pages whose selected chip glides on a spring, with ellipses in a fixed number of slots so the width never changes, and a compact Page 3 of 12 variant.",
     "industries": [
       "saas",
       "finance",

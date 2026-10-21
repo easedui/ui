@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "file-upload",
   "title": "File Upload",
-  "description": "A dropzone that wakes when files cross the page and lifts as they reach it. Rows rise in with per-file progress on a spring, and refused files are explained inline.",
+  "description": "An animated file upload for React and shadcn, with a dropzone, per-file progress and inline reasons for refused files.",
   "dependencies": [
     "motion"
   ],
@@ -21,6 +21,7 @@
     }
   ],
   "meta": {
+    "details": "A dropzone that wakes when files cross the page and lifts as they reach it. Rows rise in with per-file progress on a spring, and refused files are explained inline.",
     "industries": [
       "saas",
       "legal",

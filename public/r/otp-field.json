@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "otp-field",
   "title": "OTP Field",
-  "description": "A one-time-code input on Base UI's OTPField: autofill and paste fill every cell, the caret blinks in the empty cell, characters pop in, a wrong code shakes once and an accepted one ripples green.",
+  "description": "An animated one-time code field for React and shadcn, with autofill and paste across every cell.",
   "dependencies": [
     "@base-ui/react",
     "motion"
@@ -20,6 +20,9 @@
       "target": "@components/eased/otp-field/otp-field.tsx"
     }
   ],
+  "meta": {
+    "details": "A one-time-code input on Base UI's OTPField: autofill and paste fill every cell, the caret blinks in the empty cell, characters pop in, a wrong code shakes once and an accepted one ripples green."
+  },
   "docs": "Import OtpField from components/eased/otp-field/otp-field; wrap it in Field for a label and messages. The Eased tokens were merged into your global CSS; nothing to import.",
   "type": "registry:ui"
 }

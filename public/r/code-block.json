@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "code-block",
   "title": "Code Block",
-  "description": "Shiki-highlighted code in warm stone and cream themes, with a file title bar and language pill, a copy button that morphs into a check while \"Copied\" slides out, highlighted and focused lines, and long blocks that collapse under a progressive blur with \"Show 22 more lines\".",
+  "description": "An animated code block for React and shadcn, with Shiki highlighting, a copy button and collapsible long blocks.",
   "dependencies": [
     "motion",
     "shiki"
@@ -19,6 +19,9 @@
       "target": "@components/eased/code-block/code-block.tsx"
     }
   ],
+  "meta": {
+    "details": "Shiki-highlighted code in warm stone and cream themes, with a file title bar and language pill, a copy button that morphs into a check while \"Copied\" slides out, highlighted and focused lines, and long blocks that collapse under a progressive blur with \"Show 22 more lines\"."
+  },
   "docs": "Import CodeBlock from components/eased/code-block/code-block. Grammars load on demand; pass `tokens` from highlight() (components/eased/_primitives/code-core/highlighter) on the server for a first paint that is already coloured. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

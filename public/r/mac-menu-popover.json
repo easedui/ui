@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "mac-menu-popover",
   "title": "Mac menu popover",
-  "description": "A macOS menu bar popover: a status item and a frosted panel whose arrow and panel are one shape, so one blur and one hairline follow the arrow. It grows from the arrow tip, reverses mid-flight, and drops its CSS blur for native Tauri or Electron vibrancy.",
+  "description": "An animated macOS menu bar popover for React and shadcn, for Tauri and Electron apps.",
   "dependencies": [
     "@base-ui/react"
   ],
@@ -19,6 +19,9 @@
       "target": "@components/eased/mac-menu-popover/mac-menu-popover.tsx"
     }
   ],
+  "meta": {
+    "details": "A macOS menu bar popover: a status item and a frosted panel whose arrow and panel are one shape, so one blur and one hairline follow the arrow. It grows from the arrow tip, reverses mid-flight, and drops its CSS blur for native Tauri or Electron vibrancy."
+  },
   "docs": "Import MacMenuPopover, MacStatusItem, MacMenuPopoverContent, MacMenuItem and MacMenuSeparator from components/eased/mac-menu-popover/mac-menu-popover. The Eased tokens were merged into your global CSS; nothing to import. Put MacStatusItem (with a label) and MacMenuPopoverContent inside MacMenuPopover, and wrap rows that should close the panel in MacMenuPopoverClose. Dark mode follows .dark or data-theme=\"dark\". In a Tauri or Electron tray window, render MacMenuPanel instead; it defaults to material=\"native\" (a CSS blur cannot see the desktop there). Keep html and body transparent and call useSystemAppearance() from components/eased/lib/mac so dark follows the system.",
   "type": "registry:ui"
 }

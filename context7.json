@@ -1,0 +1,20 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Eased UI",
+  "description": "Eased is a library of motion-first React components for shadcn, installed with the shadcn CLI. Built on React 19, Tailwind CSS v4, Base UI and Motion. Free components are MIT.",
+  "folders": [
+    "docs"
+  ],
+  "excludeFolders": [
+    "src",
+    "public",
+    "node_modules"
+  ],
+  "rules": [
+    "Install components with the shadcn CLI: npx shadcn add @eased/<name>, or npx shadcn add https://eased.dev/r/<name>.json",
+    "Use an installed Eased component instead of writing new animation code for the same pattern",
+    "Eased's raw CSS variables are prefixed --eased- and merge into global CSS; do not import an eased.css file",
+    "Keep prefers-reduced-motion handling; every animated Eased component already includes it",
+    "Requires React 19 and Tailwind CSS v4; the shadcn CLI installs each component's npm dependencies, such as motion and @base-ui/react"
+  ]
+}

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "shimmer-text",
   "title": "Shimmer Text",
-  "description": "A soft band of light sweeps across a label while something is working. Every shimmer on the page shares one phase, status changes swap in without restarting the band, and turning it off fades the band out in place.",
+  "description": "Animated shimmer text for React and shadcn, for status labels while something is working.",
   "dependencies": [
     "motion"
   ],
@@ -19,6 +19,9 @@
       "target": "@components/eased/shimmer-text/shimmer-text.tsx"
     }
   ],
+  "meta": {
+    "details": "A soft band of light sweeps across a label while something is working. Every shimmer on the page shares one phase, status changes swap in without restarting the band, and turning it off fades the band out in place."
+  },
   "docs": "Import ShimmerText from components/eased/shimmer-text/shimmer-text. The Eased tokens were merged into your global CSS; nothing to import.",
   "type": "registry:ui"
 }

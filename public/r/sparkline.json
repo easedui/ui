@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "sparkline",
   "title": "Sparkline",
-  "description": "A word-sized line chart that draws in once, rings its newest point in the surface colour and morphs to new values from the shape on screen. Optional scrub readout.",
+  "description": "An animated sparkline for React and shadcn, a word-sized line chart with an optional scrub readout.",
   "registryDependencies": [
     "https://eased.dev/r/eased-tokens.json",
     "https://eased.dev/r/eased-chart-core.json"
@@ -15,6 +15,9 @@
       "target": "@components/eased/sparkline/sparkline.tsx"
     }
   ],
+  "meta": {
+    "details": "A word-sized line chart that draws in once, rings its newest point in the surface colour and morphs to new values from the shape on screen. Optional scrub readout."
+  },
   "docs": "Import Sparkline from components/eased/sparkline/sparkline. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

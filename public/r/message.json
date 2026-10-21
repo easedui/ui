@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "message",
   "title": "Message",
-  "description": "A chat message: the user's in a sunken bubble on the right, the assistant's flush on the left. Consecutive bubbles from one author merge, their touching corners tightening as the next one lands. Renders AI SDK UIMessage text and file parts.",
+  "description": "An animated chat message for React and shadcn, rendering AI SDK UIMessage text and file parts.",
   "dependencies": [
     "motion"
   ],
@@ -20,6 +20,9 @@
       "target": "@components/eased/message/message.tsx"
     }
   ],
+  "meta": {
+    "details": "A chat message: the user's in a sunken bubble on the right, the assistant's flush on the left. Consecutive bubbles from one author merge, their touching corners tightening as the next one lands. Renders AI SDK UIMessage text and file parts."
+  },
   "docs": "Import Message, MessageAction and CopyAction from components/eased/message/message. Group with groupMessages from chat-core.",
   "type": "registry:ui"
 }

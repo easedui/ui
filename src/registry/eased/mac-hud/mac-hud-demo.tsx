@@ -89,7 +89,7 @@ export function MacHudDemo() {
             value={variant}
             onValueChange={(v) => {
               setVariant(v);
-              showLevel(hud.kind);
+              if (hud.kind !== "custom") showLevel(hud.kind);
             }}
           />
           <div className="flex items-center gap-2" onKeyDown={onKeyDown}>

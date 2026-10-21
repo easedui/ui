@@ -65,13 +65,30 @@ export function TextSwap({
       return;
     }
     let spring: AnimationPlaybackControls | undefined;
-    const ro = new ResizeObserver(() => {
-      const to = el.offsetWidth;
+    let target: number | undefined;
+    const ro = new ResizeObserver(([entry]) => {
+      const node = entry.target as HTMLElement;
+      const to = node.offsetWidth;
+      // A copy removed by an interrupted swap reads 0: fall back to auto rather than
+      // springing the box shut. An empty label is a real 0 and still springs.
+      if (!node.isConnected) {
+        target = undefined;
+        width.jump("auto");
+        return;
+      }
+      if (to === target) return;
+      target = to;
       if (width.get() === "auto" || settings.current.reduced) width.jump(to);
       else spring = animate(width, to, smooth);
     });
     ro.observe(el);
+    // A copy that re-enters mid-exit is back in flow a frame later: measure it once it is.
+    const frame = requestAnimationFrame(() => {
+      ro.disconnect();
+      ro.observe(current.current ?? el);
+    });
     return () => {
+      cancelAnimationFrame(frame);
       ro.disconnect();
       spring?.stop();
     };
@@ -109,10 +126,16 @@ function SwapItem({
   ref?: React.Ref<HTMLSpanElement>;
 }) {
   const present = useIsPresent();
+  const node = useRef<HTMLSpanElement | null>(null);
+  // Claim the measured slot from an effect, not the ref callback: a copy that re-enters
+  // mid-exit keeps its node, so its ref callback can run before the leaving copy's.
+  useLayoutEffect(() => {
+    if (present) itemRef.current = node.current;
+  }, [present, itemRef]);
   return (
     <motion.span
       ref={(el) => {
-        if (present) itemRef.current = el;
+        node.current = el;
         if (typeof ref === "function") ref(el);
         else if (ref) ref.current = el;
       }}

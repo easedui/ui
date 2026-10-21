@@ -12,6 +12,8 @@ export type DemoFrameProps = {
   actions?: ReactNode;
   /** Extra classes for the root, e.g. `select-none`. */
   className?: string;
+  /** The frame's height in px. Default 420; a full app screen (a block with a sidebar) may ask for more. */
+  height?: number;
   children: ReactNode;
 };
 
@@ -23,9 +25,11 @@ export type DemoFrameProps = {
  * the viewport, and it exposes `--radius-outer`/`--pad` for concentric children. It sets
  * Eased's UI type (`text-ui`) and text colour, so a demo reads the same in any app.
  */
-export function DemoFrame({ title, meta, actions, className = "", children }: DemoFrameProps) {
+export function DemoFrame({ title, meta, actions, className = "", height, children }: DemoFrameProps) {
   return (
     <div
+      // A gallery slot can cap the frame with --demo-max-height (the /components tiles do); the content then scrolls inside.
+      style={height === undefined ? undefined : { height: `min(${height}px, var(--demo-max-height, ${height}px))` }}
       className={`@container relative flex h-[420px] w-full max-w-(--demo-width,28rem) min-w-0 flex-col overflow-hidden rounded-panel border border-line-subtle bg-surface text-ui text-text [--pad:16px] [--radius-outer:var(--eased-radius-panel)] ${className}`}
     >
       {title !== undefined && (

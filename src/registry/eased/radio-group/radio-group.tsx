@@ -171,7 +171,8 @@ export function RadioCard<V extends string>({ value, title, description, meta, i
           state.disabled
             ? "cursor-not-allowed bg-surface-sunken"
             : state.checked
-              ? "cursor-default"
+              ? // Above its siblings: the highlight travels inside this card, and moving up it would pass under the opaque cards below.
+                "z-1 cursor-default"
               : "cursor-pointer hover-fine:border-line hover-fine:bg-surface-hover"
         } ${className}`
       }

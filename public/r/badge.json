@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "badge",
   "title": "Badge",
-  "description": "A status or count chip. Counts roll their digits; a count-only badge pops in above zero and leaves when cleared; a live dot breathes slowly and stops under reduced motion.",
+  "description": "An animated badge for React and shadcn, for statuses and counts, with an optional live dot.",
   "dependencies": [
     "motion"
   ],
@@ -19,6 +19,9 @@
       "target": "@components/eased/badge/badge.tsx"
     }
   ],
+  "meta": {
+    "details": "A status or count chip. Counts roll their digits; a count-only badge pops in above zero and leaves when cleared; a live dot breathes slowly and stops under reduced motion."
+  },
   "docs": "Import Badge from components/eased/badge/badge. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

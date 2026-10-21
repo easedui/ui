@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "avatar",
   "title": "Avatar",
-  "description": "Avatar and AvatarGroup on Base UI Avatar: images fade in from a 4px blur once loaded so initials never flash; overlapping stacks with a cut-out ring spread apart on hover; the overflow count rolls.",
+  "description": "An animated avatar for React and shadcn, with groups that spread apart on hover.",
   "dependencies": [
     "@base-ui/react"
   ],
@@ -19,6 +19,9 @@
       "target": "@components/eased/avatar/avatar.tsx"
     }
   ],
+  "meta": {
+    "details": "Avatar and AvatarGroup on Base UI Avatar: images fade in from a 4px blur once loaded so initials never flash; overlapping stacks with a cut-out ring spread apart on hover; the overflow count rolls."
+  },
   "docs": "Import Avatar and AvatarGroup from components/eased/avatar/avatar. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

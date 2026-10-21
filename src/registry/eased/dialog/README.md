@@ -1,0 +1,147 @@
+# Dialog
+
+A modal dialog on Base UI's Dialog, with an alert-dialog variant on Base UI's AlertDialog, built on Eased's overlay core.
+
+## When to use
+
+- A short task that needs the page to wait: create a key, rename a project, invite someone.
+- A confirmation before something you can't take back: use the alert dialog (`AlertDialog*`).
+- A follow-up question inside a task (discard changes?): nest an alert dialog inside the dialog; the parent steps back.
+
+## When not to use
+
+- Long forms or browsing: use a [Sheet](/components/sheet), which keeps the page in view.
+- Reversible destructive actions: act at once and offer [Undo Pill](/components/undo-pill) instead of asking.
+- A few options next to a trigger: use a [Popover](/components/popover) or a [Dropdown Menu](/components/dropdown-menu).
+
+## Usage
+
+```tsx rename-dialog.tsx
+import { Button } from "@/components/eased/button/button";
+import {
+  Dialog, DialogBody, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger,
+} from "@/components/eased/dialog/dialog";
+import { Input } from "@/components/eased/input/input";
+
+export function RenameDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger>Rename</DialogTrigger>
+      <DialogContent>
+        <DialogTitle>Rename project</DialogTitle>
+        <DialogDescription>Links to the old name keep working.</DialogDescription>
+        <DialogBody>
+          <Input aria-label="Project name" defaultValue="Q3 launch plan" />
+        </DialogBody>
+        <DialogFooter>
+          <DialogClose render={<Button size="md" />}>Cancel</DialogClose>
+          <DialogClose render={<Button variant="primary" size="md" />}>Save</DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+```
+
+## Examples
+
+### Alert dialog
+
+No close button and no outside dismissal: the footer holds the choice. An outside click bumps the dialog 1.5% to say no.
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger>Revoke</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogTitle>Revoke “Production”?</AlertDialogTitle>
+    <AlertDialogDescription>Requests signed with this key start failing within a minute.</AlertDialogDescription>
+    <DialogFooter>
+      <AlertDialogClose render={<Button size="md" />}>Cancel</AlertDialogClose>
+      <AlertDialogClose render={<Button variant="danger-solid" size="md" onClick={revoke} />}>Revoke key</AlertDialogClose>
+    </DialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+### Confirm before closing (nested)
+
+Intercept `onOpenChange` and open an alert dialog inside the content. Base UI renders one scrim; the parent steps back 16px, shrinks 5% and dims while the child is open.
+
+```tsx
+<Dialog open={open} onOpenChange={(next) => (!next && dirty ? setConfirm(true) : setOpen(next))}>
+  <DialogContent>
+    …
+    <AlertDialog open={confirm} onOpenChange={setConfirm}>
+      <AlertDialogContent>…</AlertDialogContent>
+    </AlertDialog>
+  </DialogContent>
+</Dialog>
+```
+
+### Opened from a shortcut
+
+Pass `instant` when a keyboard shortcut opened it: the enter is skipped (rule 84), the exit still plays.
+
+## API reference
+
+### Dialog / AlertDialog
+
+Base UI's `Dialog.Root` / `AlertDialog.Root`: `open`, `defaultOpen`, `onOpenChange(open, details)`, `onOpenChangeComplete`, `modal`, `actionsRef`.
+
+### DialogTrigger / AlertDialogTrigger
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `ButtonVariant` | `"secondary"` / `"danger"` | The Eased Button look. |
+| `size` | `ButtonSize` | `"sm"` | |
+| `edge` | `"start" \| "end"` | | Pull a ghost trigger onto the content line (R104). |
+| `render` | `ReactElement` | | Bring your own trigger element. |
+
+### DialogContent
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 384, 448 or 576px; never wider than the screen less 32px. |
+| `closeButton` | `boolean` | `true` | The × in the top corner, its icon on the content's right edge. |
+| `closeLabel` | `string` | `"Close"` | |
+| `initialFocus` | Base UI | first tabbable | Where focus goes on open. |
+| `finalFocus` | Base UI | the trigger | Where focus returns on close. |
+| `instant` | `boolean` | `false` | Skip the enter animation. |
+| `container` | `HTMLElement \| null` | `document.body` | Portal target. |
+| `className` | `string` | | Appended to the popup. |
+
+`AlertDialogContent` takes the same props minus `closeButton`, and defaults to `size="sm"`.
+
+### DialogTitle, DialogDescription, AlertDialogTitle, AlertDialogDescription, DialogBody, DialogFooter
+
+Title is 16px medium and labels the dialog; description is 14px secondary and describes it. Body sits 20px under the header; the footer right-aligns its buttons 24px under the body and stacks them full width under 640px, primary on top.
+
+## Keyboard
+
+| Key | Action |
+|---|---|
+| `Tab` / `Shift+Tab` | Cycles focus inside the dialog (trapped). |
+| `Esc` | Closes the frontmost dialog only. |
+| `Enter` | Submits the form inside, if any. |
+
+## Accessibility
+
+- `role="dialog"` (or `alertdialog`), `aria-modal`, named by the title and described by the description.
+- Focus moves to the first tabbable element (the popup on touch, so the keyboard doesn't jump up) and returns to the trigger on close.
+- The page behind is inert and scroll-locked. The close button is a 32px target named "Close".
+
+## Motion
+
+The dialog rises 8px from scale 0.96 on the smooth spring (no overshoot) while it fades in over 200ms; it leaves 4px down at 0.98 in 160ms on the standard curve. The scrim fades and blurs 7px in 200ms, out in 150ms. A parent under a nested dialog steps back 16px and 5% per level on the same spring and dims. Open and close are transitions, so a close mid-open turns around. An alert dialog answers an outside click with a 1.5% bump. Reduced motion: a 100ms fade, no travel, no bump.
+
+## Notes for AI
+
+Pick Dialog for a short blocking task and AlertDialog for an irreversible confirmation; use `DialogClose render={<Button />}` for footer buttons so they close it, and keep the primary action last in `DialogFooter`. Nest an AlertDialog inside DialogContent to confirm discarding changes.
+
+Don't wrap it in your own portal, overlay or focus trap, and don't animate it with Motion: Base UI and overlay core already handle focus, scroll lock, stacking and motion. Don't put a Dialog inside a Popover; open it from a menu item instead.
+
+## Related
+
+- [Sheet](/components/sheet): the same modal behaviour from an edge, with drag to dismiss.
+- [Command Palette](/components/command-palette): a dialog built around a search list.
+- [Popover](/components/popover): non-modal, anchored to its trigger.

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "combobox-demo",
+  "title": "Combobox demo",
+  "description": "A pull request's sidebar: a repository combobox, reviewers with avatars in grouped teams, and colour-dotted labels as chips.",
+  "registryDependencies": [
+    "https://eased.dev/r/combobox.json",
+    "https://eased.dev/r/eased-field.json",
+    "https://eased.dev/r/eased-demo-frame.json",
+    "https://eased.dev/r/avatar.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/combobox/combobox-demo.tsx",
+      "content": "\"use client\";\n\nimport { FieldLabel, FieldRoot } from \"../_primitives/field/field\";\nimport { Avatar } from \"../avatar/avatar\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Combobox, type ComboboxOption, type ComboboxOptionGroup } from \"./combobox\";\n\nconst person = (value: string, label: string, team: string): ComboboxOption => ({\n  value,\n  label,\n  detail: team,\n  icon: <Avatar name={label} size=\"xs\" />,\n});\n\nconst PEOPLE: ComboboxOptionGroup[] = [\n  {\n    label: \"Platform\",\n    items: [\n      person(\"priya\", \"Priya Raman\", \"Platform\"),\n      person(\"jonas\", \"Jonas Lindqvist\", \"Platform\"),\n      person(\"mei\", \"Mei Tanaka\", \"Platform\"),\n    ],\n  },\n  {\n    label: \"Reliability\",\n    items: [\n      person(\"adaeze\", \"Adaeze Okafor\", \"SRE\"),\n      person(\"lucas\", \"Lucas Moreau\", \"SRE\"),\n      person(\"rafael\", \"Rafael Ortiz\", \"On call\"),\n    ],\n  },\n  {\n    label: \"Product\",\n    items: [person(\"sofia\", \"Sofia Esposito\", \"Design\"), person(\"noor\", \"Noor Haddad\", \"PM\")],\n  },\n];\n\nconst dot = (tone: string) => <span className={`size-2 rounded-pill ${tone}`} />;\n\nconst LABELS: ComboboxOption[] = [\n  { value: \"bug\", label: \"bug\", icon: dot(\"bg-danger\") },\n  { value: \"deploys\", label: \"deploys\", icon: dot(\"bg-brand\") },\n  { value: \"flaky-test\", label: \"flaky-test\", icon: dot(\"bg-warning\") },\n  { value: \"performance\", label: \"performance\", icon: dot(\"bg-info\") },\n  { value: \"docs\", label: \"docs\", icon: dot(\"bg-success\") },\n  { value: \"needs-backport\", label: \"needs-backport\", icon: dot(\"bg-text-muted\") },\n];\n\nconst REPOS: ComboboxOption[] = [\n  { value: \"deploy-api\", label: \"fathom/deploy-api\", detail: \"Go\" },\n  { value: \"edge-router\", label: \"fathom/edge-router\", detail: \"Rust\" },\n  { value: \"dashboard\", label: \"fathom/dashboard\", detail: \"TypeScript\" },\n  { value: \"cli\", label: \"fathom/cli\", detail: \"Go\" },\n  { value: \"docs\", label: \"fathom/docs\", detail: \"MDX\" },\n  { value: \"terraform-modules\", label: \"fathom/terraform-modules\", detail: \"HCL\" },\n];\n\nconst flat = PEOPLE.flatMap((g) => g.items);\n\nexport function ComboboxDemo() {\n  return (\n    <DemoFrame title=\"Fix flaky deploy retries\" meta=\"#482\">\n      <div className=\"flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-(--pad) py-5\">\n        <FieldRoot name=\"repository\">\n          <FieldLabel>Repository</FieldLabel>\n          <Combobox items={REPOS} defaultValue={REPOS[0]} placeholder=\"Search repositories\" />\n        </FieldRoot>\n        <FieldRoot name=\"reviewers\">\n          <FieldLabel>Reviewers</FieldLabel>\n          <Combobox\n            multiple\n            items={PEOPLE}\n            defaultValue={[flat[0], flat[3]]}\n            placeholder=\"Add reviewers\"\n            emptyText={(q) => `No one called “${q}” in Fathom`}\n          />\n        </FieldRoot>\n        <FieldRoot name=\"labels\">\n          <FieldLabel>Labels</FieldLabel>\n          <Combobox multiple items={LABELS} defaultValue={[LABELS[0], LABELS[2]]} placeholder=\"Add labels\" />\n        </FieldRoot>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/combobox/combobox-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

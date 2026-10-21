@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "field",
   "title": "Field",
-  "description": "Label, control and one message line on Base UI Field. The description and the error share the line and swap with y + blur; inside Base UI's Form, submitting focuses the first invalid field.",
+  "description": "An animated form field for React and shadcn, with a label, a control and one line for help or errors.",
   "registryDependencies": [
     "https://eased.dev/r/eased-tokens.json",
     "https://eased.dev/r/eased-field.json"
@@ -15,6 +15,9 @@
       "target": "@components/eased/field/field.tsx"
     }
   ],
+  "meta": {
+    "details": "Label, control and one message line on Base UI Field. The description and the error share the line and swap with y + blur; inside Base UI's Form, submitting focuses the first invalid field."
+  },
   "docs": "Import Field from components/eased/field/field and put an Input, Textarea or Search Field inside. The Eased tokens were merged into your global CSS; nothing to import.",
   "type": "registry:ui"
 }

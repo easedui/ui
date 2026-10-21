@@ -28,7 +28,8 @@ export type InertiaOptions = {
   magnet?: number;
   /**
    * How the value travels to its resting point. `"spring"` (default) rides `transition`
-   * carrying the release velocity; `"decay"` is iOS scroll friction that eases onto the point.
+   * carrying the release velocity; `"decay"` is iOS scroll friction that eases onto the point
+   * (releases below `minVelocity` still settle on the spring).
    */
   mode?: "spring" | "decay";
   /** The spring for `"spring"` mode. Default a smooth spring that carries velocity. */
@@ -145,10 +146,13 @@ export function useInertia(value: MotionValue<number>, options: InertiaOptions =
       // Released past an end: pull back without the outward velocity.
       const outside = from < (o.min ?? -Infinity) || from > (o.max ?? Infinity);
       const v = outside && Math.sign(velocity) === Math.sign(from - target) ? 0 : velocity;
-      if (o.mode === "decay") {
+      // A release slower than `minVelocity` has nothing to coast on: the spring settles it.
+      if (o.mode === "decay" && Math.abs(velocity) >= (o.minVelocity ?? 0)) {
         const rate = o.decelerationRate ?? DECELERATION.normal;
+        // Inertia only reads the origin, but Motion skips any animation whose keyframes are
+        // all equal, so the keyframe must be the target rather than `from`.
         finish(
-          animate(value, from, {
+          animate(value, target, {
             type: "inertia",
             velocity: v,
             power: rate / (1 - rate) / 1000,

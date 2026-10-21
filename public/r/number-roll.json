@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "number-roll",
   "title": "Number Roll",
-  "description": "Tabular digits that roll in the direction of change: a 9 → 0 carry rolls forward, a value that changes mid-roll redirects, new places fade in while the rest slide over. Intl formatting, locale-aware separators.",
+  "description": "An animated number counter for React and shadcn, with locale-aware formatting.",
   "registryDependencies": [
     "https://eased.dev/r/eased-tokens.json",
     "https://eased.dev/r/eased-number-roll.json"
@@ -15,6 +15,9 @@
       "target": "@components/eased/number-roll/number-roll.tsx"
     }
   ],
+  "meta": {
+    "details": "Tabular digits that roll in the direction of change: a 9 → 0 carry rolls forward, a value that changes mid-roll redirects, new places fade in while the rest slide over. Intl formatting, locale-aware separators."
+  },
   "docs": "Import NumberRoll from components/eased/number-roll/number-roll. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

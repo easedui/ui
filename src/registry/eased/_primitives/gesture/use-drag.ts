@@ -324,7 +324,8 @@ export function useDrag(options: UseDragOptions = {}): UseDrag {
         if (!pts.length && o.momentum && inside && !motion.current.reduced) {
           anim.current?.stop();
           const rate = o.decelerationRate ?? DECELERATION.normal;
-          anim.current = animate(motion.current.value, info.value, {
+          // Not `info.value`: Motion skips an animation whose keyframes are all equal.
+          anim.current = animate(motion.current.value, projected, {
             type: "inertia",
             velocity,
             power: rate / (1 - rate) / 1000,

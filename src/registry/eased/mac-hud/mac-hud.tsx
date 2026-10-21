@@ -20,6 +20,8 @@ import {
 } from "../lib/motion";
 
 export type MacHudKind = "volume" | "brightness" | "keyboard";
+/** What a HUD can show: a built-in kind, or `custom` with your own `icon` and `label`. */
+export type MacHudLevel = MacHudKind | "custom";
 export type MacHudVariant = "classic" | "pill";
 
 export type MacHudLabels = {
@@ -34,12 +36,16 @@ export type MacHudLabels = {
 export type MacHudProps = {
   /** Show the HUD. Keep it mounted and toggle this so the exit animates; `useMacHud` drives it for you. */
   open: boolean;
-  /** Which level it shows; picks the icon and the announcement. */
-  kind: MacHudKind;
+  /** Which level it shows; picks the icon and the announcement. `custom` is a level of your own: pass `icon` and `label`. */
+  kind: MacHudLevel;
   /** The level, 0 to 1. Shown in quarter segments, the finest step macOS has (⌥⇧ + a media key). */
   value: number;
   /** Volume only: speaker with a slash, empty bar. */
   muted?: boolean;
+  /** `custom` only: your glyph (a timer, playback speed), in `currentColor` at the icon's size. It animates its own changes. */
+  icon?: ReactNode;
+  /** Announced instead of the kind and level, e.g. "Paused, 12 minutes left". Default for `custom`: the level as a percentage. */
+  label?: string;
   /** `classic` is the 200×200 square of macOS 15 and earlier; `pill` the top-right capsule of macOS 26. Default "classic". */
   variant?: MacHudVariant;
   /**
@@ -91,6 +97,8 @@ export function MacHud({
   kind,
   value,
   muted = false,
+  icon,
+  label,
   variant = "classic",
   position = "fixed",
   material = "css",
@@ -105,7 +113,19 @@ export function MacHud({
   const level = silent ? 0 : clamp01(value);
   const pill = variant === "pill";
 
-  const announce = silent ? `${text[kind]}, ${text.muted}` : `${text[kind]} ${pct.format(clamp01(value))}`;
+  let announce: string;
+  if (label !== undefined) announce = label;
+  else if (kind === "custom") announce = pct.format(level);
+  else if (silent) announce = `${text[kind]}, ${text.muted}`;
+  else announce = `${text[kind]} ${pct.format(clamp01(value))}`;
+  const glyph = (className: string) =>
+    kind === "custom" ? (
+      <span aria-hidden className={`block [&>svg]:size-full ${className}`}>
+        {icon}
+      </span>
+    ) : (
+      <MacHudIcon kind={kind} value={value} muted={muted} className={className} />
+    );
 
   return (
     <>
@@ -136,12 +156,12 @@ export function MacHud({
           >
             {pill ? (
               <>
-                <MacHudIcon kind={kind} value={value} muted={muted} className="size-5" />
+                {glyph("size-5")}
                 <PillBar level={level} reduce={reduce} />
               </>
             ) : (
               <>
-                <MacHudIcon kind={kind} value={value} muted={muted} className="absolute inset-x-0 top-11 mx-auto size-20 opacity-70" />
+                {glyph("absolute inset-x-0 top-11 mx-auto size-20 opacity-70")}
                 <Segments level={level} />
               </>
             )}
@@ -346,7 +366,7 @@ function Speaker({ muted, reduce }: { muted: boolean; reduce: boolean }) {
   );
 }
 
-export type MacHudState = { open: boolean; kind: MacHudKind; value: number; muted: boolean };
+export type MacHudState = { open: boolean; kind: MacHudLevel; value: number; muted: boolean; icon?: ReactNode; label?: string };
 
 export type UseMacHudOptions = {
   /** How long the HUD stays up after the last change, in ms. Default 1100, as on macOS. */
@@ -356,7 +376,7 @@ export type UseMacHudOptions = {
 /**
  * The HUD's state and its hold timer. `show(kind, value)` opens it, or updates it in place if
  * it is already up, and restarts the timer; it hides `duration` ms after the last call.
- * Spread `hud` onto `<MacHud>`.
+ * A `custom` level passes its `icon` and `label` here too. Spread `hud` onto `<MacHud>`.
  */
 export function useMacHud({ duration = 1100 }: UseMacHudOptions = {}) {
   const [hud, setHud] = useState<MacHudState>({ open: false, kind: "volume", value: 0, muted: false });
@@ -368,8 +388,8 @@ export function useMacHud({ duration = 1100 }: UseMacHudOptions = {}) {
   }, []);
 
   const show = useCallback(
-    (kind: MacHudKind, value: number, { muted = false }: { muted?: boolean } = {}) => {
-      setHud({ open: true, kind, value: clamp01(value), muted });
+    (kind: MacHudLevel, value: number, { muted = false, icon, label }: { muted?: boolean; icon?: ReactNode; label?: string } = {}) => {
+      setHud({ open: true, kind, value: clamp01(value), muted, icon, label });
       window.clearTimeout(timer.current);
       timer.current = window.setTimeout(() => setHud((h) => ({ ...h, open: false })), duration);
     },

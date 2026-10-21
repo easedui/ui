@@ -62,6 +62,14 @@ Pass `muted` with the volume: the speaker gets a slash and the bar empties, and 
 show("volume", volume, { muted: true });
 ```
 
+### A level of your own
+
+Pass `custom` with your own glyph and what to announce. The bar still shows `value`, and the HUD still updates in place; a glyph that changes (play to pause) animates itself.
+
+```tsx
+show("custom", progress, { icon: <PauseGlyph />, label: "Paused, 12 minutes left" });
+```
+
 ### Inside a container
 
 `position="absolute"` places it in the nearest positioned parent instead of the viewport. The classic HUD sits 140px above the bottom, or centres in a container too short for that.
@@ -251,9 +259,11 @@ export function HudWindow() {
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `open` | `boolean` | | Show the HUD. Keep it mounted and toggle this so the exit animates; `useMacHud` drives it. |
-| `kind` | `"volume" \| "brightness" \| "keyboard"` | | Which level it shows: picks the icon and the announcement. |
+| `kind` | `"volume" \| "brightness" \| "keyboard" \| "custom"` | | Which level it shows: picks the icon and the announcement. `custom` takes `icon` and `label`. |
 | `value` | `number` | | The level, 0 to 1, drawn in quarter segments (macOS's finest step, ⌥⇧ with a media key). |
 | `muted` | `boolean` | `false` | Volume only: speaker with a slash, empty bar. |
+| `icon` | `ReactNode` | | `custom` only: your glyph, in `currentColor` at the icon's size. |
+| `label` | `string` | | Announced instead of the kind and level. Default for `custom`: the level as a percentage. |
 | `variant` | `"classic" \| "pill"` | `"classic"` | The 200×200 square of macOS 15 and earlier, or the 200×44 capsule of macOS 26. |
 | `position` | `"fixed" \| "absolute" \| "none"` | `"fixed"` | Against the viewport, in the nearest positioned parent, or in flow for you to place (a Tauri HUD window). |
 | `material` | `"css" \| "native"` | `"css"` | `native` drops the CSS blur and tint for a window that draws real vibrancy. |
@@ -264,7 +274,7 @@ export function HudWindow() {
 
 ### useMacHud
 
-`useMacHud({ duration? })` returns `{ hud, show, hide }`. `show(kind, value, { muted? })` opens or updates the HUD and restarts the hold; `hide()` closes it at once. `duration` is the hold after the last `show`, in ms (default `1100`). Spread `hud` onto `<MacHud>`.
+`useMacHud({ duration? })` returns `{ hud, show, hide }`. `show(kind, value, { muted?, icon?, label? })` opens or updates the HUD and restarts the hold; `hide()` closes it at once. `duration` is the hold after the last `show`, in ms (default `1100`). Spread `hud` onto `<MacHud>`.
 
 ### useSystemAppearance
 

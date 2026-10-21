@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "progress",
   "title": "Progress",
-  "description": "A progress bar on Base UI Progress: the bar rides a spring and its value rolls; an unknown length sweeps with an accelerate–decelerate curve and hands over to the bar when a value arrives.",
+  "description": "An animated progress bar for React and shadcn, with an indeterminate state that hands over to the real value.",
   "dependencies": [
     "motion",
     "@base-ui/react"
@@ -20,6 +20,9 @@
       "target": "@components/eased/progress/progress.tsx"
     }
   ],
+  "meta": {
+    "details": "A progress bar on Base UI Progress: the bar rides a spring and its value rolls; an unknown length sweeps with an accelerate–decelerate curve and hands over to the bar when a value arrives."
+  },
   "docs": "Import Progress from components/eased/progress/progress. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

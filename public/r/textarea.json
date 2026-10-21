@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "textarea",
   "title": "Textarea",
-  "description": "A textarea that grows with its text on a smooth height spring instead of jumping a line at a time. The character counter rolls its digits and turns warning-coloured at 90%.",
+  "description": "An animated textarea for React and shadcn, growing with its text, with a character counter.",
   "dependencies": [
     "@base-ui/react",
     "motion"
@@ -21,6 +21,9 @@
       "target": "@components/eased/textarea/textarea.tsx"
     }
   ],
+  "meta": {
+    "details": "A textarea that grows with its text on a smooth height spring instead of jumping a line at a time. The character counter rolls its digits and turns warning-coloured at 90%."
+  },
   "docs": "Import Textarea from components/eased/textarea/textarea; wrap it in Field for a label and messages. The Eased tokens were merged into your global CSS; nothing to import.",
   "type": "registry:ui"
 }

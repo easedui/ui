@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "undo-pill",
   "title": "Undo Pill",
-  "description": "A pill that rises after a destructive action with a draining countdown ring. Undo (or ⌘Z) reverts it; only expiry commits it. Hover or focus pauses the countdown.",
+  "description": "An animated undo pill for React and shadcn, with a countdown ring that commits the action only when it runs out.",
   "dependencies": [
     "motion"
   ],
@@ -19,6 +19,9 @@
       "target": "@components/eased/undo-pill/undo-pill.tsx"
     }
   ],
+  "meta": {
+    "details": "A pill that rises after a destructive action with a draining countdown ring. Undo (or ⌘Z) reverts it; only expiry commits it. Hover or focus pauses the countdown."
+  },
   "docs": "Import UndoPill from components/eased/undo-pill/undo-pill. The Eased tokens were merged into your global CSS; nothing to import. useUndoQueue() handles batching, undo and commit. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

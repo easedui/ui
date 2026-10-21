@@ -15,6 +15,8 @@ export type MacDesktopProps = {
   ref?: Ref<HTMLDivElement>;
   /** Extra classes for the frame root, e.g. `select-none`. */
   className?: string;
+  /** The frame's height in px. Default 420; a whole app screen may ask for more. */
+  height?: number;
   /** The desktop under the menu bar: a positioned box, so children can sit `absolute` in it. */
   children?: ReactNode;
 };
@@ -26,9 +28,9 @@ export type MacDesktopProps = {
  * sets the system font family (not its size), so the demo never falls back to the app's
  * `--font-sans`, which a fresh shadcn setup leaves circular (Times).
  */
-export function MacDesktop({ app, menus = [], statusItems, footer, ref, className = "", children }: MacDesktopProps) {
+export function MacDesktop({ app, menus = [], statusItems, footer, ref, className = "", height, children }: MacDesktopProps) {
   return (
-    <DemoFrame className={`${macFontFamily} ${className}`}>
+    <DemoFrame height={height} className={`${macFontFamily} ${className}`}>
       <div ref={ref} className={`${macFont} ${macText} ${WALLPAPER} relative flex min-h-0 flex-1 flex-col`}>
         <div className="flex h-6 shrink-0 items-center justify-between gap-3 bg-[rgb(255_255_255/0.45)] px-2.5 backdrop-blur-xl in-[.dark]:bg-[rgb(0_0_0/0.3)] in-data-[theme=dark]:bg-[rgb(0_0_0/0.3)]">
           <div aria-hidden className="flex min-w-0 items-center gap-4 overflow-hidden px-1">

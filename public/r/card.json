@@ -1,0 +1,46 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card",
+  "title": "Card",
+  "description": "A card for React and shadcn, with shadcn's parts and an optional link that makes the whole card clickable.",
+  "dependencies": [
+    "@base-ui/react",
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-auto-height.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/card/card.tsx",
+      "content": "\"use client\";\n\nimport { useRender } from \"@base-ui/react/use-render\";\nimport type { ComponentProps } from \"react\";\nimport { AutoHeight } from \"../_primitives/auto-height/auto-height\";\n\nexport type CardSize = \"default\" | \"sm\";\n\nexport type CardProps = ComponentProps<\"div\"> & {\n  /** default: comfortable, 24px padding and a 16px title. sm: dense, 16px padding and a 14px title, for grids of tiles. */\n  size?: CardSize;\n  /**\n   * Spring the card's height when its content changes (a list expanding, a form turning into\n   * a confirmation), so what sits below glides instead of jumping. Default false.\n   */\n  autoHeight?: boolean;\n};\n\n// Padding is `--pad` on the root, so the parts and any `radius-nested` child read it (rule 100).\n// The gap between parts is ⅔ of it (rule 111). Gap and radius go through variables because\n// Tailwind sorts `gap-(--x)` before `gap-0` and `rounded-(--x)` before `rounded-none`: a\n// `className=\"gap-0\"` or `rounded-none` from shadcn markup wins without tailwind-merge.\nconst SIZE: Record<CardSize, string> = {\n  default: \"[--pad:--spacing(6)] [--card-gap:--spacing(4)]\",\n  sm: \"[--pad:--spacing(4)] [--card-gap:--spacing(3)]\",\n};\n\n// All of it waits on a CardLink inside; a card without one never moves. Written out in full\n// so Tailwind sees every class.\nconst LINKED = [\n  // Hover lift (rule 13): shadow-raised on a layer behind the content, cross-faded rather than\n  // animating box-shadow (rule 14). Only while the pointer is over the link's area, not an action.\n  \"before:pointer-events-none before:absolute before:-inset-px before:-z-1 before:rounded-[inherit] before:opacity-0 before:shadow-raised before:[transition:opacity_var(--eased-duration-standard)_var(--eased-ease-standard)]\",\n  \"hover-fine:has-[[data-slot=card-link]:hover]:border-line-strong hover-fine:has-[[data-slot=card-link]:hover]:before:opacity-100\",\n  // Press like any control wider than 220px (rule 63): down in 100ms, back on the snappy spring.\n  \"[transition:border-color_150ms_var(--eased-ease-standard),scale_var(--eased-duration-spring-snappy)_var(--eased-spring-snappy),box-shadow_var(--eased-duration-focus)_var(--eased-ease-standard)]\",\n  \"has-[[data-slot=card-link]:active]:scale-(--eased-press-scale-wide) has-[[data-slot=card-link]:active]:duration-(--eased-duration-instant) has-[[data-slot=card-link]:active]:ease-standard reduced:has-[[data-slot=card-link]:active]:scale-none\",\n  // Keyboard focus rings the whole card with focus-ring's ring; the outline shows in forced colours.\n  \"outline-offset-2 outline-transparent has-[[data-slot=card-link]:focus-visible]:outline-2 has-[[data-slot=card-link]:focus-visible]:shadow-[0_0_0_2px_var(--eased-bg),0_0_0_4px_var(--eased-ring)]\",\n].join(\" \");\n\n/**\n * A surface that groups one subject: a title, what it is about and what to do with it. The\n * parts and their `data-slot`s match shadcn/ui's Card, so it swaps in. A static card holds\n * still. Put a CardLink in it and the whole card becomes the link: it lifts on hover, presses\n * to 0.985 and rings on keyboard focus. `autoHeight` springs the height when content changes.\n */\nexport function Card({ size = \"default\", autoHeight = false, className = \"\", children, ...props }: CardProps) {\n  const body = \"flex flex-col gap-(--card-gap) py-(--pad)\";\n  return (\n    <div\n      {...props}\n      data-slot=\"card\"\n      data-size={size}\n      className={`group/card relative isolate rounded-(--radius-outer) border border-line-subtle bg-surface text-ui text-text [--radius-outer:var(--eased-radius-panel)] ${SIZE[size]} ${LINKED} ${autoHeight ? \"\" : body} ${className}`}\n    >\n      {autoHeight ? (\n        <AutoHeight>\n          <div className={body}>{children}</div>\n        </AutoHeight>\n      ) : (\n        children\n      )}\n    </div>\n  );\n}\n\n/** Title and description, with a CardAction beside them when there is one. */\nexport function CardHeader({ className = \"\", ...props }: ComponentProps<\"div\">) {\n  return (\n    <div\n      {...props}\n      data-slot=\"card-header\"\n      className={`@container/card-header grid auto-rows-min items-start gap-(--card-header-gap) px-(--pad) [--card-header-gap:--spacing(1)_--spacing(4)] has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto] [.border-b]:pb-(--pad) ${className}`}\n    />\n  );\n}\n\nexport type CardTitleProps = useRender.ComponentProps<\"div\">;\n\n/** One line in sentence case. A div, as in shadcn; pass `render={<h3 />}` to put it in the outline. */\nexport function CardTitle({ render, className = \"\", ...props }: CardTitleProps) {\n  return useRender({\n    defaultTagName: \"div\",\n    render,\n    props: {\n      ...props,\n      \"data-slot\": \"card-title\",\n      className: `min-w-0 text-ui-md font-medium text-text text-balance break-words group-data-[size=sm]/card:text-ui ${className}`,\n    },\n  });\n}\n\n/** What the card is about, under the title. */\nexport function CardDescription({ className = \"\", ...props }: ComponentProps<\"div\">) {\n  return (\n    <div\n      {...props}\n      data-slot=\"card-description\"\n      className={`text-ui text-text-secondary text-pretty group-data-[size=sm]/card:text-ui-sm ${className}`}\n    />\n  );\n}\n\n/**\n * A control or badge at the header's trailing edge, centred on the title's first line (rule\n * 107). It sits above a CardLink's hit area, so it stays clickable in a linked card.\n */\nexport function CardAction({ className = \"\", ...props }: ComponentProps<\"div\">) {\n  return (\n    <div\n      {...props}\n      data-slot=\"card-action\"\n      className={`relative z-1 col-start-2 row-span-2 row-start-1 flex h-[1lh] items-center self-start justify-self-end text-ui-md group-data-[size=sm]/card:text-ui ${className}`}\n    />\n  );\n}\n\nexport function CardContent({ className = \"\", ...props }: ComponentProps<\"div\">) {\n  return <div {...props} data-slot=\"card-content\" className={`px-(--pad) ${className}`} />;\n}\n\nexport function CardFooter({ className = \"\", ...props }: ComponentProps<\"div\">) {\n  return <div {...props} data-slot=\"card-footer\" className={`flex items-center px-(--pad) [.border-t]:pt-(--pad) ${className}`} />;\n}\n\nexport type CardLinkProps = useRender.ComponentProps<\"a\">;\n\n/**\n * Makes the whole card the link (rule 59): its hit area stretches over the card, and the card\n * lifts, presses and rings for it. Wrap the title text in it so the link's name is the title.\n * An `<a>`; pass `render={<Link href=\"…\" />}` for a router link or `render={<button type=\"button\" />}`\n * for a card that acts in place. Controls elsewhere in a linked card need `relative z-1`.\n */\nexport function CardLink({ render, className = \"\", ...props }: CardLinkProps) {\n  return useRender({\n    defaultTagName: \"a\",\n    render,\n    props: {\n      ...props,\n      \"data-slot\": \"card-link\",\n      className: `cursor-pointer text-start outline-none after:absolute after:inset-0 after:rounded-(--radius-outer) ${className}`,\n    },\n  });\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/card/card.tsx"
+    }
+  ],
+  "meta": {
+    "details": "A card with shadcn's parts and slots, so it swaps straight in. A static card holds still; with a CardLink the whole card lifts, presses and rings as one link, and autoHeight springs its height as content changes.",
+    "industries": [
+      "ai",
+      "devtools",
+      "finance",
+      "crypto",
+      "saas",
+      "legal",
+      "ecommerce",
+      "real-estate",
+      "health",
+      "hr",
+      "education",
+      "travel",
+      "media"
+    ],
+    "releaseAt": "2026-10-21",
+    "demo": {
+      "height": 600
+    }
+  },
+  "docs": "Import Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter and CardLink from components/eased/card/card. Card props: size (default, sm), autoHeight. CardTitle and CardLink take render. The Eased tokens were merged into your global CSS; nothing to import.",
+  "type": "registry:ui"
+}

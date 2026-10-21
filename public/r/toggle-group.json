@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "toggle-group",
   "title": "Toggle Group",
-  "description": "Toggle buttons sharing one highlight: it travels between items in single mode, and pressed neighbours fuse into one shape in multiple mode. Base UI ToggleGroup behaviour.",
+  "description": "An animated toggle group for React and shadcn, with single or multiple selection.",
   "dependencies": [
     "motion",
     "@base-ui/react"
@@ -20,6 +20,9 @@
       "target": "@components/eased/toggle-group/toggle-group.tsx"
     }
   ],
+  "meta": {
+    "details": "Toggle buttons sharing one highlight: it travels between items in single mode, and pressed neighbours fuse into one shape in multiple mode. Base UI ToggleGroup behaviour."
+  },
   "docs": "Import ToggleGroup and ToggleGroupItem from components/eased/toggle-group/toggle-group. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

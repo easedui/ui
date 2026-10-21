@@ -40,10 +40,16 @@ export type ThinkingBarProps = {
   autoOpen?: boolean;
   /** Close the reasoning this many ms after `done`, or `false` to leave it. Default 1000. Stops once the user toggles it. */
   autoClose?: number | false;
+  /**
+   * `inline` (default): a 14px muted line with the chevron after the text, for the top of a
+   * chat reply. `row`: a full-width 13px row with the chevron on the trailing edge, matching
+   * Agent Run's header, for a trace or console that stacks it over a rail.
+   */
+  variant?: "inline" | "row";
   className?: string;
 };
 
-function Chevron() {
+function Chevron({ className = "" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 16 16"
@@ -53,7 +59,7 @@ function Chevron() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
-      className="size-4 shrink-0 [transition:rotate_var(--eased-duration-spring-smooth)_var(--eased-spring-smooth)] group-data-panel-open:rotate-90 reduced:[transition:none]"
+      className={`size-4 shrink-0 [transition:rotate_var(--eased-duration-spring-smooth)_var(--eased-spring-smooth)] group-data-panel-open:rotate-90 reduced:[transition:none] ${className}`}
     >
       <path d="m6.5 4 4 4-4 4" />
     </svg>
@@ -95,6 +101,7 @@ export function ThinkingBar({
   onOpenChange,
   autoOpen = true,
   autoClose = 1000,
+  variant = "inline",
   className = "",
 }: ThinkingBarProps) {
   const thinking = status === "thinking";
@@ -160,7 +167,12 @@ export function ThinkingBar({
     </>
   );
 
-  const row = "inline-flex max-w-full items-center gap-1.5 text-ui text-text-muted";
+  const rowVariant = variant === "row";
+  // The row variant reads like Agent Run's header: secondary while it thinks, full text once it has thought.
+  const row = rowVariant ? `flex h-8 min-w-0 items-center gap-1.5 text-ui-sm ${thinking ? "text-text-secondary" : "text-text"}` : "inline-flex max-w-full items-center gap-1.5 text-ui text-text-muted";
+  const trigger = rowVariant
+    ? "-mx-1.5 w-[calc(100%+--spacing(3))] cursor-pointer rounded-control-sm px-1.5 text-left transition-colors duration-150 ease-standard focus-ring hover-fine:bg-surface-hover"
+    : "-mx-1 cursor-pointer rounded-control-xs px-1 text-left transition-colors duration-150 ease-standard focus-ring hover-fine:text-text-secondary";
   const live = (
     <span role="status" className="sr-only">
       {thinking ? "" : spoken}
@@ -170,7 +182,7 @@ export function ThinkingBar({
   if (!hasBody) {
     return (
       <div className={`min-w-0 ${className}`} aria-busy={thinking || undefined}>
-        <div className={row}>{title}</div>
+        <div className={`${row} ${rowVariant ? "w-full" : ""}`}>{title}</div>
         {live}
       </div>
     );
@@ -186,11 +198,9 @@ export function ThinkingBar({
       className={`min-w-0 ${className}`}
       aria-busy={thinking || undefined}
     >
-      <Collapsible.Trigger
-        className={`group ${row} -mx-1 cursor-pointer rounded-control-xs px-1 text-left transition-colors duration-150 ease-standard focus-ring hover-fine:text-text-secondary`}
-      >
+      <Collapsible.Trigger className={`group ${row} ${trigger}`}>
         {title}
-        <Chevron />
+        <Chevron className={rowVariant ? "ms-auto text-text-muted" : ""} />
       </Collapsible.Trigger>
       <Collapsible.Panel keepMounted render={(htmlProps, state) => <PanelBody open={state.open} htmlProps={htmlProps} />}>
         {children}

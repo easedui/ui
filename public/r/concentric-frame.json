@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "concentric-frame",
   "title": "Concentric Frame",
-  "description": "A layout primitive that exposes outer, padding and inner radius as CSS variables so nested corners stay concentric.",
+  "description": "A layout frame for React and shadcn that keeps nested corner radii concentric through CSS variables.",
   "registryDependencies": [
     "https://eased.dev/r/eased-tokens.json"
   ],
@@ -14,6 +14,9 @@
       "target": "@components/eased/concentric-frame/concentric-frame.tsx"
     }
   ],
+  "meta": {
+    "details": "A layout primitive that exposes outer, padding and inner radius as CSS variables so nested corners stay concentric."
+  },
   "docs": "Import Frame, FrameInner and useFrame from components/eased/concentric-frame/concentric-frame. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

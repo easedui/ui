@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "composer",
   "title": "Composer",
-  "description": "A chat composer that grows on a spring, opens an attachments row with Auto Height, and morphs its Send arrow into a Stop square while a reply streams. Enter sends, Shift+Enter breaks the line, Escape stops; files can be picked, dropped or pasted. Wires straight into AI SDK useChat.",
+  "description": "An animated chat composer for React and shadcn, with file attachments and a Stop button while a reply streams.",
   "dependencies": [
     "motion"
   ],
@@ -24,6 +24,9 @@
       "target": "@components/eased/composer/composer.tsx"
     }
   ],
+  "meta": {
+    "details": "A chat composer that grows on a spring, opens an attachments row with Auto Height, and morphs its Send arrow into a Stop square while a reply streams. Enter sends, Shift+Enter breaks the line, Escape stops; files can be picked, dropped or pasted. Wires straight into AI SDK useChat."
+  },
   "docs": "Import Composer from components/eased/composer/composer. With AI SDK: const { composer } = fromUseChat(useChat()); <Composer {...composer} />.",
   "type": "registry:ui"
 }

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "number-field",
   "title": "Number Field",
-  "description": "A number input on Base UI's NumberField with steppers that speed up while held, digits that roll on every step, Intl formatting with a true minus, min, max and step, and an optional scrub label.",
+  "description": "An animated number field for React and shadcn, with steppers that speed up while held.",
   "dependencies": [
     "@base-ui/react",
     "motion"
@@ -21,6 +21,9 @@
       "target": "@components/eased/number-field/number-field.tsx"
     }
   ],
+  "meta": {
+    "details": "A number input on Base UI's NumberField with steppers that speed up while held, digits that roll on every step, Intl formatting with a true minus, min, max and step, and an optional scrub label."
+  },
   "docs": "Import NumberField from components/eased/number-field/number-field; give it a label, or wrap it in Field. The Eased tokens were merged into your global CSS; nothing to import.",
   "type": "registry:ui"
 }

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tree",
   "title": "Tree",
-  "description": "A file tree whose folders open on a height spring as the chevron turns, both interruptible. One selection glides between rows, guides mark each level, and keys follow WAI-ARIA.",
+  "description": "An animated file tree for React and shadcn, with keyboard support that follows WAI-ARIA.",
   "dependencies": [
     "motion"
   ],
@@ -22,6 +22,7 @@
     }
   ],
   "meta": {
+    "details": "A file tree whose folders open on a height spring as the chevron turns, both interruptible. One selection glides between rows, guides mark each level, and keys follow WAI-ARIA.",
     "industries": [
       "devtools",
       "saas",

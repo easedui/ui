@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox",
+  "title": "Checkbox",
+  "description": "An animated checkbox for React and shadcn, with an indeterminate state for parent checkboxes.",
+  "dependencies": [
+    "@base-ui/react",
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://eased.dev/r/eased-tokens.json",
+    "https://eased.dev/r/eased-motion.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/checkbox/checkbox.tsx",
+      "content": "\"use client\";\n\nimport { Checkbox as BaseCheckbox } from \"@base-ui/react/checkbox\";\nimport { CheckboxGroup as BaseCheckboxGroup } from \"@base-ui/react/checkbox-group\";\nimport { motion } from \"motion/react\";\nimport { useId, type ReactNode } from \"react\";\nimport { ease, duration, reducedFade, snappy, useSafeReducedMotion } from \"../lib/motion\";\n\n/*\n * One stroke, three points, two shapes: the check and the indeterminate dash share a command\n * structure, so the check's corner slides up into a straight line instead of cross-fading.\n */\nconst CHECK = \"M4.25 8.4 L6.9 11 L11.75 5.25\";\nconst DASH = \"M4.5 8 L8 8 L11.5 8\";\n\n// Colour on the standard curve; the box presses to 0.9 in 100ms and springs back (rule 63).\nconst PRESS =\n  \"[transition:background-color_150ms_var(--eased-ease-standard),border-color_150ms_var(--eased-ease-standard),scale_var(--eased-duration-spring-snappy)_var(--eased-spring-snappy)] group-active:scale-90 group-active:duration-(--eased-duration-instant) group-active:ease-standard reduced:group-active:scale-none group-data-disabled:scale-none group-data-readonly:scale-none\";\n\n/** The 16px box: the fill tints in, the mark draws on and morphs between check and dash. */\nfunction CheckboxControl({ checked, indeterminate, disabled }: { checked: boolean; indeterminate: boolean; disabled: boolean }) {\n  const reduced = useSafeReducedMotion();\n  const on = checked || indeterminate;\n  const shape = indeterminate ? DASH : CHECK;\n\n  const transition = reduced\n    ? { d: { duration: 0 }, pathLength: { duration: 0 }, opacity: reducedFade }\n    : on\n      ? { d: snappy, pathLength: { duration: duration.standard, ease: ease.enter }, opacity: { duration: duration.instant } }\n      : { d: snappy, pathLength: { duration: duration.instant, ease: ease.exit }, opacity: { duration: duration.instant, delay: 0.04 } };\n\n  return (\n    <span\n      aria-hidden\n      className={`relative flex size-4 shrink-0 items-center justify-center rounded-control-2xs border ${PRESS} ${\n        disabled\n          ? on\n            ? \"border-transparent bg-text-disabled\"\n            : \"border-line bg-surface-sunken\"\n          : on\n            ? \"border-brand bg-brand\"\n            : \"border-line-strong bg-surface group-hover-fine:border-text-muted\"\n      }`}\n    >\n      <svg viewBox=\"0 0 16 16\" fill=\"none\" className=\"absolute -inset-px size-4 overflow-visible\">\n        <motion.path\n          initial={false}\n          animate={{ d: shape, pathLength: on ? 1 : 0, opacity: on ? 1 : 0 }}\n          transition={transition}\n          className={disabled ? \"stroke-surface\" : \"stroke-text-on-brand\"}\n          strokeWidth={1.75}\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n        />\n      </svg>\n    </span>\n  );\n}\n\nexport type CheckboxProps = {\n  /** Checked (controlled). */\n  checked?: boolean;\n  /** Initially checked (uncontrolled). */\n  defaultChecked?: boolean;\n  onCheckedChange?: (checked: boolean) => void;\n  /** Shows the dash. A parent checkbox in a `CheckboxGroup` sets this itself. */\n  indeterminate?: boolean;\n  /** Controls every checkbox in its `CheckboxGroup`: checks or clears them all, and shows the dash when some are checked. */\n  parent?: boolean;\n  /** Its value inside a `CheckboxGroup`, and what a form submits under `name`. */\n  value?: string;\n  name?: string;\n  disabled?: boolean;\n  required?: boolean;\n  readOnly?: boolean;\n  /** The label. Clicking anywhere on the row toggles it. Leave it out for a bare box, and pass `aria-label`. */\n  children?: ReactNode;\n  /** Muted text under the label, e.g. why it is disabled. */\n  description?: ReactNode;\n  \"aria-label\"?: string;\n  id?: string;\n  className?: string;\n};\n\n/**\n * A checkbox on Base UI: keyboard (Space), form submission, Field validation and group\n * parents. The fill tints in, the check draws itself, and the indeterminate dash is the same\n * stroke straightened, so check ⇄ dash morphs rather than swaps.\n */\nexport function Checkbox({ children, description, className = \"\", ...props }: CheckboxProps) {\n  const id = useId();\n  const labelled = children != null;\n\n  return (\n    <BaseCheckbox.Root\n      {...props}\n      aria-labelledby={labelled ? `${id}-label` : undefined}\n      aria-describedby={description ? `${id}-desc` : undefined}\n      render={(htmlProps, state) => (\n        <span {...htmlProps}>\n          {labelled ? (\n            <>\n              {/* 16px box centred on the 14px label's 20px first line (rule 107). */}\n              <span className=\"flex h-5 items-center\">\n                <CheckboxControl checked={state.checked} indeterminate={state.indeterminate} disabled={state.disabled} />\n              </span>\n              <span className=\"flex min-w-0 flex-col gap-0.5\">\n                <span id={`${id}-label`} className={`text-ui ${state.disabled ? \"text-text-disabled\" : \"text-text\"}`}>\n                  {children}\n                </span>\n                {description && (\n                  <span id={`${id}-desc`} className=\"text-ui-sm text-text-muted text-pretty\">\n                    {description}\n                  </span>\n                )}\n              </span>\n            </>\n          ) : (\n            <CheckboxControl checked={state.checked} indeterminate={state.indeterminate} disabled={state.disabled} />\n          )}\n        </span>\n      )}\n      className={(state) =>\n        `group inline-flex min-w-0 items-start text-left select-none focus-ring ${\n          labelled ? \"gap-2.5 rounded-control-xs py-1.5\" : \"rounded-control-2xs\"\n        } ${state.disabled ? \"cursor-not-allowed\" : state.readOnly ? \"cursor-default\" : \"cursor-pointer\"} ${className}`\n      }\n    />\n  );\n}\n\nexport type CheckboxGroupProps = {\n  /** Checked values (controlled). */\n  value?: string[];\n  /** Initially checked values (uncontrolled). */\n  defaultValue?: string[];\n  onValueChange?: (value: string[]) => void;\n  /** Every child's value. Required when the group has a `parent` checkbox. */\n  allValues?: string[];\n  disabled?: boolean;\n  \"aria-label\"?: string;\n  \"aria-labelledby\"?: string;\n  className?: string;\n  children: ReactNode;\n};\n\n/** A list of checkboxes that share one value array, with an optional parent \"Select all\". */\nexport function CheckboxGroup({ className = \"\", onValueChange, children, ...props }: CheckboxGroupProps) {\n  return (\n    <BaseCheckboxGroup {...props} onValueChange={(v) => onValueChange?.(v)} className={`flex flex-col ${className}`}>\n      {children}\n    </BaseCheckboxGroup>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/eased/checkbox/checkbox.tsx"
+    }
+  ],
+  "meta": {
+    "details": "A Base UI checkbox whose check draws itself and morphs into the indeterminate dash. The box presses in and springs back, and a parent checkbox fills, dashes and clears with its group.",
+    "industries": [
+      "ai",
+      "devtools",
+      "finance",
+      "crypto",
+      "saas",
+      "legal",
+      "ecommerce",
+      "real-estate",
+      "health",
+      "hr",
+      "education",
+      "travel",
+      "media"
+    ],
+    "releaseAt": "2026-10-21"
+  },
+  "docs": "Import Checkbox and CheckboxGroup from components/eased/checkbox/checkbox. Checkbox: checked, defaultChecked, onCheckedChange, indeterminate, parent, value, name, disabled, children (label), description. The Eased tokens were merged into your global CSS; nothing to import.",
+  "type": "registry:ui"
+}

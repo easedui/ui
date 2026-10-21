@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "spinner",
   "title": "Spinner",
-  "description": "A quarter arc turning on a faint ring, the eased.dev status-badge mark. Spins on the compositor, pauses off-screen, freezes under reduced motion, announces itself unless visible text already does.",
+  "description": "An animated spinner for React and shadcn, that pauses off-screen and announces itself to screen readers.",
   "dependencies": [
     "motion"
   ],
@@ -17,6 +17,9 @@
       "target": "@components/eased/spinner/spinner.tsx"
     }
   ],
+  "meta": {
+    "details": "A quarter arc turning on a faint ring, the eased.dev status-badge mark. Spins on the compositor, pauses off-screen, freezes under reduced motion, announces itself unless visible text already does."
+  },
   "docs": "Import Spinner from components/eased/spinner/spinner. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

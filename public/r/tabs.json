@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tabs",
   "title": "Tabs",
-  "description": "Tabs with a gliding indicator (underline or pill) and panels that cross-fade 6px in the direction of travel while their container's height springs. Base UI Tabs behaviour.",
+  "description": "Animated tabs for React and shadcn, with an underline or pill indicator.",
   "dependencies": [
     "motion",
     "@base-ui/react"
@@ -21,6 +21,9 @@
       "target": "@components/eased/tabs/tabs.tsx"
     }
   ],
+  "meta": {
+    "details": "Tabs with a gliding indicator (underline or pill) and panels that cross-fade 6px in the direction of travel while their container's height springs. Base UI Tabs behaviour."
+  },
   "docs": "Import Tabs, TabsList, Tab, TabsPanels and TabsPanel from components/eased/tabs/tabs. The Eased tokens were merged into your global CSS; nothing to import. Dark mode follows .dark or data-theme=\"dark\".",
   "type": "registry:ui"
 }

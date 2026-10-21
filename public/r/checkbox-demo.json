@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-demo",
+  "title": "Checkbox demo",
+  "description": "An export dialog: All columns follows the columns below it.",
+  "registryDependencies": [
+    "https://eased.dev/r/checkbox.json",
+    "https://eased.dev/r/eased-demo-frame.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/eased/checkbox/checkbox-demo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { DemoFrame } from \"../lib/demo-frame\";\nimport { Checkbox, CheckboxGroup } from \"./checkbox\";\n\nconst COLUMNS = [\n  { value: \"invoice\", label: \"Invoice number\" },\n  { value: \"customer\", label: \"Customer\" },\n  { value: \"amount\", label: \"Amount\" },\n  { value: \"status\", label: \"Status\" },\n  { value: \"due\", label: \"Due date\" },\n];\n\n/** An export dialog: \"All columns\" fills, dashes and clears as the columns below change. */\nexport function CheckboxDemo() {\n  const [value, setValue] = useState<string[]>([\"invoice\", \"amount\", \"status\"]);\n  return (\n    <DemoFrame title=\"Export to CSV\" meta={`${value.length} of ${COLUMNS.length} columns`}>\n      <div className=\"flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-(--pad) py-3\">\n        <CheckboxGroup aria-label=\"Columns\" value={value} onValueChange={setValue} allValues={COLUMNS.map((c) => c.value)}>\n          <Checkbox parent>All columns</Checkbox>\n          <div className=\"ms-1.5 flex flex-col border-s border-line-subtle ps-4\">\n            {COLUMNS.map((c) => (\n              <Checkbox key={c.value} value={c.value}>\n                {c.label}\n              </Checkbox>\n            ))}\n          </div>\n        </CheckboxGroup>\n        <div className=\"flex flex-col border-t border-line-subtle pt-3\">\n          <Checkbox defaultChecked description=\"Adds a row with the total of each number column.\">\n            Include totals\n          </Checkbox>\n          <Checkbox disabled description=\"Available on the Business plan.\">\n            Schedule a weekly export\n          </Checkbox>\n        </div>\n      </div>\n    </DemoFrame>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "@components/eased/checkbox/checkbox-demo.tsx"
+    }
+  ],
+  "type": "registry:example"
+}

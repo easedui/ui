@@ -1,0 +1,158 @@
+# Sheet
+
+A panel that slides in from an edge of the screen and swipes back out, built on Base UI Drawer and overlay-core's modal surface and scrim.
+
+## When to use
+
+- Secondary work that keeps the page in view: filters, an order's details, settings for the selected row.
+- Anything a phone user should be able to flick away. Side sheets become bottom sheets under 640px.
+- A short drill-in from inside a sheet (a nested sheet), where the parent should stay visible behind it.
+
+## When not to use
+
+- A decision that blocks the flow, or a short form: use [Dialog](/components/dialog).
+- A few actions on one thing: use a Dropdown Menu or a [Popover](/components/popover).
+- Navigation that stays open beside the content: a sidebar, not a modal sheet.
+
+## Usage
+
+```tsx example.tsx
+import {
+  Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody, SheetFooter, SheetClose,
+} from "@/components/eased/sheet/sheet";
+import { Button } from "@/components/eased/button/button";
+
+export function OrderFilters() {
+  return (
+    <Sheet>
+      <SheetTrigger>Filters</SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Filters</SheetTitle>
+          <SheetDescription>Narrow the orders list. Changes apply as you go.</SheetDescription>
+        </SheetHeader>
+        <SheetBody>…</SheetBody>
+        <SheetFooter>
+          <Button variant="ghost" size="sm" edge="start" className="me-auto">Clear all</Button>
+          <SheetClose render={<Button variant="primary" size="sm" />}>Show 8 orders</SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}
+```
+
+## Examples
+
+### Bottom sheet
+
+A grabber, full width, at most 85% of the screen tall; the body scrolls inside and hands a downward drag at its top over to the sheet.
+
+```tsx
+<SheetContent side="bottom">…</SheetContent>
+```
+
+### Snap points
+
+Pass Base UI's snap points to `Sheet`: numbers 0–1 are fractions of the viewport, larger numbers are pixels, strings take `px` or `rem`. They apply to bottom sheets.
+
+```tsx
+<Sheet snapPoints={["320px", 1]}>…</Sheet>
+```
+
+### Nested sheets
+
+Render a `Sheet` inside another sheet's content. The parent steps back 16px and 5% smaller per level and dims, and comes forward as the top sheet is swiped away.
+
+```tsx
+<SheetBody>
+  <Sheet>
+    <SheetTrigger>Ship to</SheetTrigger>
+    <SheetContent>…</SheetContent>
+  </Sheet>
+</SheetBody>
+```
+
+### Background indent
+
+Wrap the app in `SheetProvider` and the page in `SheetIndent`. While any sheet is open the page scales to 0.97, drops 8px and rounds its corners, easing back as the sheet is swiped. It scales from the top centre, so put it on an app shell that scrolls itself.
+
+```tsx
+<SheetProvider>
+  <SheetIndent className="h-dvh overflow-y-auto bg-bg">
+    <App />
+  </SheetIndent>
+</SheetProvider>
+```
+
+## API reference
+
+### Sheet
+
+Base UI `Drawer.Root`: `open`, `defaultOpen`, `onOpenChange`, `onOpenChangeComplete`, `modal`, `disablePointerDismissal`, `snapPoints`, `snapPoint`, `defaultSnapPoint`, `onSnapPointChange`, `actionsRef`, `handle`. `swipeDirection` is set for you from `SheetContent`'s side.
+
+### SheetTrigger
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `ButtonVariant` | `"secondary"` | The Eased `Button` variant. |
+| `size` | `ButtonSize` | `"sm"` | The Eased `Button` size. |
+| `render` | `ReactElement` | | Your own trigger element instead of the Button. |
+
+### SheetContent
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `side` | `"right" \| "left" \| "top" \| "bottom"` | `"right"` | The edge it lives on and swipes back to. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Side sheets' width: 320, 384 or 480px, never wider than the screen less 16px. |
+| `responsive` | `boolean` | `true` | Under 640px a right or left sheet becomes a bottom sheet. Read after hydration. |
+| `container` | `HTMLElement \| null` | `document.body` | Portal target. |
+| `initialFocus` | Base UI `initialFocus` | first tabbable | Where focus goes on open. |
+| `finalFocus` | Base UI `finalFocus` | the trigger | Where focus returns on close. |
+| `closeButton` | `boolean` | `true` | The close button in the top corner. |
+| `closeLabel` | `string` | `"Close"` | Its accessible name. |
+| `className` | `string` | `""` | Appended to the popup's classes. |
+
+The popup exposes `--pad` (24px, 20px under 640px), `--radius-outer` and `data-side` for children.
+
+### Parts
+
+| Part | What it is |
+|---|---|
+| `SheetHeader` | Title and description on the content inset, fixed above the body. |
+| `SheetTitle`, `SheetDescription` | Base UI `Drawer.Title` / `Drawer.Description`; label and describe the sheet. |
+| `SheetBody` | The scroll region. Its edges feather only while there is more to scroll. Sections inside are 24px apart. |
+| `SheetFooter` | The actions bar under a hairline, on the body's inset. Primary action last. |
+| `SheetClose` | Base UI `Drawer.Close`. |
+| `SheetProvider` | Base UI `Drawer.Provider`, for the indent. |
+| `SheetIndent` | The page layer that indents. `className` (default `bg-bg`), `backgroundClassName` (default `bg-surface-sunken`). |
+
+## Keyboard
+
+| Key | Action |
+|---|---|
+| `Enter` / `Space` | On the trigger, opens the sheet. |
+| `Tab` / `Shift Tab` | Moves focus within the sheet; focus is trapped while it is open. |
+| `Esc` | Closes the topmost sheet. |
+
+## Accessibility
+
+- The popup is a modal `dialog`, named by `SheetTitle` and described by `SheetDescription`.
+- Focus moves to the first tabbable element on open (the popup itself on touch) and returns to the trigger on close.
+- The grabber is decorative (`aria-hidden`): Esc, the close button and an outside click all close the sheet, and its 44px hit area is for dragging.
+- The bottom sheet pads for the home indicator (`safe-area-inset-bottom`).
+
+## Motion
+
+A sheet enters from its edge in 500ms on the enter curve (`--eased-duration-sheet`, `--eased-ease-enter`) and leaves in 375ms on the standard curve, scaled by Base UI's `--drawer-swipe-strength`, so a hard flick leaves sooner. While a finger drives it, transitions are off and the sheet follows the drag; the scrim's opacity follows `--drawer-swipe-progress`, and a parent under a nested sheet comes forward as the nested one is swiped. Parents step back 16px and 5% per level and dim by half a scrim. Every move is a CSS transition on `transform`, so an open reverses mid-flight. Reduced motion: no slide, no step back, no indent; a 100ms fade.
+
+## Notes for AI
+
+Pick Sheet over Dialog when the content is secondary to the page or long enough to scroll, and when phone users should swipe it away. Set `side` on `SheetContent`, not on `Sheet`; leave `responsive` on for side sheets so phones get a bottom sheet. Put scrolling content in `SheetBody` and actions in `SheetFooter`.
+
+Don't add your own swipe handling, focus trap, scroll lock or media query: Base UI and the component own them. Don't wrap `SheetContent` in another portal or a transformed element, and don't animate the sheet with Motion on top of its transitions.
+
+## Related
+
+- [Dialog](/components/dialog): centred, for decisions and short forms.
+- [Popover](/components/popover): non-modal and anchored to its trigger.
